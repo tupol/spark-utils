@@ -30,12 +30,13 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
   "com.typesafe" % "config" % "1.3.0"
 )
-
 // ------------------------------
 // TESTING
 parallelExecution in Test := false
 
 fork in Test := true
+
+publishArtifact in Test := true
 
 // ------------------------------
 // TEST COVERAGE
