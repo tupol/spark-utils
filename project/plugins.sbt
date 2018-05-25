@@ -2,6 +2,10 @@ logLevel := Level.Warn
 
 resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
 
+resolvers += Resolver.url("scalasbt", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"))
+
+addSbtPlugin("com.jsuereth" % "xsbt-gpg-plugin" % "0.5")
+
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.5.0")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")

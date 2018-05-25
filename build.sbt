@@ -1,7 +1,7 @@
 
 name := "spark-utils"
 
-organization := "tupol"
+organization := "io.tupol"
 
 scalaVersion := "2.11.12"
 
@@ -45,6 +45,46 @@ scoverage.ScoverageKeys.coverageExcludedPackages := "org.apache.spark.ml.param.s
 scoverage.ScoverageKeys.coverageExcludedFiles := ".*BuildInfo.*"
 
 
+// ------------------------------
+// PUBLISHING
+isSnapshot := version.value.trim.endsWith("SNAPSHOT")
+
+publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+
+publishArtifact in Test := true
+
+publishMavenStyle := true
+
+
+pomIncludeRepository := { x => false }
+
+pomExtra := (
+  <url>https://github.com/tupol/spark-utils</url>
+    <licenses>
+      <license>
+        <name>MIT-style</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+    <scm>
+      <url>git@github.com:tupol/spark-utils.git</url>
+      <connection>scm:git:git@github.com:tupol/spark-utils.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>tupol</id>
+        <name>Oliver Tupran</name>
+        <url>https://github.com/tupol</url>
+      </developer>
+    </developers>
+  )
 
 // ------------------------------
 // BUILD-INFO
