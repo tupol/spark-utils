@@ -22,14 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 package io.tupol.spark
-
-import com.typesafe.scalalogging.Logger
-
 /**
- * Basic logging trait
+ * Basic logging trait; For now this is a hack.
+ * org.apache.spark.Logging is shadowing the original implementation which was made package private.
  */
-trait Logging {
-
-  protected val logger = Logger(this.getClass)
-
-}
+trait Logging extends org.apache.spark.Logging

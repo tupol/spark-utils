@@ -64,27 +64,26 @@ publishMavenStyle := true
 
 pomIncludeRepository := { x => false }
 
-pomExtra := (
-  <url>https://github.com/tupol/spark-utils</url>
-    <licenses>
-      <license>
-        <name>MIT-style</name>
-        <url>https://opensource.org/licenses/MIT</url>
-        <distribution>repo</distribution>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:tupol/spark-utils.git</url>
-      <connection>scm:git:git@github.com:tupol/spark-utils.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>tupol</id>
-        <name>Oliver Tupran</name>
-        <url>https://github.com/tupol</url>
-      </developer>
-    </developers>
+
+licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT"))
+
+homepage := Some(url("https://github.com/tupol"))
+
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/tupol/spark-utils.git"),
+    "scm:git@github.com:tupol/spark-utils.git"
   )
+)
+
+developers := List(
+  Developer(
+    id    = "tupol",
+    name  = "Oliver Tupran",
+    email = "olivertupran@yahoo.com",
+    url   = url("https://github.com/tupol")
+  )
+)
 
 // ------------------------------
 // BUILD-INFO

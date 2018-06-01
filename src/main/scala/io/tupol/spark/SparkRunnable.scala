@@ -69,7 +69,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
    */
   def main(implicit args: Array[String]): Unit = {
     val runnableName = this.getClass.getName
-    logger.info(s"Running $runnableName")
+    log.info(s"Running $runnableName")
     val spark = createDefaultSparkSession(runnableName)
     val conf = applicationConfiguration(spark)
 
@@ -79,10 +79,10 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     } yield result
 
     outcome match {
-      case Success(x) =>
-        logger.info(s"$appName: Job successfully completed.")
+      case _ : Success[_] =>
+        log.info(s"$appName: Job successfully completed.")
       case Failure(ex) =>
-        logger.error(s"$appName: Job failed.", ex)
+        log.error(s"$appName: Job failed.", ex)
     }
   }
 
@@ -114,7 +114,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
 
     val CONFIGURATION_FILENAME = "application.conf"
 
-    logger.info(s"$appName: Application Parameters:\n${args.mkString("\n")}")
+    log.info(s"$appName: Application Parameters:\n${args.mkString("\n")}")
 
     // This configuration file is supposed to work with the --files option of spark-submit, but it seems that in yarn-cluster mode this one fails.
     // In yarn cluster mode the SparkFiles.getRootDirectory yields a result like
@@ -128,14 +128,14 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     val configurationFile: Option[File] = {
       val file = new File(SparkFiles.get(CONFIGURATION_FILENAME))
       val available = file.exists && file.canRead && file.isFile
-      logger.info(s"$appName: SparkFiles configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
+      log.info(s"$appName: SparkFiles configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
       if (available) Some(file) else None
     }
 
     val localConfigurationFile: Option[File] = {
       val file = new File(CONFIGURATION_FILENAME)
       val available = file.exists && file.canRead && file.isFile
-      logger.info(s"$appName: Local configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
+      log.info(s"$appName: Local configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
       if (available) Some(file) else None
     }
 
@@ -149,7 +149,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
         withFallback(ConfigFactory.defaultReference())
     val config = fullConfig.getConfig(appName)
 
-    logger.debug(s"$appName: Configuration:\n${renderConfig(config)}")
+    log.debug(s"$appName: Configuration:\n${renderConfig(config)}")
 
     config
   }
