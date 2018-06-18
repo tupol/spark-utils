@@ -29,6 +29,8 @@ import org.apache.spark.{ SparkConf, SparkFiles }
 
 import scala.util.{ Failure, Success, Try }
 
+import io.tupol.spark.utils._
+
 /**
  * Trivial trait for running basic Spark applications.
  * @tparam Configuration the type of the application configuration class.
@@ -51,16 +53,14 @@ trait SparkRunnable[Configuration, Result] extends Logging {
    */
   def buildConfig(config: Config): Try[Configuration]
 
-  val skippedPathsWhenLogging: Seq[String] = Nil
-
   /**
    * This method needs to be implemented and should contain the entire runnable logic.
    *
-   * @param spark active spark session
    * @param config configuration class
+   * @param spark active spark session
    * @return
    */
-  def run(spark: SparkSession, config: Configuration): Try[Result]
+  def run(implicit spark: SparkSession, config: Configuration): Try[Result]
 
   /**
    * Any object extending this trait becomes a runnable application.
@@ -70,8 +70,8 @@ trait SparkRunnable[Configuration, Result] extends Logging {
   def main(implicit args: Array[String]): Unit = {
     val runnableName = this.getClass.getName
     log.info(s"Running $runnableName")
-    val spark = createDefaultSparkSession(runnableName)
-    val conf = applicationConfiguration(spark)
+    implicit val spark = createSparkSession(runnableName)
+    implicit val conf = applicationConfiguration
 
     val outcome = for {
       config <- buildConfig(conf)
@@ -79,14 +79,12 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     } yield result
 
     outcome match {
-      case _ : Success[_] =>
-        log.info(s"$appName: Job successfully completed.")
-      case Failure(ex) =>
-        log.error(s"$appName: Job failed.", ex)
+      case Success(_) => log.info(s"$appName: Job successfully completed.")
+      case Failure(t) => log.error(s"$appName: Job failed.", t)
     }
   }
 
-  private def createDefaultSparkSession(runnerName: String) = {
+  protected def createSparkSession(runnerName: String) = {
     val defSparkConf = new SparkConf(true)
     val sparkConf = defSparkConf.setAppName(runnerName).
       setMaster(defSparkConf.get("spark.master", "local[*]"))
@@ -108,7 +106,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
    * @param args application parameters
    * @return the application configuration object
    */
-  private[spark] def applicationConfiguration(spark: SparkSession)(implicit args: Array[String]) = {
+  private[spark] def applicationConfiguration(implicit spark: SparkSession, args: Array[String]) = {
 
     import java.io.File
 
@@ -125,27 +123,44 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     // To overcome situations encountered so far we are using the `configurationFile` and the `localConfigurationFile` to try both paths.
     // In standalone mode the reverse is true.
     // We might be able to come to the bottom of this, but it looks like a rabbit hole not worth exploring at the moment.
-    val configurationFile: Option[File] = {
+    val sparkConfiguration: Option[Config] = {
       val file = new File(SparkFiles.get(CONFIGURATION_FILENAME))
       val available = file.exists && file.canRead && file.isFile
       log.info(s"$appName: SparkFiles configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
-      if (available) Some(file) else None
+      if (available) {
+        Try(ConfigFactory.parseFile(file))
+          .logSuccess(_ => log.info(s"Successfully parsed the local file at '${file.getAbsolutePath}'"))
+          .logFailure(t => log.error(s"Failed to parse local file at '${file.getAbsolutePath}'", t))
+          .toOption
+      } else None
     }
 
-    val localConfigurationFile: Option[File] = {
+    val localConfiguration: Option[Config] = {
       val file = new File(CONFIGURATION_FILENAME)
       val available = file.exists && file.canRead && file.isFile
       log.info(s"$appName: Local configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
-      if (available) Some(file) else None
+      if (available) {
+        Try(ConfigFactory.parseFile(file))
+          .logSuccess(_ => log.info(s"Successfully parsed the local file at '${file.getAbsolutePath}'"))
+          .logFailure(t => log.error(s"Failed to parse local file at '${file.getAbsolutePath}'", t))
+          .toOption
+      } else None
     }
 
-    val configurationFiles = Seq(configurationFile, localConfigurationFile)
+    val classpathConfiguration: Option[Config] = {
+      val resourcePath = s"/$CONFIGURATION_FILENAME"
+      Try(ConfigFactory.parseResources(resourcePath))
+        .logSuccess(_ => log.info(s"Successfully parsed the classpath configuration at '$resourcePath'"))
+        .logFailure(t => log.error(s"Failed to parse classpath configuration at '$resourcePath'", t))
+        .toOption
+    }
+
+    val configurationFiles = Seq(sparkConfiguration, localConfiguration, classpathConfiguration)
 
     val parametersConf = ConfigFactory.parseString(args.mkString("\n"))
     val fullConfig =
-      configurationFiles.filter(_.isDefined).map(_.get).
-        foldLeft(parametersConf)((cfg, file) => cfg.withFallback(ConfigFactory.parseFile(file))).
-        withFallback(ConfigFactory.parseResources(s"/$CONFIGURATION_FILENAME")).
+      configurationFiles.collect { case Some(config) => config }.
+        foldLeft(parametersConf)((acc, conf) => acc.withFallback(conf)).
         withFallback(ConfigFactory.defaultReference())
     val config = fullConfig.getConfig(appName)
 
@@ -154,5 +169,5 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     config
   }
 
-  protected def renderConfig(config: Config): String = skippedPathsWhenLogging.foldLeft(config)(_.withoutPath(_)).root.render
+  protected def renderConfig(config: Config): String = config.root.render
 }

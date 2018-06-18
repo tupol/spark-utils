@@ -50,12 +50,21 @@ scoverage.ScoverageKeys.coverageExcludedFiles := ".*BuildInfo.*"
 isSnapshot := version.value.trim.endsWith("SNAPSHOT")
 
 publishTo := {
-  val nexus = "https://oss.sonatype.org/"
+  val repo = file(sys.env("HOME") + "/.ivy2/local").toURI.toASCIIString
   if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
+    Some("snapshots" at repo)
   else
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    Some("releases" at repo)
 }
+
+// Nexus
+//publishTo := {
+//  val repo = "https://oss.sonatype.org/"
+//  if (isSnapshot.value)
+//    Some("snapshots" at repo + "content/repositories/snapshots")
+//  else
+//    Some("releases" at repo + "service/local/staging/deploy/maven2")
+//}
 
 publishArtifact in Test := true
 

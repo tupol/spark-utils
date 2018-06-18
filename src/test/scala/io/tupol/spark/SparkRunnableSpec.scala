@@ -2,7 +2,7 @@ package io.tupol.spark
 
 import java.io.File
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{ FunSuite, Matchers }
 
@@ -11,7 +11,7 @@ import scala.util.Try
 class SparkRunnableSpec extends FunSuite with Matchers with SharedSparkSession {
 
   val filesArg = Seq(
-    new File("./src/test/resources/MockRunnable/application.conf").getAbsolutePath
+    new File("src/test/resources/MockRunnable/application.conf").getAbsolutePath
   )
 
   override def sparkConfig: Map[String, String] = {
@@ -27,7 +27,7 @@ class SparkRunnableSpec extends FunSuite with Matchers with SharedSparkSession {
       |then to the application.conf in the classpath and then to reference.conf""".stripMargin
   ) {
 
-    val conf = MockRunnable.applicationConfiguration(spark)(Array(
+    val conf = MockRunnable.applicationConfiguration(spark, Array(
       "MockRunnable.whoami=\"app.param\"",
       "MockRunnable.param=\"param\""
     ))
@@ -39,7 +39,7 @@ class SparkRunnableSpec extends FunSuite with Matchers with SharedSparkSession {
   }
 
   test("SparkRunnable.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
-    val conf = MockRunnable.applicationConfiguration(spark)(Array(
+    val conf = MockRunnable.applicationConfiguration(spark, Array(
       "MockRunnable.param=\"param\""
     ))
     conf.getString("param") shouldBe "param"
@@ -49,68 +49,12 @@ class SparkRunnableSpec extends FunSuite with Matchers with SharedSparkSession {
     conf.getBoolean("file.application.conf") shouldBe true
   }
 
-  test("SparkRunnable.applicationConfiguration ignores specified paths when logs config") {
-
-    val runnable = new SparkRunnable[String, Unit] {
-
-      override val skippedPathsWhenLogging: Seq[String] = Seq("app.app1.credentials", "app.app1.password")
-
-      override def buildConfig(config: Config): Try[String] = ???
-      override def run(spark: SparkSession, config: String): Try[Unit] = ???
-
-      def loggedConfig(config: Config): String = renderConfig(config)
-    }
-
-    val conf = ConfigFactory.parseString(
-      """
-        |app.app1.credentials: {
-        |    user = "user1"
-        |    password = "******"
-        |}
-        |
-        |app.app1.password = "qwerty"
-        |
-        |app.app1.nobody.needs.it: {
-        |    something = "stuff"
-        |}
-      """.stripMargin
-    )
-
-    import scala.language.reflectiveCalls
-    val actual = runnable.loggedConfig(conf)
-
-    val expected =
-      """{
-        |    # String: 2-9
-        |    "app" : {
-        |        # String: 2-9
-        |        "app1" : {
-        |            # String: 9
-        |            "nobody" : {
-        |                # String: 9
-        |                "needs" : {
-        |                    # String: 9
-        |                    "it" : {
-        |                        # String: 10
-        |                        "something" : "stuff"
-        |                    }
-        |                }
-        |            }
-        |        }
-        |    }
-        |}
-        |""".stripMargin
-
-    actual shouldEqual expected
-
-  }
-
   object MockRunnable extends SparkRunnable[String, Unit] {
 
     def buildConfig(config: Config): Try[String] = Try("Hello")
 
     // This method needs to be implemented and should contain the entire runnable logic.
-    override def run(spark: SparkSession, config: String): Try[Unit] = ???
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = ???
   }
 }
 
