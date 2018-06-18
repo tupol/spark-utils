@@ -70,7 +70,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
   def main(implicit args: Array[String]): Unit = {
     val runnableName = this.getClass.getName
     log.info(s"Running $runnableName")
-    val spark = createDefaultSparkSession(runnableName)
+    val spark = createSparkSession(runnableName)
     val conf = applicationConfiguration(spark)
 
     val outcome = for {
@@ -86,7 +86,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     }
   }
 
-  private def createDefaultSparkSession(runnerName: String) = {
+  protected def createSparkSession(runnerName: String) = {
     val defSparkConf = new SparkConf(true)
     val sparkConf = defSparkConf.setAppName(runnerName).
       setMaster(defSparkConf.get("spark.master", "local[*]"))
