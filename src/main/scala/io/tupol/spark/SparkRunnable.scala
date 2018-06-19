@@ -79,7 +79,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
     } yield result
 
     outcome match {
-      case _ : Success[_] =>
+      case _: Success[_] =>
         log.info(s"$appName: Job successfully completed.")
       case Failure(ex) =>
         log.error(s"$appName: Job failed.", ex)
