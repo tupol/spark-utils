@@ -27,7 +27,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{ SparkConf, SparkFiles }
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 import io.tupol.spark.utils._
 
@@ -68,7 +68,7 @@ trait SparkRunnable[Configuration, Result] extends Logging {
    * @param args
    */
   def main(implicit args: Array[String]): Unit = {
-    val runnableName = this.getClass.getName
+    val runnableName = this.getClass.getName.replaceAll("\\$", "")
     log.info(s"Running $runnableName")
     implicit val spark = createSparkSession(runnableName)
     implicit val conf = applicationConfiguration
@@ -78,10 +78,17 @@ trait SparkRunnable[Configuration, Result] extends Logging {
       result <- run(spark, config)
     } yield result
 
-    outcome match {
-      case Success(_) => log.info(s"$appName: Job successfully completed.")
-      case Failure(t) => log.error(s"$appName: Job failed.", t)
-    }
+    outcome
+      .logSuccess(_ => log.info(s"$appName: Job successfully completed."))
+      .logFailure(t => log.error(s"$appName: Job failed.", t))
+
+    // Close the session so the application can exit
+    Try(spark.close)
+      .logSuccess(_ => log.info(s"$appName: Spark session closed."))
+      .logFailure(t => log.error(s"$appName: Failed to close the spark session.", t))
+
+    // If the application failed we exit with an exception
+    outcome.get
   }
 
   protected def createSparkSession(runnerName: String) = {
