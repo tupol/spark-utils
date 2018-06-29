@@ -25,7 +25,6 @@ package io.tupol.spark
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
-import java.util
 
 import org.json4s.JsonAST.JString
 import org.json4s.{ CustomSerializer, Serializer }
@@ -160,65 +159,14 @@ package object utils {
     Seq(LDTSerializer, SqlTimestampSerializer)
   }
 
-  import org.apache.spark.sql.catalyst.ScalaReflection
-  import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
-  import org.apache.spark.sql.types.{ StructField, StructType }
-  import org.apache.spark.sql.{ Column, DataFrame, Row }
-  import org.json4s.NoTypeHints
-  import org.json4s.jackson.Serialization
-
-  import scala.reflect.runtime.universe._
-
-  /**
-   * Map decorator with a Spark flavour
-   * @param map
-   * @tparam K
-   * @tparam V
-   */
-  implicit class MapOps[K, V](val map: Map[K, V]) {
-    // Primitive conversion from Map to a Row using a schema
-    // TODO: Deal with inner maps
-    def toRow(schema: StructType): Row = {
-      val values = schema.fieldNames.map(fieldName => map.map { case (k, v) => (k.toString(), v) }.get(fieldName).getOrElse(null))
-      new GenericRowWithSchema(values, schema)
-    }
-    def toHashMap = {
-      val props = new util.HashMap[K, V]()
-      map.foreach { case (k, v) => props.put(k, v) }
-      props
-    }
-  }
-  /**
-   * Simple conversion between a Spark SQL Row and a Map. Inner rows are also transformed also into maps.
-   * @param row
-   * @return
-   */
-  def row2map(row: Row): Map[String, Any] =
-    row.schema.fields.map { key =>
-      val value = row.getAs[Any](key.name) match {
-        case r: Row => row2map(r)
-        case v => v
-      }
-      (key.name, value)
-    }.toMap
-
-  /**
-   * Row decorator.
-   *
-   * @param row
-   */
-  implicit class RowOps(val row: Row) {
-    // Primitive conversion from Map to a Row using a schema
-    // TODO: this does not take care of inner maps
-    def toMap: Map[String, Any] = row2map(row)
-  }
-
   /**
    * Product decorator
    * @param product
    */
   implicit class ProductOps(product: Product) {
     import org.json4s.Extraction
+    import org.json4s.NoTypeHints
+    import org.json4s.jackson.Serialization
 
     /**
      * Convert the product into a map keyed by field name
@@ -228,51 +176,6 @@ package object utils {
       val formats = Serialization.formats(NoTypeHints) ++ TimeSerializers
       Extraction.decompose(product)(formats).values.asInstanceOf[Map[String, Any]]
     }
-  }
-
-  /**
-   * Extract the schema for a given type.
-   * @tparam T the type to extract the schema for
-   * @return
-   */
-  def schemaFor[T: TypeTag]: StructType = ScalaReflection.schemaFor[T].dataType.asInstanceOf[StructType]
-
-  /**
-   * "Flatten" a DataFrame.
-   *
-   * If the DataFrame contains nested types, they are all unpacked to individual columns, having the column name as a
-   * string representing the original hierarchy, separated by `_` characters.
-   *
-   * For example, a column containing a structure like `someCol: { fieldA, fieldB}` will be transformed into two columns
-   * like `someCol_fieldA` and `someCol_fieldB`.
-   *
-   * @param dataFrame
-   * @return
-   */
-  def flattenDataFrame(dataFrame: DataFrame) = {
-
-    def constructFlatteningInstructions(field: StructField, ancestors: Seq[String] = Nil): Seq[(String, String)] = field.dataType match {
-      case StructType(children) =>
-        children.flatMap(child => constructFlatteningInstructions(child, ancestors :+ field.name))
-      case _ =>
-        val fullPath = ancestors :+ field.name
-        Seq((fullPath.mkString("."), fullPath.mkString("_")))
-    }
-
-    val flatteningInstructions = dataFrame.schema.fields.toSeq
-      .flatMap(field => constructFlatteningInstructions(field))
-      .map { case (originalPath, aliasedName) => new Column(originalPath).as(aliasedName) }
-
-    dataFrame.select(flatteningInstructions: _*)
-  }
-
-  implicit class DataFrameOps(val dataFrame: DataFrame) {
-    /**
-     * See [[io.tupol.spark.utils.flattenDataFrame()]]
-     *
-     * @return
-     */
-    def flatten: DataFrame = flattenDataFrame(dataFrame)
   }
 
 }

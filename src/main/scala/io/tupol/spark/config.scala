@@ -32,7 +32,7 @@ import scala.annotation.implicitNotFound
 import scala.collection.JavaConverters._
 import scala.util.{ Failure, Success, Try }
 
-object config {
+package object config {
 
   /**
    * An extractor is a bit of code that knows how to extract a value of type T

@@ -1,10 +1,10 @@
-package io.tupol.spark
+package io.tupol.spark.config
 
 import com.typesafe.config.ConfigException.BadValue
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
 import org.scalatest.Matchers
-import config.Extractor.rangeExtractor.parseStringToRange
+import Extractor.rangeExtractor.parseStringToRange
 
 class StringToRangeProp extends Properties("Range") with Matchers {
 
