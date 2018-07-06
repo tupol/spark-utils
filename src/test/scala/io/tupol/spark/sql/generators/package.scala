@@ -1,4 +1,4 @@
-package io.tupol.spark.utils
+package io.tupol.spark.sql
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen

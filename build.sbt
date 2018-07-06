@@ -12,6 +12,8 @@ val log4jVersion = "2.11.0"
 // ------------------------------
 // DEPENDENCIES AND RESOLVERS
 
+updateOptions := updateOptions.value.withCachedResolution(true)
+
 lazy val providedDependencies = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion force(),
   "org.apache.spark" %% "spark-sql" % sparkVersion force(),

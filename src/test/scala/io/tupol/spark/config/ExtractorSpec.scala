@@ -1,8 +1,7 @@
-package io.tupol.spark
+package io.tupol.spark.config
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{ FunSuite, Matchers }
-import config._
 import scalaz.syntax.applicative._
 
 import scala.collection.JavaConversions._
