@@ -54,31 +54,60 @@ class TryOpsSpec extends FunSuite with Matchers {
   }
 
   test("allOkOrFail yields a Success") {
-
     val result = Seq(Success(1), Success(2)).allOkOrFail
-
     result shouldBe a[Success[_]]
-
     result.get should contain theSameElementsAs (Seq(1, 2))
-
   }
 
   test("allOkOrFail for an empty list yields a Success") {
-
     val result = Seq[Try[Int]]().allOkOrFail
-
     result shouldBe a[Success[_]]
-
     result.get.isEmpty shouldBe true
-
   }
 
   test("allOkOrFail yields a Failure") {
-
     val result = Seq(Success(1), Failure[Int](new Exception("ex"))).allOkOrFail
-
     result shouldBe a[Failure[_]]
+  }
 
+  test("tryWithResource should be successful if everything goes well and the resource should be closed") {
+    val expectedResult = 111
+    var closedFlag: Boolean = false
+    trait Resource extends AutoCloseable {
+      override def close(): Unit = closedFlag = true
+    }
+    def code(r: Resource) = expectedResult
+    val result = tryWithResources(new Resource {})(code)
+    result shouldBe a[Success[_]]
+    result.get shouldBe expectedResult
+    closedFlag shouldBe true
+  }
+
+  test("tryWithResource should be successful if everything goes well, even if the resource fails closing") {
+    val expectedResult = 111
+    var closedFlag: Boolean = false
+    class ResourceException extends Exception("")
+    trait Resource extends AutoCloseable {
+      override def close(): Unit = throw new ResourceException
+    }
+    def code(r: Resource) = expectedResult
+    val result = tryWithResources(new Resource {})(code)
+    result shouldBe a[Success[_]]
+    result.get shouldBe expectedResult
+    closedFlag shouldBe false
+  }
+
+  test("tryWithResource should fail if the code fails and the resource should be closed") {
+    var closedFlag: Boolean = false
+    trait Resource extends AutoCloseable {
+      override def close(): Unit = closedFlag = true
+    }
+    class CodeException extends Exception("")
+    def code(r: Resource) = throw new CodeException
+    val result = tryWithResources(new Resource {})(code)
+    result shouldBe a[Failure[_]]
+    a[CodeException] should be thrownBy result.get
+    closedFlag shouldBe true
   }
 
 }

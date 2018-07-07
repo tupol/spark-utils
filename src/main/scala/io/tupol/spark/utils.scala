@@ -120,6 +120,22 @@ package object utils {
   }
 
   /**
+   * Try running a code block that uses a resource which is silently closed on return.
+   * @param resource resource creation block
+   * @param code code that uses the resource
+   * @tparam R resource type which must be [[AutoCloseable]]
+   * @tparam T the code block return type
+   * @return Success if the resource was successfully initialised and the code was successfully ran,
+   *         even if the resource was not successfully closed.
+   */
+  def tryWithResources[R <: AutoCloseable, T](resource: => R)(code: R => T): Try[T] = {
+    val res = Try(resource)
+    val result = res.map(code)
+    res.map(r => Try(r.close()))
+    result
+  }
+
+  /**
    * This is a small and probably wrong conversion to JSON format.
    *
    * Besides the basic conversion, this also serializes the LocalDateFormat
