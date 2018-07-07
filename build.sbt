@@ -51,27 +51,20 @@ scoverage.ScoverageKeys.coverageExcludedFiles := ".*BuildInfo.*"
 // PUBLISHING
 isSnapshot := version.value.trim.endsWith("SNAPSHOT")
 
-publishTo := {
-  val repo = file(sys.env("HOME") + "/.ivy2/local").toURI.toASCIIString
-  if (isSnapshot.value)
-    Some("snapshots" at repo)
-  else
-    Some("releases" at repo)
-}
+useGpg := true
 
-// Nexus
-//publishTo := {
-//  val repo = "https://oss.sonatype.org/"
-//  if (isSnapshot.value)
-//    Some("snapshots" at repo + "content/repositories/snapshots")
-//  else
-//    Some("releases" at repo + "service/local/staging/deploy/maven2")
-//}
+// Nexus (see https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html)
+publishTo := {
+  val repo = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at repo + "content/repositories/snapshots")
+  else
+    Some("releases" at repo + "service/local/staging/deploy/maven2")
+}
 
 publishArtifact in Test := true
 
 publishMavenStyle := true
-
 
 pomIncludeRepository := { x => false }
 
