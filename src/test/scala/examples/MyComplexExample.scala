@@ -42,7 +42,7 @@ case class MyComplexExample(example: MySimpleExample, separatorChar: String, sep
   }
 }
 
-import io.tupol.spark.config._
+import org.tupol.spark.config._
 
 /**
  * This is the configurator implementation for the MyExample case class

@@ -1,4 +1,4 @@
-package io.tupol.spark.sql.generators
+package org.tupol.spark.sql.generators
 
 // Schema has a type and a sequence of records
 case class TestMetadata(continuous: Boolean, label: Boolean)

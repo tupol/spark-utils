@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package io.tupol.spark
+package org.tupol.spark
 
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.spark.sql.SparkSession
@@ -29,7 +29,7 @@ import org.apache.spark.{ SparkConf, SparkFiles }
 
 import scala.util.Try
 
-import io.tupol.spark.utils._
+import org.tupol.spark.utils._
 
 /**
  * Trivial trait for running basic Spark applications.

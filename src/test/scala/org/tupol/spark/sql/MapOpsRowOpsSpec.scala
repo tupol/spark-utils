@@ -1,7 +1,7 @@
-package io.tupol.spark.sql
+package org.tupol.spark.sql
 
-import io.tupol.spark.SharedSparkSession
-import io.tupol.spark.TestData.{ DeepClass, TestClass }
+import org.tupol.spark.SharedSparkSession
+import org.tupol.spark.TestData.{ DeepClass, TestClass }
 import org.scalatest.{ FunSuite, Matchers }
 
 class MapOpsRowOpsSpec extends FunSuite with Matchers with SharedSparkSession {

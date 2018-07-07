@@ -1,4 +1,4 @@
-package io.tupol.spark
+package org.tupol.spark
 
 import java.io.File
 

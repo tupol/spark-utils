@@ -1,7 +1,7 @@
 
 name := "spark-utils"
 
-organization := "io.tupol"
+organization := "org.tupol"
 
 scalaVersion := "2.11.12"
 
@@ -102,7 +102,7 @@ lazy val root = (project in file(".")).
   enablePlugins(BuildInfoPlugin).
   settings(
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "io.tupol.spark.info"
+    buildInfoPackage := "org.tupol.spark.info"
   )
 
 buildInfoKeys ++= Seq[BuildInfoKey](

@@ -1,7 +1,7 @@
-package io.tupol.spark.sql
+package org.tupol.spark.sql
 
-import io.tupol.spark.SharedSparkSession
-import io.tupol.spark.TestData.{ DummyData, DummyNestedData, DummyUnnestedData }
+import org.tupol.spark.SharedSparkSession
+import org.tupol.spark.TestData.{ DummyData, DummyNestedData, DummyUnnestedData }
 import org.scalatest.{ FunSuite, Matchers }
 
 class DataFrameOpsSpec extends FunSuite with Matchers with SharedSparkSession {

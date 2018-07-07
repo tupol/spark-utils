@@ -13,7 +13,7 @@ The configuration framework is based on *ScalaZ* `validation` infrastructure.
 The main reason for using the *ScalaZ* `ValidationNel` is to be able to collect all error messages found during the configuration of the target object, and showing them to the user in one go, rather than one by one, as each problem is fixed, application is ran again and the next problem is revealed.
 
 The key concepts are:
-- `io.tupol.spark.Configurator`
+- `org.tupol.spark.Configurator`
 - `scalaz.ValidationNel`; for more details look [here](https://github.com/scalaz/scalaz/blob/series/7.2.x/core/src/main/scala/scalaz/Validation.scala)
 - `com.typesafe.config.Config`; for more details look [here](https://github.com/typesafehub/config)
 
@@ -62,7 +62,7 @@ case class MySimpleExample(path: String, overwrite: Boolean) {
 #### 2. Create a corresponding `Configurator` and implement the `validationNel()` function 
 
 ```scala
-import io.tupol.spark.config.Configurator
+import org.tupol.spark.config.Configurator
 
 object MySimpleExample extends Configurator[MySimpleExample] {
 
@@ -71,7 +71,7 @@ object MySimpleExample extends Configurator[MySimpleExample] {
 
   override def validationNel(config: Config): ValidationNel[Throwable, MySimpleExample] = {
 
-    import io.tupol.spark.config._
+    import org.tupol.spark.config._
     import scalaz.syntax.applicative._
 
     config.extract[String]("path") |@| config.extract[Boolean]("overwrite") apply MySimpleExample.apply
@@ -85,7 +85,7 @@ object MySimpleExample extends Configurator[MySimpleExample] {
 
 1. Normally we define the configurator factory in a companion object attached to the case class that we want to configure.
 
-2. The only top level import is `import io.tupol.spark.config.Configurator`.
+2. The only top level import is `import org.tupol.spark.config.Configurator`.
    We are quite keen on keeping the top level imports clean, and only import locally what we need.
    The subsequent sets of imports are inside the `MySimpleExample` object scope and in the `validationNel` function scope.
 
@@ -93,7 +93,7 @@ object MySimpleExample extends Configurator[MySimpleExample] {
 
 4. Notice the `config.extract[String]("path")` function call. What happens here is the following:
     - the `config` is implicitly converted to a `RichConfig` instance, that uses the *type class* pattern in the `extract` function
-    - the actual type classes can be found inside the `Extractor` object, all available in the `io.tupol.spark.config` package
+    - the actual type classes can be found inside the `Extractor` object, all available in the `org.tupol.spark.config` package
     - the `path` refers to a path inside the `config` object passed in as an argument
     - the `[String]` type parameter is used to trigger the type class matching
     - the `RichConfig.extract` function returns `ValidationNel[Throwable, T]`
@@ -142,7 +142,7 @@ case class MyComplexExample(example: MySimpleExample, separatorChar: String, sep
 #### 2. Create a corresponding `Configurator` and implement the `validationNel()` function 
 
 ```scala
-import io.tupol.spark.config.Configurator
+import org.tupol.spark.config.Configurator
 
 object MyComplexExample extends Configurator[MyComplexExample] {
 
@@ -151,7 +151,7 @@ object MyComplexExample extends Configurator[MyComplexExample] {
 
   override def validationNel(config: Config): ValidationNel[Throwable, MyComplexExample] = {
 
-    import io.tupol.spark.config._
+    import org.tupol.spark.config._
     import scalaz.syntax.applicative._
     import com.typesafe.config.ConfigException.BadValue
 
@@ -177,7 +177,7 @@ object MyComplexExample extends Configurator[MyComplexExample] {
         - takes as a second argument a predicate that is applied to the value contained in the `ValidationNel`
         - if testing the value against the predicate fails, then the `Throwable` defined as a first parameter is added to the `NonEmptyList[Throwable]` of the `ValidationNel`
         - for more details don't hesitate to check the [scalaz documentation](https://github.com/scalaz/scalaz/blob/series/7.2.x/core/src/main/scala/scalaz/Validation.scala)
-    - the `Throwable`s are implicitly converted to `NonEmptyList[Throwable]` by the `io.tupol.spark.config._` package defined implicits;
+    - the `Throwable`s are implicitly converted to `NonEmptyList[Throwable]` by the `org.tupol.spark.config._` package defined implicits;
       This way the type signature `ValidationNel[Throwable, T]` is preserved.
       
 3. For the final line to work, `MySimpleExample.validationNel(config)` needs to be defined.

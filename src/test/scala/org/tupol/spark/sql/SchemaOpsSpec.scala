@@ -1,4 +1,4 @@
-package io.tupol.spark.sql
+package org.tupol.spark.sql
 
 import org.apache.spark.sql.types._
 import org.scalatest.{ FunSuite, Matchers }

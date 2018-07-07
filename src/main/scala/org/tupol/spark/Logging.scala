@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package io.tupol.spark
+package org.tupol.spark
 /**
  * Basic logging trait; For now this is a hack.
  * org.apache.spark.Logging is shadowing the original implementation which was made package private.

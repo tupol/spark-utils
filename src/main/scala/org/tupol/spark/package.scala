@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package io.tupol.spark
+package org.tupol.spark
 
 import java.util
 
@@ -136,7 +136,7 @@ package object sql {
   implicit class SchemaOps(val schema: StructType) {
 
     /**
-     * See [[io.tupol.spark.sql.mapFields()]]
+     * See [[org.tupol.spark.sql.mapFields()]]
      *
      * @return
      */
@@ -144,14 +144,14 @@ package object sql {
       sql.mapFields(schema, mapFun).asInstanceOf[StructType]
 
     /**
-     * See [[io.tupol.spark.sql.checkAllFields()]]
+     * See [[org.tupol.spark.sql.checkAllFields()]]
      *
      * @return
      */
     def checkAllFields(predicate: StructField => Boolean): Boolean = sql.checkAllFields(schema, predicate)
 
     /**
-     * See [[io.tupol.spark.sql.checkAnyFields()]]
+     * See [[org.tupol.spark.sql.checkAnyFields()]]
      *
      * @return
      */
@@ -160,7 +160,7 @@ package object sql {
 
   implicit class DataFrameOps(val dataFrame: DataFrame) {
     /**
-     * See [[io.tupol.spark.sql.flattenFields()]]
+     * See [[org.tupol.spark.sql.flattenFields()]]
      *
      * @return
      */

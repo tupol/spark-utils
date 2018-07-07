@@ -1,4 +1,4 @@
-package io.tupol.spark
+package org.tupol.spark
 
 import org.apache.spark.sql.{ SQLContext, SparkSession }
 import org.apache.spark.{ SparkConf, SparkContext }
