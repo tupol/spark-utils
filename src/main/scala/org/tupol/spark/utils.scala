@@ -128,7 +128,7 @@ package object utils {
    * @return Success if the resource was successfully initialised and the code was successfully ran,
    *         even if the resource was not successfully closed.
    */
-  def tryWithResources[R <: AutoCloseable, T](resource: => R)(code: R => T): Try[T] = {
+  def tryWithCloseable[R <: AutoCloseable, T](resource: => R)(code: R => T): Try[T] = {
     val res = Try(resource)
     val result = res.map(code)
     res.map(r => Try(r.close()))
