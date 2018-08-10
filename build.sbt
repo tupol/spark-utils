@@ -7,8 +7,6 @@ scalaVersion := "2.11.12"
 
 val sparkVersion = "2.1.1"
 
-val log4jVersion = "2.11.0"
-
 // ------------------------------
 // DEPENDENCIES AND RESOLVERS
 
@@ -25,7 +23,6 @@ libraryDependencies ++= providedDependencies.map(_ % "provided")
 
 libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
-  "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "org.scalaz" %% "scalaz-core" % "7.2.5",
   "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",

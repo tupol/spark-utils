@@ -53,6 +53,12 @@ class TryOpsSpec extends FunSuite with Matchers {
     loggerFailure should contain theSameElementsAs Seq("1")
   }
 
+  test("allOkOrFail yields a Success for a list of a single element") {
+    val result = Seq(Success(1)).allOkOrFail
+    result shouldBe a[Success[_]]
+    result.get should contain theSameElementsAs (Seq(1))
+  }
+
   test("allOkOrFail yields a Success") {
     val result = Seq(Success(1), Success(2)).allOkOrFail
     result shouldBe a[Success[_]]
@@ -70,20 +76,20 @@ class TryOpsSpec extends FunSuite with Matchers {
     result shouldBe a[Failure[_]]
   }
 
-  test("tryWithResource should be successful if everything goes well and the resource should be closed") {
+  test("tryWithCloseable should be successful if everything goes well and the resource should be closed") {
     val expectedResult = 111
     var closedFlag: Boolean = false
     trait Resource extends AutoCloseable {
       override def close(): Unit = closedFlag = true
     }
     def code(r: Resource) = expectedResult
-    val result = tryWithResources(new Resource {})(code)
+    val result = tryWithCloseable(new Resource {})(code)
     result shouldBe a[Success[_]]
     result.get shouldBe expectedResult
     closedFlag shouldBe true
   }
 
-  test("tryWithResource should be successful if everything goes well, even if the resource fails closing") {
+  test("tryWithCloseable should be successful if everything goes well, even if the resource fails closing") {
     val expectedResult = 111
     var closedFlag: Boolean = false
     class ResourceException extends Exception("")
@@ -91,20 +97,20 @@ class TryOpsSpec extends FunSuite with Matchers {
       override def close(): Unit = throw new ResourceException
     }
     def code(r: Resource) = expectedResult
-    val result = tryWithResources(new Resource {})(code)
+    val result = tryWithCloseable(new Resource {})(code)
     result shouldBe a[Success[_]]
     result.get shouldBe expectedResult
     closedFlag shouldBe false
   }
 
-  test("tryWithResource should fail if the code fails and the resource should be closed") {
+  test("tryWithCloseable should fail if the code fails and the resource should be closed") {
     var closedFlag: Boolean = false
     trait Resource extends AutoCloseable {
       override def close(): Unit = closedFlag = true
     }
     class CodeException extends Exception("")
     def code(r: Resource) = throw new CodeException
-    val result = tryWithResources(new Resource {})(code)
+    val result = tryWithCloseable(new Resource {})(code)
     result shouldBe a[Failure[_]]
     a[CodeException] should be thrownBy result.get
     closedFlag shouldBe true
