@@ -1,6 +1,8 @@
 logLevel := Level.Warn
 
-resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+resolvers += "Sonatype OSS Staging" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+
+resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
 
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.5.0")
 

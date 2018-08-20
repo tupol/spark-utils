@@ -29,7 +29,7 @@ import org.apache.spark.{ SparkConf, SparkFiles }
 
 import scala.util.Try
 
-import org.tupol.spark.utils._
+import org.tupol.utils._
 
 /**
  * Trivial trait for running basic Spark applications.

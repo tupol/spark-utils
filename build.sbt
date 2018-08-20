@@ -5,6 +5,8 @@ organization := "org.tupol"
 
 scalaVersion := "2.11.12"
 
+val scalaUtilsVersion = "0.0.1-SNAPSHOT"
+
 val sparkVersion = "2.1.1"
 
 // ------------------------------
@@ -22,12 +24,9 @@ lazy val providedDependencies = Seq(
 libraryDependencies ++= providedDependencies.map(_ % "provided")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
-  "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-  "org.scalaz" %% "scalaz-core" % "7.2.5",
-  "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-  "com.typesafe" % "config" % "1.3.0"
+  "org.tupol" %% "scala-utils" % scalaUtilsVersion,
+  "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 // ------------------------------
 // TESTING

@@ -12,7 +12,7 @@ import scala.util.Try
 trait SharedSparkSession extends BeforeAndAfterAll {
   this: Suite =>
 
-  def master = "local[*]"
+  def master = "local[2]"
   def appName = this.getClass.getSimpleName
 
   @transient private var _spark: SparkSession = _
@@ -23,7 +23,7 @@ trait SharedSparkSession extends BeforeAndAfterAll {
 
   implicit lazy val sqlContext: SQLContext = spark.sqlContext
 
-  def sparkConfig: Map[String, String] = Map.empty
+  def sparkConfig: Map[String, String] = Map("spark.driver.host" -> "localhost") //See https://issues.apache.org/jira/browse/SPARK-19394
 
   def createSparkSession(conf: SparkConf): SparkSession =
     SparkSession.builder.config(conf).getOrCreate()
