@@ -5,7 +5,7 @@ organization := "org.tupol"
 
 scalaVersion := "2.11.12"
 
-val scalaUtilsVersion = "0.0.1"
+val scalaUtilsVersion = "0.1.0"
 
 val sparkVersion = "2.1.1"
 
