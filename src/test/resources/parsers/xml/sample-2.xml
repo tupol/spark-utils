@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root-name>
+  <node_name isome_attribute="blah blah 2">
+    <good_node_name>
+      <_other_good_node_name>3000</_other_good_node_name>
+      <_other_good_node_name>4000</_other_good_node_name>
+    </good_node_name>
+  </node_name>
+</root-name>

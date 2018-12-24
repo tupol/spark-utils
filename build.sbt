@@ -5,9 +5,9 @@ organization := "org.tupol"
 
 scalaVersion := "2.11.12"
 
-val scalaUtilsVersion = "0.1.0"
+val scalaUtilsVersion = "0.2.0-SNAPSHOT"
 
-val sparkVersion = "2.1.1"
+val sparkVersion = "2.3.2"
 
 // ------------------------------
 // DEPENDENCIES AND RESOLVERS
@@ -18,7 +18,9 @@ lazy val providedDependencies = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion force(),
   "org.apache.spark" %% "spark-sql" % sparkVersion force(),
   "org.apache.spark" %% "spark-mllib" % sparkVersion force(),
-  "org.apache.spark" %% "spark-streaming" % sparkVersion force()
+  "org.apache.spark" %% "spark-streaming" % sparkVersion force(),
+  "com.databricks" %% "spark-xml" % "0.4.1",
+  "com.databricks" %% "spark-avro" % "4.0.0"
 )
 
 libraryDependencies ++= providedDependencies.map(_ % "provided")
@@ -26,7 +28,9 @@ libraryDependencies ++= providedDependencies.map(_ % "provided")
 libraryDependencies ++= Seq(
   "org.tupol" %% "scala-utils" % scalaUtilsVersion,
   "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "com.databricks" %% "spark-xml" % "0.4.1" % "test",
+  "com.databricks" %% "spark-avro" % "4.0.0" % "test"
 )
 // ------------------------------
 // TESTING
@@ -62,7 +66,7 @@ publishArtifact in Test := true
 
 publishMavenStyle := true
 
-pomIncludeRepository := { x => false }
+pomIncludeRepository := { _ => false }
 
 
 licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT"))
