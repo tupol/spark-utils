@@ -121,19 +121,22 @@ trait SparkRunnable[Configuration, Result] extends Logging {
 
     log.info(s"$appName: Application Parameters:\n${args.mkString("\n")}")
 
-    // This configuration file is supposed to work with the --files option of spark-submit, but it seems that in yarn-cluster mode this one fails.
+    // This configuration file is supposed to work with the --files option of spark-submit,
+    // but it seems that in yarn-cluster mode this one fails.
     // In yarn cluster mode the SparkFiles.getRootDirectory yields a result like
     //   /opt/app/hadoop/yarn/local/usercache/spark/appcache/application_1472457872363_0064/spark-fb5e850b-2108-482d-8dff-f9a3d2db8dd6/userFiles-d02bb426-515d-4e82-a2ac-d160061c8cb6/
     // However, the local path (new File(".").getAbsolutePath() ) for the Driver looks like
     //   /opt/app/hadoop/yarn/local/usercache/spark/appcache/application_1472457872363_0064/container_e21_1472457872363_0064_01_000001
     // Though looks like a small difference, this is a problem in cluster mode.
-    // To overcome situations encountered so far we are using the `configurationFile` and the `localConfigurationFile` to try both paths.
+    // To overcome situations encountered so far we are using the `configurationFile` and the `localConfigurationFile`
+    // to try both paths.
     // In standalone mode the reverse is true.
     // We might be able to come to the bottom of this, but it looks like a rabbit hole not worth exploring at the moment.
     val sparkConfiguration: Option[Config] = {
       val file = new File(SparkFiles.get(CONFIGURATION_FILENAME))
       val available = file.exists && file.canRead && file.isFile
-      log.info(s"$appName: SparkFiles configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
+      log.info(s"$appName: SparkFiles configuration file: ${file.getAbsolutePath} " +
+        s"is ${if (!available) "not " else ""}available.")
       if (available) {
         Try(ConfigFactory.parseFile(file))
           .logSuccess(_ => log.info(s"Successfully parsed the local file at '${file.getAbsolutePath}'"))

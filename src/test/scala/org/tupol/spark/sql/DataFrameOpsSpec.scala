@@ -3,6 +3,7 @@ package org.tupol.spark.sql
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.TestData.{ DummyData, DummyNestedData, DummyUnnestedData }
 import org.scalatest.{ FunSuite, Matchers }
+import org.tupol.spark.implicits._
 
 class DataFrameOpsSpec extends FunSuite with Matchers with SharedSparkSession {
 
@@ -13,7 +14,6 @@ class DataFrameOpsSpec extends FunSuite with Matchers with SharedSparkSession {
     flattenFields(df).schema shouldBe df.schema
 
     df.flattenFields.schema shouldBe df.schema
-
   }
 
   test("flattenFields on a structured DataFrame should flatten it.") {
@@ -25,7 +25,6 @@ class DataFrameOpsSpec extends FunSuite with Matchers with SharedSparkSession {
     flattenFields(df).schema shouldBe expectedSchema
 
     df.flattenFields.schema shouldBe expectedSchema
-
   }
 
 }

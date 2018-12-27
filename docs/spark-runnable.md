@@ -64,6 +64,7 @@ The order is important because the a parameter defined in the application parame
 
 The `application.conf` and the `reference.conf` are acceptable in properties, json or HOCON formats. See also the [Typesafe Config](https://github.com/typesafehub/config) project for more details.
 
+
 ## Logging
 
 `SparkRunnable` extends Logging, so any implementation will have logging available out of the box.

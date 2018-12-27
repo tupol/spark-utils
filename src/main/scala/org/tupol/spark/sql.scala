@@ -23,13 +23,11 @@ SOFTWARE.
 */
 package org.tupol.spark
 
-import java.util
-
 import org.apache.spark.sql.catalyst.ScalaReflection
-import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{ Column, DataFrame, Row }
+import org.apache.spark.sql.{ Column, DataFrame, Row, SparkSession }
 
+import scala.io.Source
 import scala.reflect.runtime.universe._
 
 package object sql {
@@ -40,6 +38,24 @@ package object sql {
    * @return
    */
   def schemaFor[T: TypeTag]: StructType = ScalaReflection.schemaFor[T].dataType.asInstanceOf[StructType]
+
+  /**
+   * Load a schema ([[StructType]]) from a json string.
+   * @param json
+   * @return
+   */
+  def loadSchemaFromString(json: String): StructType =
+    DataType.fromJson(json).asInstanceOf[StructType]
+
+  /**
+   * Load a schema ([[StructType]]) from a given file. The schema must be in json format.
+   * @param resourcePath
+   * @return
+   */
+  def loadSchemaFromFile(resourcePath: String): StructType = {
+    val json = Source.fromFile(resourcePath).getLines.mkString(" ")
+    loadSchemaFromString(json)
+  }
 
   /**
    * "Flatten" a DataFrame.
@@ -133,39 +149,6 @@ package object sql {
   def checkAnyFields(schema: DataType, predicate: StructField => Boolean): Boolean =
     checkFields(schema, predicate, _ || _, false)
 
-  implicit class SchemaOps(val schema: StructType) {
-
-    /**
-     * See [[org.tupol.spark.sql.mapFields()]]
-     *
-     * @return
-     */
-    def mapFields(mapFun: StructField => StructField): StructType =
-      sql.mapFields(schema, mapFun).asInstanceOf[StructType]
-
-    /**
-     * See [[org.tupol.spark.sql.checkAllFields()]]
-     *
-     * @return
-     */
-    def checkAllFields(predicate: StructField => Boolean): Boolean = sql.checkAllFields(schema, predicate)
-
-    /**
-     * See [[org.tupol.spark.sql.checkAnyFields()]]
-     *
-     * @return
-     */
-    def checkAnyFields(predicate: StructField => Boolean): Boolean = sql.checkAnyFields(schema, predicate)
-  }
-
-  implicit class DataFrameOps(val dataFrame: DataFrame) {
-    /**
-     * See [[org.tupol.spark.sql.flattenFields()]]
-     *
-     * @return
-     */
-    def flattenFields: DataFrame = sql.flattenFields(dataFrame)
-  }
   /**
    * Simple conversion between a Spark SQL Row and a Map. Inner rows are also transformed also into maps.
    * @param row
@@ -181,34 +164,71 @@ package object sql {
     }.toMap
 
   /**
-   * Row decorator.
+   * Make strings, as column names Avro compliant ([[https://avro.apache.org/docs/1.8.1/spec.html#names]])
+   * All the illegal characters are replaced with the `replaceWith` string which is '_' by default.
+   * Prefix and suffix can be defined as well.
+   * The replacement character, the prefix and suffix must also be Avro compliant.
    *
-   * @param row
+   * @param string the string to be transformed to an Avro compliant string
+   * @param replaceWith the string that will replace not compliant Avro characters
+   * @param prefix the string that will prefix the non-compliant Avro strings
+   * @param suffix the string that will suffix the non-compliant Avro strings
+   * @return same string if the string was Avro compliant of a compliant Avro name string
    */
-  implicit class RowOps(val row: Row) {
-    // Primitive conversion from Map to a Row using a schema
-    // TODO: this does not take care of inner maps
-    def toMap: Map[String, Any] = row2map(row)
+  private[sql] def makeNameAvroCompliant(string: String, replaceWith: String, prefix: String, suffix: String) = {
+
+    def acceptableFirstChar(char: Char): Boolean = (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_'
+    def acceptableTailChar(char: Char): Boolean = char.isDigit || acceptableFirstChar(char)
+    def illegalContentChars(string: String) = string.filterNot(acceptableTailChar).toSet
+    def requireFirstChar(string: String, printName: String) =
+      require(
+        if (string.size > 0) acceptableFirstChar(string.head) else true,
+        s"The $printName starts with an illegal Avro character: '${string.head}'.")
+    def requireContentChars(string: String, printName: String) =
+      require(
+        if (string.size > 0) illegalContentChars(string).size == 0 else true,
+        s"The $printName contains illegal Avro character(s): '${illegalContentChars(string).mkString("'", ", ", "'")}'.")
+
+    require(string.nonEmpty, "The input string can not be empty.")
+
+    if (prefix.nonEmpty) {
+      requireFirstChar(prefix, "prefix")
+      requireContentChars(prefix, "prefix")
+    } else {
+      requireFirstChar(replaceWith, "replacement string")
+    }
+    requireContentChars(replaceWith, "replacement string")
+    requireContentChars(suffix, "suffix")
+
+    val first = if (prefix.isEmpty && !acceptableFirstChar(string.head)) replaceWith else string.head.toString
+    val body = string.tail.flatMap { c => if (acceptableTailChar(c)) Seq(c) else replaceWith }
+
+    prefix + first + body + suffix
+
   }
 
   /**
-   * Map decorator with a Spark flavour
-   * @param map
-   * @tparam K
-   * @tparam V
+   * Transform the DataFrame column names to be Avro compliant ([[https://avro.apache.org/docs/1.8.1/spec.html#names]])
+   * All the illegal characters are replaced with the `replaceWith` string which is '_' by default.
+   * Prefix and suffix can be defined as well.
+   * The replacement character, the prefix and suffix must also be Avro compliant.
+   *
+   * @param dataFrame the DataFrame to be transformed to a DataFrame with an Avro compliant schema
+   * @param replaceWith the string that will replace not compliant Avro characters
+   * @param prefix the string that will prefix the non-compliant Avro strings
+   * @param suffix the string that will suffix the non-compliant Avro strings
+   * @param spark SparkSession
+   * @return
    */
-  implicit class MapOps[K, V](val map: Map[K, V]) {
-    // Primitive conversion from Map to a Row using a schema
-    // TODO: Deal with inner maps
-    def toRow(schema: StructType): Row = {
-      val values = schema.fieldNames.map(fieldName => map.map { case (k, v) => (k.toString(), v) }.get(fieldName).getOrElse(null))
-      new GenericRowWithSchema(values, schema)
+  def makeDataFrameAvroCompliant(dataFrame: DataFrame, replaceWith: String = "_", prefix: String = "", suffix: String = "")(implicit spark: SparkSession): DataFrame = {
+    import org.apache.spark.sql.types.MetadataBuilder
+    import org.tupol.spark.implicits._
+    val newSchema = dataFrame.schema.mapFields { field =>
+      val newFieldName = makeNameAvroCompliant(field.name, replaceWith, prefix, suffix)
+      val newMetadata = new MetadataBuilder().withMetadata(field.metadata).putString("originalColumnName", field.name).build()
+      field.copy(name = newFieldName, metadata = newMetadata)
     }
-    def toHashMap = {
-      val props = new util.HashMap[K, V]()
-      map.foreach { case (k, v) => props.put(k, v) }
-      props
-    }
+    spark.createDataFrame(dataFrame.rdd, newSchema)
   }
 
 }

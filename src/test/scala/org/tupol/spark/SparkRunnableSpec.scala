@@ -11,8 +11,7 @@ import scala.util.Try
 class SparkRunnableSpec extends FunSuite with Matchers with SharedSparkSession {
 
   val filesArg = Seq(
-    new File("src/test/resources/MockRunnable/application.conf").getAbsolutePath
-  )
+    new File("src/test/resources/MockRunnable/application.conf").getAbsolutePath)
 
   override def sparkConfig: Map[String, String] = {
     // Add the comma separated configuration files to the files property.
@@ -24,24 +23,21 @@ class SparkRunnableSpec extends FunSuite with Matchers with SharedSparkSession {
 
   test(
     """SparkRunnable.applicationConfiguration loads first the app params then defaults to application.conf file,
-      |then to the application.conf in the classpath and then to reference.conf""".stripMargin
-  ) {
+      |then to the application.conf in the classpath and then to reference.conf""".stripMargin) {
 
-    val conf = MockRunnable.applicationConfiguration(spark, Array(
-      "MockRunnable.whoami=\"app.param\"",
-      "MockRunnable.param=\"param\""
-    ))
-    conf.getString("param") shouldBe "param"
-    conf.getString("whoami") shouldBe "app.param"
-    conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference"
-    conf.getBoolean("file.application.conf") shouldBe true
-  }
+      val conf = MockRunnable.applicationConfiguration(spark, Array(
+        "MockRunnable.whoami=\"app.param\"",
+        "MockRunnable.param=\"param\""))
+      conf.getString("param") shouldBe "param"
+      conf.getString("whoami") shouldBe "app.param"
+      conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
+      conf.getString("reference") shouldBe "reference"
+      conf.getBoolean("file.application.conf") shouldBe true
+    }
 
   test("SparkRunnable.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
     val conf = MockRunnable.applicationConfiguration(spark, Array(
-      "MockRunnable.param=\"param\""
-    ))
+      "MockRunnable.param=\"param\""))
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockRunnable/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
