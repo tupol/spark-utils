@@ -2,6 +2,7 @@ package org.tupol.spark.sql
 
 import org.apache.spark.sql.types._
 import org.scalatest.{ FunSuite, Matchers }
+import org.tupol.spark.implicits._
 
 class SchemaOpsSpec extends FunSuite with Matchers {
 

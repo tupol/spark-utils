@@ -3,6 +3,7 @@ package org.tupol.spark.sql
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.TestData.{ DeepClass, TestClass }
 import org.scalatest.{ FunSuite, Matchers }
+import org.tupol.spark.implicits._
 
 class MapOpsRowOpsSpec extends FunSuite with Matchers with SharedSparkSession {
 
