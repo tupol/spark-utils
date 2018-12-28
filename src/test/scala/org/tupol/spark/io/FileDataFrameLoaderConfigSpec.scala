@@ -17,8 +17,7 @@ class FileDataFrameLoaderConfigSpec extends FunSuite with Matchers {
 
     val expected = FileDataFrameLoaderConfig(
       path = "INPUT_PATH",
-      parserConfiguration = TextConfiguration()
-    )
+      parserConfiguration = TextConfiguration())
 
     val result = FileDataFrameLoaderConfig(config.getConfig("input"))
 

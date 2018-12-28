@@ -16,8 +16,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = loadSchemaFromFile("src/test/resources/parsers/json/sample_schema.json")
     val inputPath = "src/test/resources/parsers/json/sample_1line.json"
     val mode = "FAILFAST"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, Some(schema))
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, Some(schema))
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData.get
 
@@ -32,8 +32,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = loadSchemaFromFile("src/test/resources/parsers/json/sample_schema.json")
     val inputPath = "src/test/resources/parsers/json/ManyFiles/*.json"
     val mode = "FAILFAST"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, Some(schema))
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, Some(schema))
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -46,8 +46,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = None
     val inputPath = "src/test/resources/parsers/json/sample.json"
     val mode = "PERMISSIVE"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, schema)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, schema)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -65,8 +65,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = loadSchemaFromFile("src/test/resources/parsers/json/sample_fail_schema.json")
     val inputPath = "src/test/resources/parsers/json/sample_fail.json"
     val mode = "PERMISSIVE"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, Some(schema))
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, Some(schema))
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -81,8 +81,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = Some(loadSchemaFromFile("src/test/resources/parsers/json/sample_fail_schema.json"))
     val inputPath = "src/test/resources/parsers/json/sample_fail.json"
     val mode = "PERMISSIVE"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, schema)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, schema)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -96,8 +96,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = Some(loadSchemaFromFile("src/test/resources/parsers/json/sample_fail_schema.json"))
     val inputPath = "src/test/resources/parsers/json/sample_fail.json"
     val mode = "DROPMALFORMED"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, schema)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, schema)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -112,8 +112,8 @@ class JsonFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
     val schema = Some(loadSchemaFromFile("src/test/resources/parsers/json/sample_fail_schema.json"))
     val inputPath = "src/test/resources/parsers/json/sample_fail.json"
     val mode = "FAILFAST"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = JsonParserConfiguration(parserOptions, schema)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = JsonParserConfiguration(options, schema)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 

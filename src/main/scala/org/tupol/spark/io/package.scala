@@ -54,8 +54,7 @@ package object io {
       case TextFormat => Success(Text)
       case _ => Failure(new IllegalArgumentException(
         s"""Unknown format type '$formatString'. Available format types are:
-           |${(FormatType.AvailableFormats.map(_.toString) :+ "avro" :+ "xml").mkString("'", "', '", "'")}. """.stripMargin
-      ))
+           |${(FormatType.AvailableFormats.map(_.toString) :+ "avro" :+ "xml").mkString("'", "', '", "'")}. """.stripMargin))
     }
 
     val AvailableFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text)

@@ -54,12 +54,12 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
   - header defining if the reader should take the first row of the csv file as the column names
   - all types will be assumed string
   - the default value is `false`
-  - if there is a `header` property also defined in the `parserOptions` section, this one will override it
+  - if there is a `header` property also defined in the `options` section, this one will override it
 - `delimiter` *Optional*
   - delimiter defining which separator has to be taken into account to distinct the data in the csv file
   - the default value is `,`
-  - if there is a `delimiter` property also defined in the `parserOptions` section, this one will override it
-- `parserOptions` *Optional*
+  - if there is a `delimiter` property also defined in the `options` section, this one will override it
+- `options` *Optional*
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
     passed through the `application.conf` file
   - the csv parser options are defined [here](https://spark.apache.org/docs/2.1.1/api/java/org/apache/spark/sql/DataFrameReader.html#csv(java.lang.String...)).
@@ -103,8 +103,8 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - `rowTag` **Required**
   - the XML tag name that will become rows of data
   - if the row tag is the root tag the output will be just one record
-  - if there is a `rowTag` property also defined in the `parserOptions` section, this one will override it
-- `parserOptions` *Optional*
+  - if there is a `rowTag` property also defined in the `options` section, this one will override it
+- `options` *Optional*
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
     passed through the `application.conf` file
    - Specific Databricks XML parser options; more details are available [here](https://github.com/databricks/spark-xml)
@@ -136,7 +136,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 
 ### JSON Parameters
 
-- `parserOptions` *Optional*
+- `options` *Optional*
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
     passed through the `application.conf` file
   - the json parser options are defined [here](https://spark.apache.org/docs/2.1.1/api/java/org/apache/spark/sql/DataFrameReader.html#json(java.lang.String...)).

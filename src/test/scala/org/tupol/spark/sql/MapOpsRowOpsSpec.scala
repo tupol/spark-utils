@@ -30,7 +30,6 @@ class MapOpsRowOpsSpec extends FunSuite with Matchers with SharedSparkSession {
     import scala.collection.JavaConverters._
 
     hashMap.entrySet.iterator.asScala.map(me => (me.getKey, me.getValue)).toMap should contain theSameElementsAs (scalaMap)
-
   }
 
 }

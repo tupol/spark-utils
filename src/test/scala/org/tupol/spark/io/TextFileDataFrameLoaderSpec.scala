@@ -12,8 +12,8 @@ class TextFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
   test("The number of records in the file provided and the schema must match") {
     import spark.implicits._
     val inputPath = "src/test/resources/parsers/text/sample.txt"
-    val parserOptions = Map[String, String]()
-    val parserConfig = TextConfiguration(parserOptions, None)
+    val options = Map[String, String]()
+    val parserConfig = TextConfiguration(options, None)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData.get
 

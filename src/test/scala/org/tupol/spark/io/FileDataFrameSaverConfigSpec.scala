@@ -22,8 +22,7 @@ class FileDataFrameSaverConfigSpec extends FunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("OUTPUT_PATH"),
-      partitionFilesNumber = Some(2)
-    )
+      partitionFilesNumber = Some(2))
 
     val result = FileDataFrameSaverConfig(config.getConfig("output"))
 
@@ -31,7 +30,6 @@ class FileDataFrameSaverConfigSpec extends FunSuite with Matchers {
     result.get shouldBe expected
     result.get.saveMode shouldBe "MODE"
     result.get.toString.contains("path") shouldBe true
-
   }
 
   test("Extract FileDataFrameSaverConfig out of a configuration string when the partition.files is smaller than 1 yields default partitioning") {
@@ -51,14 +49,12 @@ class FileDataFrameSaverConfigSpec extends FunSuite with Matchers {
       format = FormatType.Parquet,
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("OUTPUT_PATH"),
-      partitionFilesNumber = None
-    )
+      partitionFilesNumber = None)
 
     val result = FileDataFrameSaverConfig(config.getConfig("output"))
 
     result.isSuccess shouldBe true
     result.get shouldBe expected
-
   }
 
   test("Successfully create FileDataFrameSaverConfig using the simplified constructor") {
@@ -70,13 +66,11 @@ class FileDataFrameSaverConfigSpec extends FunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = None,
       partitionColumns = Seq(),
-      partitionFilesNumber = None
-    )
+      partitionFilesNumber = None)
 
     result shouldBe expected
     result.saveMode shouldBe "default"
     result.toString.contains("OUTPUT_PATH") shouldBe true
-
   }
 
   test("Failed to extract FileDataFrameSaverConfig if the path is not defined") {

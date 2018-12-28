@@ -539,17 +539,17 @@ class XmlParserConfigurationSpec extends FunSuite with Matchers {
 
     parserConfig.get.schema.isDefined shouldBe false
 
-    parserConfig.get.parserOptions shouldBe Map("rowTag" -> "ROW_TAG")
+    parserConfig.get.options shouldBe Map("rowTag" -> "ROW_TAG")
 
   }
 
-  test("Parse configuration with parserOptions") {
+  test("Parse configuration with options") {
 
     val configStr = """
                       |format="com.databricks.spark.xml"
                       |path="INPUT_PATH"
                       |rowTag="ROW_TAG"
-                      |parserOptions=[
+                      |options=[
                       |   {"mode" : "PERMISSIVE"},
                       |   {"samplingRatio" : "1"},
                       |   {"charset" : "UTF-8"}
@@ -564,20 +564,20 @@ class XmlParserConfigurationSpec extends FunSuite with Matchers {
 
     parserConfig.get shouldBe an[XmlParserConfiguration]
 
-    parserConfig.get.parserOptions.isEmpty shouldBe false
+    parserConfig.get.options.isEmpty shouldBe false
 
-    parserConfig.get.parserOptions should contain
+    parserConfig.get.options should contain
     theSameElementsAs(Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8"))
 
   }
 
-  test("Parse configuration with parserOptions overridden by top level properties") {
+  test("Parse configuration with options overridden by top level properties") {
 
     val configStr = """
                       |format="com.databricks.spark.xml"
                       |path="INPUT_PATH"
                       |rowTag="ROW_TAG"
-                      |parserOptions=[
+                      |options=[
                       |   {"mode" : "PERMISSIVE"},
                       |   {"samplingRatio" : "1"},
                       |   {"charset" : "UTF-8"},
@@ -593,9 +593,9 @@ class XmlParserConfigurationSpec extends FunSuite with Matchers {
 
     parserConfig.get shouldBe an[XmlParserConfiguration]
 
-    parserConfig.get.parserOptions.isEmpty shouldBe false
+    parserConfig.get.options.isEmpty shouldBe false
 
-    parserConfig.get.parserOptions should be
+    parserConfig.get.options should be
     Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8", "rowTag" -> "ROW_TAG")
 
   }

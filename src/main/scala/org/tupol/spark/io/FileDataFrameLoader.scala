@@ -42,7 +42,7 @@ case class FileDataFrameLoader(configuration: FileDataFrameLoaderConfig) extends
     val dataFormat = parserConfiguration.format.toString
     val basicReader = spark.read
       .format(dataFormat)
-      .options(parserConfiguration.parserOptions)
+      .options(parserConfiguration.options)
 
     parserConfiguration.schema match {
       case Some(inputSchema) =>
@@ -77,7 +77,7 @@ case class FileDataFrameLoader(configuration: FileDataFrameLoaderConfig) extends
 case class FileDataFrameLoaderConfig(path: String, parserConfiguration: ParserConfiguration) {
   /** Get the format type of the input file. */
   def format: FormatType = parserConfiguration.format
-  override def toString: String = s"path: '$path', parserConfiguration: $parserConfiguration"
+  override def toString: String = s"path: '$path', parser configuration: $parserConfiguration"
 }
 object FileDataFrameLoaderConfig extends Configurator[FileDataFrameLoaderConfig] {
   override def validationNel(config: Config): ValidationNel[Throwable, FileDataFrameLoaderConfig] = {

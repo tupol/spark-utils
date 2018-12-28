@@ -46,3 +46,6 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
     look at the average size of the data inside partition folders and come up with a number that is appropriate for the
         application;  for example, one might target a partition number so that the partition file size inside a
         partition folder are around 100 MB
+- `output.options` *Optional*: additional options that can be passed to the Apache Spark `DataFrameWriter`;
+    due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
+        passed through the `application.conf` file

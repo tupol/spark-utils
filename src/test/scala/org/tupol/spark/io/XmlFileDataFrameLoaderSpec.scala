@@ -18,8 +18,8 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/sample-1.xml"
     val mode = "PERMISSIVE"
     val rowTag = "root-name"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData.get
 
@@ -35,8 +35,8 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/sample-*.xml"
     val mode = "PERMISSIVE"
     val rowTag = "root-name"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -50,15 +50,13 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/sample-1.xml"
     val mode = "PERMISSIVE"
     val rowTag = "tag_that_is_not_available"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
     resultDF shouldBe a[Success[_]]
     resultDF.get.count shouldBe 0
-
-    println(resultDF.get.schema.prettyJson)
   }
 
   test("Infer simple schema") {
@@ -67,16 +65,15 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/test-corrupt-records.xml"
     val mode = "PERMISSIVE"
     val rowTag = "test_root"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
     resultDF shouldBe a[Success[_]]
     // Test that the field was inferred and the correct metadata was added
     resultDF.get.schema.fields should contain(
-      new StructField("test_node", StringType, true)
-    )
+      new StructField("test_node", StringType, true))
 
     resultDF.get.count shouldBe 13
   }
@@ -86,8 +83,8 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val schema = Some(new StructType().add("test_node", LongType))
     val inputPath = "src/test/resources/parsers/xml/test-corrupt-records.xml"
     val rowTag = "test_root"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record")
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record")
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -102,8 +99,8 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/test-corrupt-records.xml"
     val mode = "PERMISSIVE"
     val rowTag = "test_root"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -118,8 +115,8 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/test-corrupt-records.xml"
     val mode = "DROPMALFORMED"
     val rowTag = "test_root"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -133,8 +130,8 @@ class XmlFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val inputPath = "src/test/resources/parsers/xml/test-corrupt-records.xml"
     val mode = "FAILFAST"
     val rowTag = "test_root"
-    val parserOptions = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
-    val parserConfig = XmlParserConfiguration(parserOptions, schema, rowTag)
+    val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
+    val parserConfig = XmlParserConfiguration(options, schema, rowTag)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 

@@ -60,13 +60,11 @@ package object utils extends Logging {
     /** Serializer / deserializer for LocalDateFormat */
     case object LDTSerializer extends CustomSerializer[LocalDateTime](format => (
       { case JString(s) => LocalDateTime.parse(s) },
-      { case ldt: LocalDateTime => JString(ldt.toString) }
-    ))
+      { case ldt: LocalDateTime => JString(ldt.toString) }))
     /** Serializer / deserializer for Timestamp */
     case object SqlTimestampSerializer extends CustomSerializer[Timestamp](format => (
       { case JString(ts) => Timestamp.valueOf(LocalDateTime.parse(ts)) },
-      { case ts: Timestamp => JString(ts.toLocalDateTime.toString) }
-    ))
+      { case ts: Timestamp => JString(ts.toLocalDateTime.toString) }))
     Seq(LDTSerializer, SqlTimestampSerializer)
   }
 

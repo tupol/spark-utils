@@ -13,8 +13,8 @@ class FileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSparkSes
   test("Loading the data fails if the file does not exist") {
 
     val inputPath = "unknown/path/to/inexistent/file.no.way"
-    val parserOptions = Map[String, String]()
-    val parserConfig = AvroConfiguration(parserOptions, None)
+    val options = Map[String, String]()
+    val parserConfig = AvroConfiguration(options, None)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF1 = FileDataFrameLoader(inputConfig).loadData
 

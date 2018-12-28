@@ -29,7 +29,7 @@ import org.apache.spark.sql.functions.col
 package object testing {
 
   case class DataFrameCompareResult(columnsOnlyInLeft: Seq[String], columnsOnlyInRight: Seq[String],
-      dataOnlyInLeft: DataFrame, dataOnlyInRight: DataFrame) {
+    dataOnlyInLeft: DataFrame, dataOnlyInRight: DataFrame) {
 
     lazy val countOnlyInLeft = dataOnlyInLeft.count
     lazy val countOnlyInRight = dataOnlyInRight.count

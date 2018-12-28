@@ -35,11 +35,11 @@ package object parsers {
 
   sealed trait ParserConfiguration {
     /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
-    def parserOptions: Map[String, String]
+    def options: Map[String, String]
     /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
     def schema: Option[StructType]
     /** If the parser supports storing the failed records, they will be stored in this column */
-    def columnNameOfCorruptRecord: Option[String] = parserOptions.get(ColumnNameOfCorruptRecord)
+    def columnNameOfCorruptRecord: Option[String] = options.get(ColumnNameOfCorruptRecord)
     /** The `FormatType` which corresponds to the format as required by the [[org.apache.spark.sql.DataFrameReader]] */
     final def format: FormatType = inputFormat(this)
   }
@@ -64,98 +64,96 @@ package object parsers {
     }
   }
 
-  case class CsvParserConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration {
+  case class CsvParserConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration {
     /** The csv parser does not support this feature */
     override val columnNameOfCorruptRecord = None
   }
   object CsvParserConfiguration extends Configurator[CsvParserConfiguration] {
-    def apply(parserOptions: Map[String, String], inputSchema: Option[StructType],
+    def apply(options: Map[String, String], inputSchema: Option[StructType],
       delimiter: String, header: Boolean): CsvParserConfiguration =
       CsvParserConfiguration(
-        parserOptions
+        options
           + ("delimiter" -> delimiter)
           + ("header" -> header.toString),
-        inputSchema
-      )
+        inputSchema)
     override def validationNel(config: Config): ValidationNel[Throwable, CsvParserConfiguration] = {
       import org.tupol.utils.config._
       import scalaz.syntax.applicative._
 
-      val parserOptions = config.extract[Option[Map[String, String]]]("parserOptions").map(_.getOrElse(Map[String, String]()))
+      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
       val inputSchema = config.extract[Option[StructType]]("schema")
-      val delimiter = config.extract[String]("delimiter")
-      val header = config.extract[Boolean]("header")
+      val delimiter = config.extract[Option[String]]("delimiter").map(_.getOrElse(","))
+      val header = config.extract[Option[Boolean]]("header").map(_.getOrElse(false))
 
-      parserOptions |@| inputSchema |@| delimiter |@| header apply CsvParserConfiguration.apply
+      options |@| inputSchema |@| delimiter |@| header apply CsvParserConfiguration.apply
     }
   }
 
-  case class XmlParserConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None)
+  case class XmlParserConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None)
     extends ParserConfiguration
   object XmlParserConfiguration extends Configurator[XmlParserConfiguration] {
-    def apply(parserOptions: Map[String, String], inputSchema: Option[StructType],
+    def apply(options: Map[String, String], inputSchema: Option[StructType],
       rowTag: String): XmlParserConfiguration =
       XmlParserConfiguration(
-        parserOptions
+        options
           + ("rowTag" -> rowTag),
-        inputSchema
-      )
+        inputSchema)
     override def validationNel(config: Config): ValidationNel[Throwable, XmlParserConfiguration] = {
       import org.tupol.utils.config._
       import scalaz.syntax.applicative._
 
-      val parserOptions = config.extract[Option[Map[String, String]]]("parserOptions").map(_.getOrElse(Map[String, String]()))
+      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
       val inputSchema = config.extract[Option[StructType]]("schema")
       val rowTag = config.extract[String]("rowTag")
 
-      parserOptions |@| inputSchema |@| rowTag apply XmlParserConfiguration.apply
+      options |@| inputSchema |@| rowTag apply XmlParserConfiguration.apply
     }
   }
 
-  case class JsonParserConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
+  case class JsonParserConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
   object JsonParserConfiguration extends Configurator[JsonParserConfiguration] {
-    def apply(basicConfig: BasicConfiguration) = new JsonParserConfiguration(basicConfig.parserOptions, basicConfig.schema)
+    def apply(basicConfig: BasicConfiguration) = new JsonParserConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, JsonParserConfiguration] =
       BasicConfiguration.validationNel(config) map JsonParserConfiguration.apply
   }
 
-  case class ParquetConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
+  case class ParquetConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
   object ParquetConfiguration extends Configurator[ParquetConfiguration] {
-    def apply(basicConfig: BasicConfiguration) = new ParquetConfiguration(basicConfig.parserOptions, basicConfig.schema)
+    def apply(basicConfig: BasicConfiguration) = new ParquetConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, ParquetConfiguration] =
       BasicConfiguration.validationNel(config) map ParquetConfiguration.apply
   }
 
-  case class OrcConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
+  case class OrcConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
   object OrcConfiguration extends Configurator[OrcConfiguration] {
-    def apply(basicConfig: BasicConfiguration) = new OrcConfiguration(basicConfig.parserOptions, basicConfig.schema)
+    def apply(basicConfig: BasicConfiguration) = new OrcConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, OrcConfiguration] =
       BasicConfiguration.validationNel(config) map OrcConfiguration.apply
   }
 
-  case class AvroConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
+  case class AvroConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
   object AvroConfiguration extends Configurator[AvroConfiguration] {
-    def apply(basicConfig: BasicConfiguration) = new AvroConfiguration(basicConfig.parserOptions, basicConfig.schema)
+    def apply(basicConfig: BasicConfiguration) = new AvroConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, AvroConfiguration] =
       BasicConfiguration.validationNel(config) map AvroConfiguration.apply
   }
 
-  case class TextConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
+  case class TextConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends ParserConfiguration
   object TextConfiguration extends Configurator[TextConfiguration] {
-    def apply(basicConfig: BasicConfiguration) = new TextConfiguration(basicConfig.parserOptions, basicConfig.schema)
+    def apply(basicConfig: BasicConfiguration) = new TextConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, TextConfiguration] =
       BasicConfiguration.validationNel(config) map TextConfiguration.apply
   }
 
-  private case class BasicConfiguration(parserOptions: Map[String, String] = Map(), schema: Option[StructType] = None)
+  private case class BasicConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None)
   private object BasicConfiguration extends Configurator[BasicConfiguration] {
     override def validationNel(config: Config): ValidationNel[Throwable, BasicConfiguration] = {
       import org.tupol.utils.config._
       import scalaz.syntax.applicative._
 
-      val parserOptions = config.extract[Option[Map[String, String]]]("parserOptions").map(_.getOrElse(Map[String, String]()))
+      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
       val inputSchema = config.extract[Option[StructType]]("schema")
-      parserOptions |@| inputSchema apply BasicConfiguration.apply
+      options |@| inputSchema apply BasicConfiguration.apply
     }
   }
 }

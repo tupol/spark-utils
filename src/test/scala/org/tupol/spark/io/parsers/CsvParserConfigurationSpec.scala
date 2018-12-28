@@ -192,14 +192,14 @@ class CsvParserConfigurationSpec extends FunSuite with Matchers {
 
   }
 
-  test("Parse configuration with parserOptions") {
+  test("Parse configuration with options") {
 
     val configStr = """
                       |format="csv"
                       |path="INPUT_PATH"
                       |header=true
                       |delimiter="DELIMITER"
-                      |parserOptions=[
+                      |options=[
                       |   {"mode" : "PERMISSIVE"},
                       |   {"samplingRatio" : "1"},
                       |   {"charset" : "UTF-8"},
@@ -214,22 +214,22 @@ class CsvParserConfigurationSpec extends FunSuite with Matchers {
 
     converterConfig.get shouldBe a[CsvParserConfiguration]
 
-    converterConfig.get.parserOptions.isEmpty shouldBe false
+    converterConfig.get.options.isEmpty shouldBe false
 
-    converterConfig.get.parserOptions shouldBe
+    converterConfig.get.options shouldBe
       Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8",
         "header" -> "true", "delimiter" -> "DELIMITER")
 
   }
 
-  test("Parse configuration with parserOptions overridden by top level properties") {
+  test("Parse configuration with options overridden by top level properties") {
 
     val configStr = """
                       |format="csv"
                       |path="INPUT_PATH"
                       |header=true
                       |delimiter="DELIMITER"
-                      |parserOptions=[
+                      |options=[
                       |   {"mode" : "PERMISSIVE"},
                       |   {"samplingRatio" : "1"},
                       |   {"charset" : "UTF-8"},
@@ -246,9 +246,9 @@ class CsvParserConfigurationSpec extends FunSuite with Matchers {
 
     converterConfig.get shouldBe a[CsvParserConfiguration]
 
-    converterConfig.get.parserOptions.isEmpty shouldBe false
+    converterConfig.get.options.isEmpty shouldBe false
 
-    converterConfig.get.parserOptions shouldBe
+    converterConfig.get.options shouldBe
       Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8",
         "header" -> "true", "delimiter" -> "DELIMITER")
 

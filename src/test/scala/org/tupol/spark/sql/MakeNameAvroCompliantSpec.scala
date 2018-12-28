@@ -61,12 +61,10 @@ class makeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkS
 
     val inputData = spark.createDataFrame(Seq(
       BadAvroTest0(1, 2, 3, 4),
-      BadAvroTest0(2, 3, 4, 5, Some(BadAvroTest1(1, 2, 3, 4, 5)))
-    ))
+      BadAvroTest0(2, 3, 4, 5, Some(BadAvroTest1(1, 2, 3, 4, 5)))))
     val expectedData = spark.createDataFrame(Seq(
       GoodAvroTest0(1, 2, 3, 4),
-      GoodAvroTest0(2, 3, 4, 5, Some(GoodAvroTest1(1, 2, 3, 4, 5)))
-    ))
+      GoodAvroTest0(2, 3, 4, 5, Some(GoodAvroTest1(1, 2, 3, 4, 5)))))
 
     // Writing the original DataFrame to Avro should fail due to the non-compliant names
     Try(inputData.write.avro(testPath1)) shouldBe a[Failure[_]]
@@ -78,7 +76,6 @@ class makeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkS
 
     // Writing the "friendly" DataFrame to Avro should be successful
     Try(result.write.avro(testPath1)) shouldBe a[Success[_]]
-
   }
 
 }

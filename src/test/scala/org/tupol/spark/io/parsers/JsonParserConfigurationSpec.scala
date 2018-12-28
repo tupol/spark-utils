@@ -153,12 +153,12 @@ class JsonParserConfigurationSpec extends FunSuite with Matchers {
 
   }
 
-  test("Parse configuration with parserOptions") {
+  test("Parse configuration with options") {
 
     val configStr = """
                       |format="json"
                       |path="INPUT_PATH"
-                      |parserOptions=[
+                      |options=[
                       |   {"mode" : "PERMISSIVE"},
                       |   {"columnNameOfCorruptRecord" : "_arbitrary_name"}
                       |]
@@ -172,9 +172,9 @@ class JsonParserConfigurationSpec extends FunSuite with Matchers {
 
     converterConfig.get shouldBe a[JsonParserConfiguration]
 
-    converterConfig.get.parserOptions.isEmpty shouldBe false
+    converterConfig.get.options.isEmpty shouldBe false
 
-    converterConfig.get.parserOptions should contain
+    converterConfig.get.options should contain
     theSameElementsAs(Map("mode" -> "PERMISSIVE", "columnNameOfCorruptRecord" -> "_arbitrary_name"))
 
   }

@@ -54,7 +54,7 @@ case class FileDataFrameSaver(configuration: FileDataFrameSaverConfig) extends L
           s"${partitions.mkString("'", "', '", "'")}.")
         writer.partitionBy(partitions: _*)
     }
-    partitionsWriter.mode(config.saveMode).format(config.format.toString)
+    partitionsWriter.mode(config.saveMode).format(config.format.toString).options(config.options)
   }
 
   /**
@@ -67,11 +67,11 @@ case class FileDataFrameSaver(configuration: FileDataFrameSaverConfig) extends L
     Try(configureWriter(data, configuration).save(configuration.path)) match {
       case Success(_) =>
         logInfo(s"Successfully saved the data to '${configuration.path}' as '${configuration.format}' " +
-          s"(Full Configuration: ${configuration}).")
+          s"(Full configuration: ${configuration}).")
         Success(data)
       case Failure(ex) =>
         logError(s"Failed to save the data to '${configuration.path}' as '${configuration.format}' " +
-          s"(Full Configuration: ${configuration}).")
+          s"(Full configuration: ${configuration}).")
         Failure(ex)
     }
   }
@@ -91,10 +91,10 @@ case class FileDataFrameSaver(configuration: FileDataFrameSaverConfig) extends L
  * TODO: Move this to the `sdp-commons` project.
  */
 case class FileDataFrameSaverConfig(path: String, format: FormatType, optionalSaveMode: Option[String] = None,
-    partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq()) {
+  partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq(), options: Map[String, String] = Map()) {
   def saveMode = optionalSaveMode.getOrElse("default")
-  override def toString: String = s"path: '$path', format: '$format', optionalSaveMode: '$optionalSaveMode', " +
-    s"partitionsNumber: $partitionFilesNumber, partitionColumns: [${partitionColumns.mkString("'", ", ", "'")}]"
+  override def toString: String = s"path: '$path', format: '$format', save mode: '$saveMode', " +
+    s"partition files number: ${partitionFilesNumber.getOrElse("not specified")}, partition columns: [${partitionColumns.mkString("'", ", ", "'")}]"
 }
 
 object FileDataFrameSaverConfig extends Configurator[FileDataFrameSaverConfig] with Logging {
@@ -115,7 +115,8 @@ object FileDataFrameSaverConfig extends Configurator[FileDataFrameSaverConfig] w
       config.extract[Option[Seq[String]]]("partition.columns").map {
         case (Some(partition_columns)) => partition_columns
         case None => Seq[String]()
-      } apply
+      } |@|
+      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
       FileDataFrameSaverConfig.apply
   }
 }

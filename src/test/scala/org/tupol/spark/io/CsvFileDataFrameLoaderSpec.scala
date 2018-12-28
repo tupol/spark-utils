@@ -14,10 +14,10 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
   test("The number of records in the csv provided must be the same in the output result") {
 
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]()
+    val options = Map[String, String]()
     val header = true
     val delimiter = ","
-    val parserConfig = CsvParserConfiguration(parserOptions, None, delimiter, header)
+    val parserConfig = CsvParserConfiguration(options, None, delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData.get
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
@@ -32,8 +32,8 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val header = true
     val delimiter = ","
     val inputPath = "src/test/resources/parsers/csv/cars*.csv"
-    val parserOptions = Map[String, String]()
-    val parserConfig = CsvParserConfiguration(parserOptions, None, delimiter, header)
+    val options = Map[String, String]()
+    val parserConfig = CsvParserConfiguration(options, None, delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
     resultDF shouldBe a[Success[_]]
@@ -49,13 +49,12 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
       StructField("make", StringType, true),
       StructField("model", StringType, true),
       StructField("comment", StringType, true),
-      StructField("blank", StringType, true)
-    ))
+      StructField("blank", StringType, true)))
     val header = true
     val delimiter = ","
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]()
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]()
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -74,14 +73,13 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
       StructField("make", StringType, true),
       StructField("model", StringType, true),
       StructField("comment", StringType, true),
-      StructField("blank", StringType, true)
-    ))
+      StructField("blank", StringType, true)))
     val header = true
     val delimiter = ","
     val mode = "PERMISSIVE"
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -96,14 +94,13 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
       StructField("make", StringType, true),
       StructField("model", StringType, true),
       StructField("comment", StringType, true),
-      StructField("blank", StringType, true)
-    ))
+      StructField("blank", StringType, true)))
     val header = true
     val delimiter = ","
     val mode = "DROPMALFORMED"
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").schema(customSchema)
@@ -119,14 +116,13 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val customSchema = StructType(Array(
       StructField("year", IntegerType, true),
       StructField("make", StringType, true),
-      StructField("model", StringType, true)
-    ))
+      StructField("model", StringType, true)))
     val header = true
     val delimiter = ","
     val mode = "FAILFAST"
     val inputPath = "src/test/resources/parsers/csv/cars_modified.csv"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 
@@ -139,14 +135,13 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val customSchema = StructType(Array(
       StructField("year", IntegerType, true),
       StructField("make", StringType, true),
-      StructField("model", StringType, true)
-    ))
+      StructField("model", StringType, true)))
     val header = true
     val delimiter = ","
     val mode = "PERMISSIVE"
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
@@ -160,14 +155,13 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val customSchema = StructType(Array(
       StructField("year", IntegerType, true),
       StructField("make", StringType, true),
-      StructField("model", StringType, true)
-    ))
+      StructField("model", StringType, true)))
     val header = true
     val delimiter = ","
     val mode = "DROPMALFORMED"
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
 
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
@@ -182,14 +176,13 @@ class CsvFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpark
     val customSchema = StructType(Array(
       StructField("year", IntegerType, true),
       StructField("make", StringType, true),
-      StructField("model", StringType, true)
-    ))
+      StructField("model", StringType, true)))
     val header = true
     val delimiter = ","
     val mode = "FAILFAST"
     val inputPath = "src/test/resources/parsers/csv/cars.csv"
-    val parserOptions = Map[String, String]("mode" -> mode)
-    val parserConfig = CsvParserConfiguration(parserOptions, Some(customSchema), delimiter, header)
+    val options = Map[String, String]("mode" -> mode)
+    val parserConfig = CsvParserConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData
 

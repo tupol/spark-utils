@@ -43,6 +43,8 @@ Usage with SBT, adding a dependency to the latest version of tools to your sbt b
 libraryDependencies += "org.tupol" %% "spark-utils" % "0.2.0-SNAPSHOT"
 ```
 
+A nice example on how this library can be used can be found in the [`spark-tools`](https://github.com/tupol/spark-tools) project, through the implementation
+of a generic format converter and a sql processor.
 
 ## What's new? ##
 

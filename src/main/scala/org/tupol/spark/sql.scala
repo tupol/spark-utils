@@ -183,13 +183,11 @@ package object sql {
     def requireFirstChar(string: String, printName: String) =
       require(
         if (string.size > 0) acceptableFirstChar(string.head) else true,
-        s"The $printName starts with an illegal Avro character: '${string.head}'."
-      )
+        s"The $printName starts with an illegal Avro character: '${string.head}'.")
     def requireContentChars(string: String, printName: String) =
       require(
         if (string.size > 0) illegalContentChars(string).size == 0 else true,
-        s"The $printName contains illegal Avro character(s): '${illegalContentChars(string).mkString("'", ", ", "'")}'."
-      )
+        s"The $printName contains illegal Avro character(s): '${illegalContentChars(string).mkString("'", ", ", "'")}'.")
 
     require(string.nonEmpty, "The input string can not be empty.")
 

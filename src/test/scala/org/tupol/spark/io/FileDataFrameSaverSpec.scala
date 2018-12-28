@@ -32,7 +32,6 @@ class FileDataFrameSaverSpec extends FunSuite with Matchers with SharedSparkSess
     inputData.saveData(outputConfig) shouldBe a[Success[_]]
 
     inputData.saveData(outputConfig) shouldBe a[Failure[_]]
-
   }
 
   test("Saving the input partitioned results in the same data") {

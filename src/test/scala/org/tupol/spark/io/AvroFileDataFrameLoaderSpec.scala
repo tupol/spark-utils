@@ -12,8 +12,8 @@ class AvroFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedSpar
   test("The number of records in the file provided and the schema must match") {
 
     val inputPath = "src/test/resources/parsers/avro/sample.avro"
-    val parserOptions = Map[String, String]()
-    val parserConfig = AvroConfiguration(parserOptions, None)
+    val options = Map[String, String]()
+    val parserConfig = AvroConfiguration(options, None)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF1 = FileDataFrameLoader(inputConfig).loadData.get
 

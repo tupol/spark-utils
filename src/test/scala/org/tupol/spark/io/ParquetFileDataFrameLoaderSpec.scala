@@ -12,8 +12,8 @@ class ParquetFileDataFrameLoaderSpec extends FunSuite with Matchers with SharedS
   test("The number of records in the file provided and the schema must match") {
 
     val inputPath = "src/test/resources/parsers/parquet/sample.parquet"
-    val parserOptions = Map[String, String]()
-    val parserConfig = ParquetConfiguration(parserOptions, None)
+    val options = Map[String, String]()
+    val parserConfig = ParquetConfiguration(options, None)
     val inputConfig = FileDataFrameLoaderConfig(inputPath, parserConfig)
     val resultDF = FileDataFrameLoader(inputConfig).loadData.get
 

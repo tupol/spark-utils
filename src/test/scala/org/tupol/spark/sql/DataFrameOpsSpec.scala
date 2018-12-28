@@ -14,7 +14,6 @@ class DataFrameOpsSpec extends FunSuite with Matchers with SharedSparkSession {
     flattenFields(df).schema shouldBe df.schema
 
     df.flattenFields.schema shouldBe df.schema
-
   }
 
   test("flattenFields on a structured DataFrame should flatten it.") {
@@ -26,7 +25,6 @@ class DataFrameOpsSpec extends FunSuite with Matchers with SharedSparkSession {
     flattenFields(df).schema shouldBe expectedSchema
 
     df.flattenFields.schema shouldBe expectedSchema
-
   }
 
 }
