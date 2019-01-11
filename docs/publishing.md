@@ -4,6 +4,8 @@
 
 `sbt publishLocalSigned`
 
+`sbt release`
+
 ## External References
 
 - [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html)

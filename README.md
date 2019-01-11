@@ -35,12 +35,12 @@ Spark Utils is published to Sonatype OSS and Maven Central:
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest version is `0.2.0-SNAPSHOT`
+- Latest version is `0.2.0`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.2.0-SNAPSHOT"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.2.0"
 ```
 
 A nice example on how this library can be used can be found in the
@@ -50,7 +50,7 @@ of a generic format converter and a sql processor.
 
 ## What's new? ##
 
-**0.2.0-SNAPSHOT**
+**0.2.0**
 
  - Added `DataSource` and `DataSink` IO frameworks
  - Added `FileDataSource` and `FileDataSink` IO frameworks

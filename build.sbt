@@ -5,7 +5,7 @@ organization := "org.tupol"
 
 scalaVersion := "2.11.12"
 
-val scalaUtilsVersion = "0.2.0-SNAPSHOT"
+val scalaUtilsVersion = "0.2.0"
 
 val sparkVersion = "2.3.2"
 
@@ -72,7 +72,7 @@ pomIncludeRepository := { _ => false }
 
 licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT"))
 
-homepage := Some(url("https://github.com/tupol"))
+homepage := Some(url("https://github.com/tupol/spark-utils"))
 
 scmInfo := Some(
   ScmInfo(
@@ -88,6 +88,24 @@ developers := List(
     email = "olivertupran@yahoo.com",
     url   = url("https://github.com/tupol")
   )
+)
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+import ReleaseTransformations._
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,          // performs the initial git checks
+  tagRelease,
+  publishArtifacts,              // checks whether `publishTo` is properly set up
+  releaseStepCommand(s"""sonatypeOpen "${organization.value}" "${name.value} v${version.value}""""),
+  releaseStepCommand("publishSigned"),
+  releaseStepCommand("sonatypeRelease"),
+  setNextVersion,
+  commitNextVersion,
+  pushChanges                     // also checks that an upstream branch is properly configured
 )
 
 // ------------------------------
