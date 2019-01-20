@@ -21,5 +21,6 @@ class FileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
 
     val resultDF2 = spark.source(inputConfig).read
     resultDF2 shouldBe a[Failure[_]]
+    a[DataSourceException] should be thrownBy resultDF2.get
   }
 }

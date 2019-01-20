@@ -66,6 +66,7 @@ class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "default", Map[String, String]())
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
     inputData.sink(sinkConfig).write shouldBe a[Failure[_]]
+    a[DataSinkException] should be thrownBy inputData.sink(sinkConfig).write.get
   }
 
   private def resultSetToJdbcTestRecords(resultSet: ResultSet) = {

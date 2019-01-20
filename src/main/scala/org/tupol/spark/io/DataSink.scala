@@ -77,3 +77,6 @@ object DataSinkConfiguration extends Configurator[DataSinkConfiguration] {
   override def validationNel(config: Config): ValidationNel[Throwable, DataSinkConfiguration] =
     FormatAwareDataSinkConfiguration.validationNel(config)
 }
+
+case class DataSinkException(private val message: String = "", private val cause: Throwable = None.orNull)
+  extends Exception(message, cause)

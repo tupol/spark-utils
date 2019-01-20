@@ -51,10 +51,11 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
           s"(Full configuration: ${configuration}).")
         Success(data)
       case Failure(ex) =>
-        logError(s"Failed to save the data as '${configuration.format}' " +
+        val message = s"Failed to save the data as '${configuration.format}' " +
           s"to the '${configuration.table}' table of '${configuration.url}' " +
-          s"(Full configuration: ${configuration}).")
-        Failure(ex)
+          s"(Full configuration: ${configuration})."
+        logError(message)
+        Failure(DataSinkException(message, ex))
     }
   }
 }

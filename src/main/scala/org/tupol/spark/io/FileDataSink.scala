@@ -64,9 +64,10 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
           s"(Full configuration: ${configuration}).")
         Success(data)
       case Failure(ex) =>
-        logError(s"Failed to save the data as '${configuration.format}' to '${configuration.path}' " +
-          s"(Full configuration: ${configuration}).")
-        Failure(ex)
+        val message = s"Failed to save the data as '${configuration.format}' to '${configuration.path}' " +
+          s"(Full configuration: ${configuration})."
+        logError(message)
+        Failure(DataSinkException(message, ex))
     }
   }
 }

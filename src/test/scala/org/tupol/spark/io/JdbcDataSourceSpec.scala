@@ -38,6 +38,7 @@ class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
     val result = spark.source(sourceConfig).read
 
     result shouldBe a[Failure[_]]
+    a[DataSourceException] should be thrownBy result.get
 
   }
 

@@ -32,6 +32,7 @@ class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
     inputData.sink(sinkConfig).write shouldBe a[Failure[_]]
+    a[DataSinkException] should be thrownBy (inputData.sink(sinkConfig).write.get)
   }
 
   test("Saving the input partitioned results in the same data") {

@@ -55,3 +55,6 @@ object FormatAwareDataSourceConfiguration extends Configurator[FormatAwareDataSo
 /** Common marker trait for `DataSource` configuration */
 trait DataSourceConfiguration
 
+case class DataSourceException(private val message: String = "", private val cause: Throwable = None.orNull)
+  extends Exception(message, cause)
+
