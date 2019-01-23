@@ -87,8 +87,8 @@ case class JdbcSinkConfiguration(url: String, table: String, user: Option[String
   }
 
   override def toString: String = {
-    val optionsStr = if (writerOptions.isEmpty) "" else writerOptions.map { case (k, v) => s"$k: '$v'" }.mkString(", ")
-    s"url: '$url', table: $table, connection properties: { $optionsStr }"
+    val optionsStr = if (writerOptions.isEmpty) "" else writerOptions.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+    s"url: '$url', table: '$table', connection properties: {$optionsStr}"
   }
 }
 object JdbcSinkConfiguration extends Configurator[JdbcSinkConfiguration] {

@@ -1,5 +1,6 @@
 # DataSource
 
+
 ## Description
 
 The `DataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
@@ -12,6 +13,7 @@ The framework is composed of two main traits:
     `def read(implicit spark: SparkSession): Try[DataFrame]`
 - `DataSourceConfiguration`: a marker trait to define `DataSource` configuration classes
 
+
 ## Usage
 
 The framework provides the following predefined `DataSource` implementations:
@@ -22,14 +24,14 @@ The framework provides the following predefined `DataSource` implementations:
 For convenience the `DataSourceFactory` trait and the default implementation are provided.
 To create a `DataSource` out of a given TypeSafe `Config` instance, one can call
 
-```
+```scala
 DataSource( someDataSourceConfigurationInstance )
 ```
 
 Also, in order to easily extract the configuration from a given TypeSafe `Config` instance,
 the `FormatAwareDataSourceConfiguration` factory is provided.
 
-```
+```scala
 FormatAwareDataSourceConfiguration( someTypesafeConfigurationInstance )
 ```
 

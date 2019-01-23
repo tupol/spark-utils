@@ -46,7 +46,7 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
 
     sourceConfiguration.schema match {
       case Some(inputSchema) =>
-        logDebug(s"Initializing the $dataFormat DataFrame loader using the specified schema.")
+        logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
         val schema = sourceConfiguration.columnNameOfCorruptRecord
           .map { columnNameOfCorruptRecord =>
             logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; adding column '$columnNameOfCorruptRecord' to the input schema.")
@@ -55,7 +55,7 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
           .getOrElse(inputSchema)
         basicReader.schema(schema)
       case None =>
-        logDebug(s"Initializing the $dataFormat DataFrame loader inferring the schema.")
+        logDebug(s"Initializing the '$dataFormat' DataFrame loader inferring the schema.")
         basicReader
     }
   }

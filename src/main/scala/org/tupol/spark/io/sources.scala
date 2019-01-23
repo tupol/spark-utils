@@ -41,9 +41,9 @@ package object sources {
     /** If the parser supports storing the failed records, they will be stored in this column */
     def columnNameOfCorruptRecord: Option[String] = options.get(ColumnNameOfCorruptRecord)
     override def toString: String = {
-      val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(", ")
+      val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
       val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
-      s"format: $format, options: { $optionsStr }, schema: $schemaStr"
+      s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
     }
   }
   object SourceConfiguration extends Configurator[SourceConfiguration] {
@@ -192,8 +192,9 @@ package object sources {
         userOption ++ passwordOption ++ driverOption
     }
     override def toString: String = {
-      val optionsStr = if (readerOptions.isEmpty) "" else readerOptions.map { case (k, v) => s"$k: '$v'" }.mkString(", ")
-      s"format: $format, url: '$url', table: '$table', connection properties: { $optionsStr }"
+      val optionsStr = if (readerOptions.isEmpty) ""
+      else readerOptions.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      s"format: '$format', url: '$url', table: '$table', connection properties: {$optionsStr}"
     }
   }
   object JdbcSourceConfiguration extends Configurator[JdbcSourceConfiguration] {

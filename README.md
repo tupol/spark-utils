@@ -1,8 +1,22 @@
-# Spark Utils
+# Spark Utils #
+
+
+## Motivation ##
+
+One of the biggest challenges after taking the first steps into the world of writing Spark applications in Scala
+is taking it to production in a professional manner.
+
+An application of any kind needs to be easy to run and easy to configure.
+
+This project is trying to help developers write Spark applications focusing mainly on the application logic rather
+than the details of configuring the application and setting up the Spark context.
+
+
+## Description ##
 
 This project contains some basic utilities that can help setting up a Spark project.
 
-The [`SparkRunnable`](docs/spark-runnable.md), together with the
+The [`SparkRunnable`](docs/spark-runnable.md) and [`SparkApp`](docs/spark-app.md) together with the
 [configuration framework](https://github.com/tupol/scala-utils/blob/master/docs/configuration-framework.md)
 provide for easy Spark application creation with configuration that can be managed through configuration files or
 application parameters.
@@ -35,20 +49,25 @@ Spark Utils is published to Sonatype OSS and Maven Central:
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest version is `0.2.0`
+- Latest version is `0.3.0-SNAPSHOT`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.2.0"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.3.0-SNAPSHOT"
 ```
 
 A nice example on how this library can be used can be found in the
 [`spark-tools`](https://github.com/tupol/spark-tools) project, through the implementation
-of a generic format converter and a sql processor.
+of a generic format converter and a SQL processor.
 
 
 ## What's new? ##
+
+**0.3.0-SNAPSHOT**
+
+ - Split `SparkRunnable` into `SparkRunnable` and `SparkApp`
+ - Small documentation improvements
 
 **0.2.0**
 
@@ -57,6 +76,11 @@ of a generic format converter and a sql processor.
  - Added `JdbcDataSource` and `JdbcDataSink` IO frameworks
  - Moved all useful implicit conversions into `org.tupol.spark.implicits`
  - Added testing utilities under `org.tupol.spark.testing`
+
+
+## ToDoS, Thoughts & Suggestions ##
+
+- [ ] Consider changing the `SparkApp` to take a `Configurator[T]` as a parameter to replace the `buildConfig` function
 
 
 ## License ##

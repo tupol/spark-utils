@@ -1,5 +1,6 @@
 # JdbcDataSource
 
+
 ## Description
 
 The `JdbcDataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
@@ -12,7 +13,7 @@ The framework is composed of two classes:
 - `JdbcDataSourceConfig`: the necessary configuration parameters
 
 **Sample code**
-```
+```scala
     import org.tupol.spark.io._
     ...
     implicit val sparkSession = ...
@@ -23,7 +24,7 @@ The framework is composed of two classes:
 Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
 
 **Sample code**
-```
+```scala
     import org.tupol.spark.io._
     ...
     val sourceConfiguration = JdbcDataSourceConfig(inputPath, parserConfig)

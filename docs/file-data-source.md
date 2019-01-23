@@ -1,5 +1,6 @@
 # FileDataSource
 
+
 ## Description
 
 The `FileDataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
@@ -13,7 +14,7 @@ The framework is composed of two classes:
 - `FileSourceConfiguration`: the necessary configuration parameters
 
 **Sample code**
-```
+```scala
     import org.tupol.spark.io._
     ...
     implicit val sparkSession = ...
@@ -24,7 +25,7 @@ The framework is composed of two classes:
 Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
 
 **Sample code**
-```
+```scala
     import org.tupol.spark.io._
     ...
     val sourceConfiguration = FileSourceConfiguration(inputPath, parserConfig)
@@ -113,32 +114,32 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - `options` *Optional*
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
     passed through the `application.conf` file
-   - Specific Databricks XML parser options; more details are available [here](https://github.com/databricks/spark-xml)
-      - `path`: Location of files. Similar to Spark can accept standard Hadoop globbing expressions.
-      - `rowTag`: The row tag of your xml files to treat as a row. For example, in this xml `<books> <book><book> ...</books>`,
-        the appropriate value would be `book`. Default is `ROW`. At the moment, rows containing self closing xml tags
-        are not supported. If the `rowTag` parameter is defined here, it will be overridden by the global `rowTag` parameter.
-      - `samplingRatio`: Sampling ratio for inferring schema (0.0 ~ 1). Default is 1. Possible types are `StructType`,
-        `ArrayType`, `StringType`, `LongType`, `DoubleType`, `BooleanType`, `TimestampType` and `NullType`, unless user
-        provides a schema for this.
-      - `excludeAttribute` : Whether you want to exclude attributes in elements or not. Default is false.
-      - `treatEmptyValuesAsNulls` : (DEPRECATED: use `nullValue` set to `""`) Whether you want to treat whitespaces as
-        a null value. Default is false
-      - `attributePrefix`: The prefix for attributes so that we can differentiate attributes and elements.
-        This will be the prefix for field names. Default is `_`.
-      - `valueTag`: The tag used for the value when there are attributes in the element having no child.
-        Default is `_VALUE`.
-      - `charset`: Defaults to `UTF-8` but can be set to other valid charset names
-      - `ignoreSurroundingSpaces`: Defines whether or not surrounding whitespaces from values being read should be skipped.
-        Default is `false`.
-      - `columnNameOfCorruptRecord` (default _none_): If defined a column with this name will be attached to the input
-        data set schema and it will only be filled with corrupt records.
-      - `mode`: The mode for dealing with corrupt records during parsing. Default is `PERMISSIVE`.
-        - `PERMISSIVE` : sets other fields to `null` when it meets a corrupted record, and puts the malformed string
-          into a new field configured by `columnNameOfCorruptRecord`. When a schema is set by user,
-          it sets `null` for extra fields.
-        - `DROPMALFORMED` : ignores the whole corrupted records.
-        - `FAILFAST` : throws an exception when it meets corrupted records.
+  - Specific Databricks XML parser options; more details are available [here](https://github.com/databricks/spark-xml)
+    - `path`: Location of files. Similar to Spark can accept standard Hadoop globbing expressions.
+    - `rowTag`: The row tag of your xml files to treat as a row. For example, in this xml `<books> <book><book> ...</books>`,
+      the appropriate value would be `book`. Default is `ROW`. At the moment, rows containing self closing xml tags
+      are not supported. If the `rowTag` parameter is defined here, it will be overridden by the global `rowTag` parameter.
+    - `samplingRatio`: Sampling ratio for inferring schema (0.0 ~ 1). Default is 1. Possible types are `StructType`,
+      `ArrayType`, `StringType`, `LongType`, `DoubleType`, `BooleanType`, `TimestampType` and `NullType`, unless user
+      provides a schema for this.
+    - `excludeAttribute` : Whether you want to exclude attributes in elements or not. Default is false.
+    - `treatEmptyValuesAsNulls` : (DEPRECATED: use `nullValue` set to `""`) Whether you want to treat whitespaces as
+      a null value. Default is false
+    - `attributePrefix`: The prefix for attributes so that we can differentiate attributes and elements.
+      This will be the prefix for field names. Default is `_`.
+    - `valueTag`: The tag used for the value when there are attributes in the element having no child.
+      Default is `_VALUE`.
+    - `charset`: Defaults to `UTF-8` but can be set to other valid charset names
+    - `ignoreSurroundingSpaces`: Defines whether or not surrounding whitespaces from values being read should be skipped.
+      Default is `false`.
+    - `columnNameOfCorruptRecord` (default _none_): If defined a column with this name will be attached to the input
+      data set schema and it will only be filled with corrupt records.
+    - `mode`: The mode for dealing with corrupt records during parsing. Default is `PERMISSIVE`.
+      - `PERMISSIVE` : sets other fields to `null` when it meets a corrupted record, and puts the malformed string
+        into a new field configured by `columnNameOfCorruptRecord`. When a schema is set by user,
+        it sets `null` for extra fields.
+      - `DROPMALFORMED` : ignores the whole corrupted records.
+      - `FAILFAST` : throws an exception when it meets corrupted records.
 
 ### JSON Parameters
 
@@ -170,6 +171,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 
 ## References
 
-- For the CSV, JSON, Parquet and Text converter API see more details [here](https://spark.apache.org/docs/2.1.1/api/java/org/apache/spark/sql/DataFrameReader.html).
+- For the CSV, JSON, Parquet and Text converter API see more details
+[here](https://spark.apache.org/docs/2.1.1/api/java/org/apache/spark/sql/DataFrameReader.html).
 - For the XML converter API see more details [here](https://github.com/databricks/spark-xml).
 - For the Avro converter API see more details [here](https://github.com/databricks/spark-avro).

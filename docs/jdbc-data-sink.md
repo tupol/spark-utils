@@ -1,10 +1,11 @@
 # JdbcDataSink
 
+
 ## Description
 
 The `JdbcDataSink` framework is a utility framework that helps configuring and writing `DataFrames`.
 
-This framework provides for writing to a given path into the specified format like `avro`, `parquet`, `orc`, `json`, `csv`...
+This framework provides for writing to a given Jdbc connection.
 
 This framework supports different save modes like `overwrite` or `append`, as well as partitioning parameters like
 columns and number of partition files.
@@ -15,7 +16,7 @@ The framework is composed of two classes:
 - `JdbcSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
-```
+```scala
     import org.tupol.spark.io._
     ...
     val sinkConfiguration = JdbcSinkConfiguration(outputPath, format)
@@ -25,7 +26,7 @@ The framework is composed of two classes:
 Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
 
 **Sample code**
-```
+```scala
     import org.tupol.spark.io._
     ...
     val sinkConfiguration = JdbcSinkConfiguration(outputPath, format)
@@ -55,13 +56,17 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
     passed through the `application.conf` file
   - for more details about the available options please check the [References](#references) section.
 - `mode`: the save mode can be `overwrite`, `append`, `ignore` and `error`; more details available
-    [here](https://spark.apache.org/docs/2.3.1/api/java/org/apache/spark/sql/DataFrameWriter.html#mode-java.lang.String-)
-- `options` *Optional*: additional options that can be passed to the Apache Spark `DataFrameWriter`;
-    due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-        passed through the `application.conf` file
+    [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter)
+- `options` *Optional*
+  - additional options that can be passed to the Apache Spark `DataFrameWriter`;
+  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
+      passed through the `application.conf` file
+  - more details available [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter)
 
 
 ## References
 
-- For the more details about the optional parameters consult the [DataFrameWriter](https://spark.apache.org/docs/2.3.0/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameWriter)
-  API and sources, especially [JDBCOptions](https://github.com/apache/spark/blob/master/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/jdbc/JDBCOptions.scala).
+For the more details about the optional parameters consult the
+[DataFrameWriter](https://spark.apache.org/docs/2.3.1/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameReader)
+API and sources, especially
+[JDBCOptions](https://github.com/apache/spark/blob/master/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/jdbc/JDBCOptions.scala).

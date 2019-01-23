@@ -1,5 +1,6 @@
 # DataSink
 
+
 ## Description
 
 The `DataSink` framework is a utility framework that helps configuring and writing `DataFrame`s.
@@ -12,6 +13,7 @@ The framework is composed of two main traits:
     `def write(data: DataFrame): Try[DataFrame]`
 - `DataSinkConfiguration`: a marker trait to define `DataSink` configuration classes
 
+
 ## Usage
 
 The framework provides the following predefined `DataSink` implementations:
@@ -22,14 +24,14 @@ The framework provides the following predefined `DataSink` implementations:
 For convenience the `DataAwareSinkFactory` trait and the default implementation are provided.
 To create a `DataSink` out of a given TypeSafe `Config` instance, one can call
 
-```
+```scala
 DataAwareSinkFactory( someDataSinkConfigurationInstance )
 ```
 
 Also, in order to easily extract the configuration from a given TypeSafe `Config` instance,
 the `FormatAwareDataSinkConfiguration` factory is provided.
 
-```
+```scala
 FormatAwareDataSinkConfiguration( someTypesafeConfigurationInstance )
 ```
 

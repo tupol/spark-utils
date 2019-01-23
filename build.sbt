@@ -13,6 +13,10 @@ val sparkVersion = "2.3.2"
 // DEPENDENCIES AND RESOLVERS
 
 updateOptions := updateOptions.value.withCachedResolution(true)
+resolvers += "Sonatype OSS Staging" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 
 lazy val providedDependencies = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion force(),

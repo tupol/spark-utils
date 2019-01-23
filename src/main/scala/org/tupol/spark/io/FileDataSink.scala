@@ -49,7 +49,7 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
       case Nil => writer
       case partitions =>
         logDebug(s"Initializing the DataFrameWriter to partition the data using the following partition columns: " +
-          s"${partitions.mkString("'", "', '", "'")}.")
+          s"[${partitions.mkString(", ")}].")
         writer.partitionBy(partitions: _*)
     }
     partitionsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(configuration.options)
@@ -94,11 +94,11 @@ case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveM
   extends FormatAwareDataSinkConfiguration {
   def saveMode = optionalSaveMode.getOrElse("default")
   override def toString: String = {
-    val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(", ")
+    val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     s"path: '$path', format: '$format', save mode: '$saveMode', " +
       s"partition files number: ${partitionFilesNumber.getOrElse("not specified")}, " +
-      s"partition columns: [ ${partitionColumns.mkString("'", ", ", "'")} ], " +
-      s"options: { $optionsStr }"
+      s"partition columns: [${partitionColumns.mkString(", ")}], " +
+      s"options: {$optionsStr}"
   }
 }
 
