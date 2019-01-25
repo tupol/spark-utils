@@ -37,6 +37,8 @@ object FormatType {
   private val OrcFormat = "orc"
   private val TextFormat = "text"
   private val JdbcFormat = "jdbc"
+  private val SocketFormat = "socket"
+  private val KafkaFormat = "kafka"
 
   def fromString(formatString: String): Try[FormatType] = formatString.trim match {
     case XmlFormat | "xml" => Success(Xml)
@@ -47,6 +49,8 @@ object FormatType {
     case OrcFormat => Success(Orc)
     case TextFormat => Success(Text)
     case JdbcFormat => Success(Jdbc)
+    case SocketFormat => Success(Socket)
+    case KafkaFormat => Success(Kafka)
     case _ => Failure(new IllegalArgumentException(
       s"""Unknown format type '$formatString'. Available format types are:
          |${(FormatType.AvailableFormats.map(_.toString) :+ "avro" :+ "xml").mkString("'", "', '", "'")}. """.stripMargin))
@@ -62,4 +66,6 @@ object FormatType {
   case object Orc extends FormatType { override def toString: String = OrcFormat }
   case object Text extends FormatType { override def toString: String = TextFormat }
   case object Jdbc extends FormatType { override def toString: String = JdbcFormat }
+  case object Socket extends FormatType { override def toString: String = SocketFormat }
+  case object Kafka extends FormatType { override def toString: String = KafkaFormat }
 }
