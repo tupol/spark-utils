@@ -11,20 +11,20 @@ some application configuration.
  * Trivial trait for creating basic runnable Spark applications.
  * These runnable still needs a runner or an app to run.
  *
- * @tparam Configuration the type of the application configuration class.
+ * @tparam Context the type of the application context or configuration class.
  * @tparam Result The output type of the run method.
  *
  */
-trait SparkRunnable[Configuration, Result]  {
+trait SparkRunnable[Context, Result] {
 
   /**
    * This method needs to be implemented and should contain the entire runnable logic.
    *
-   * @param config configuration instance that should contain all the application specific configuration
+   * @param context context instance that should contain all the application specific configuration
    * @param spark active spark session
    * @return
    */
-  def run(implicit spark: SparkSession, config: Configuration): Try[Result]
+  def run(implicit spark: SparkSession, context: Context): Result
 
 }
 
@@ -33,7 +33,6 @@ trait SparkRunnable[Configuration, Result]  {
 Using this API is fairly easy, and it comes down mainly to defining the `run()` method.
 
 One should always think about the return type of the `SparkRunnable` is about to create, though
-`SparkRunnable[Config, Result[Unit]]` is also possible.
+`SparkRunnable[Config, Unit]` is also possible.
 
-One can think of the `Configuration` type as the type of the application context.
-
+The `Context` can be seen as the application configuration and in most of the cases the most basic case class will suffice.

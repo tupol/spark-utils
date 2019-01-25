@@ -7,7 +7,7 @@ import org.tupol.spark.io.sources.JsonSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Failure, Try }
 
 class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
 
@@ -19,11 +19,11 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read.get
+    val resultDF = FileDataSource(inputConfig).read
 
     resultDF.count shouldBe 1
 
-    val resultDF2 = spark.source(inputConfig).read.get
+    val resultDF2 = spark.source(inputConfig).read
     resultDF2.comapreWith(resultDF).areEqual(true) shouldBe true
   }
 
@@ -36,9 +36,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 2
+    resultDF.count shouldBe 2
   }
 
   test("Infer simple schema") {
@@ -50,14 +48,12 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
     // Test that the field was inferred and the correct metadata was added
 
     val expectedSchema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json")
-    resultDF.get.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
+    resultDF.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
-    resultDF.get.count shouldBe 3
+    resultDF.count shouldBe 3
   }
 
   test("Deal with corrupted records in default mode (PERMISSIVE)") {
@@ -69,9 +65,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 4
+    resultDF.count shouldBe 4
   }
 
   test("Deal with corrupted records in PERMISSIVE mode with custom corrupt record column") {
@@ -85,10 +79,8 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 4
-    resultDF.get.schema.fieldNames should contain(columnNameOfCorruptRecord)
+    resultDF.count shouldBe 4
+    resultDF.schema.fieldNames should contain(columnNameOfCorruptRecord)
   }
 
   test("Deal with corrupted records in DROPMALFORMED mode") {
@@ -100,11 +92,9 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.collect.size shouldBe 2
+    resultDF.collect.size shouldBe 2
     // TODO Investigate why the count does not match the expected result; e.g. in our case the collect.size != count
-    // resultDF.get.count shouldBe 2
+    // resultDF.count shouldBe 2
   }
 
   test("Deal with corrupted records in FAILFAST mode") {
@@ -116,9 +106,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    Try(resultDF.get.collect) shouldBe a[Failure[_]]
+    Try(resultDF.collect) shouldBe a[Failure[_]]
   }
 
 }

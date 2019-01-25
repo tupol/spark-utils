@@ -41,7 +41,7 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  def write(data: DataFrame): Try[DataFrame] = {
+  def write(data: DataFrame): DataFrame = {
     logInfo(s"Writing data as '${configuration.format}' " +
       s"to the '${configuration.table}' table of '${configuration.url}'.")
     Try(configureWriter(data, configuration).save()) match {
@@ -49,13 +49,13 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
         logInfo(s"Successfully saved the data as '${configuration.format}' " +
           s"to the '${configuration.table}' table of '${configuration.url}' " +
           s"(Full configuration: ${configuration}).")
-        Success(data)
+        data
       case Failure(ex) =>
         val message = s"Failed to save the data as '${configuration.format}' " +
           s"to the '${configuration.table}' table of '${configuration.url}' " +
           s"(Full configuration: ${configuration})."
         logError(message)
-        Failure(DataSinkException(message, ex))
+        throw new DataSinkException(message, ex)
     }
   }
 }

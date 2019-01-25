@@ -5,8 +5,6 @@ import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.AvroSourceConfiguration
 
-import scala.util.Failure
-
 class FileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
 
   test("Loading the data fails if the file does not exist") {
@@ -15,12 +13,9 @@ class FileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
     val options = Map[String, String]()
     val parserConfig = AvroSourceConfiguration(options, None)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF1 = FileDataSource(inputConfig).read
 
-    resultDF1 shouldBe a[Failure[_]]
+    a[DataSourceException] should be thrownBy FileDataSource(inputConfig).read
 
-    val resultDF2 = spark.source(inputConfig).read
-    resultDF2 shouldBe a[Failure[_]]
-    a[DataSourceException] should be thrownBy resultDF2.get
+    a[DataSourceException] should be thrownBy spark.source(inputConfig).read
   }
 }

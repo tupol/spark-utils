@@ -8,7 +8,6 @@ import org.tupol.spark.implicits._
 import org.tupol.spark.testing.H2Database
 
 import scala.collection.mutable
-import scala.util.{ Failure, Success }
 
 class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession with H2Database {
 
@@ -23,7 +22,7 @@ class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val inputData = spark.createDataFrame(TestData)
 
     val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver)
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
 
     val resultSet: ResultSet = connection.createStatement.executeQuery(s"SELECT * FROM $TestTable")
     val result = resultSetToJdbcTestRecords(resultSet)
@@ -36,8 +35,8 @@ class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val inputData = spark.createDataFrame(TestData)
 
     val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "overwrite", Map[String, String]())
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
 
     val resultSet: ResultSet = connection.createStatement().executeQuery(s"SELECT * FROM $TestTable")
     val result = resultSetToJdbcTestRecords(resultSet)
@@ -50,8 +49,8 @@ class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val inputData = spark.createDataFrame(TestData)
 
     val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "append", Map[String, String]())
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
 
     val resultSet: ResultSet = connection.createStatement().executeQuery(s"SELECT * FROM $TestTable")
     val result = resultSetToJdbcTestRecords(resultSet)
@@ -64,9 +63,8 @@ class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val inputData = spark.createDataFrame(TestData)
 
     val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "default", Map[String, String]())
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
-    inputData.sink(sinkConfig).write shouldBe a[Failure[_]]
-    a[DataSinkException] should be thrownBy inputData.sink(sinkConfig).write.get
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
+    a[DataSinkException] should be thrownBy (inputData.sink(sinkConfig).write)
   }
 
   private def resultSetToJdbcTestRecords(resultSet: ResultSet) = {

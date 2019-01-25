@@ -8,7 +8,7 @@ import org.tupol.spark.io.sources.XmlSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Failure, Try }
 
 class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
 
@@ -21,11 +21,11 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read.get
+    val resultDF = FileDataSource(inputConfig).read
 
     resultDF.count shouldBe 1
 
-    val resultDF2 = spark.source(inputConfig).read.get
+    val resultDF2 = spark.source(inputConfig).read
     resultDF2.comapreWith(resultDF).areEqual(true) shouldBe true
   }
 
@@ -39,9 +39,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 2
+    resultDF.count shouldBe 2
   }
 
   test("Extract elements that do not exist should return an empty result") {
@@ -54,9 +52,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 0
+    resultDF.count shouldBe 0
   }
 
   test("Infer simple schema") {
@@ -69,13 +65,10 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
     // Test that the field was inferred and the correct metadata was added
-    resultDF.get.schema.fields should contain(
-      new StructField("test_node", StringType, true))
+    resultDF.schema.fields should contain(new StructField("test_node", StringType, true))
 
-    resultDF.get.count shouldBe 13
+    resultDF.count shouldBe 13
   }
 
   test("Deal with corrupted records in default mode (PERMISSIVE)") {
@@ -87,9 +80,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 13
+    resultDF.count shouldBe 13
   }
 
   test("Deal with corrupted records in PERMISSIVE mode with custom corrupt record column") {
@@ -103,10 +94,8 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count shouldBe 13
-    resultDF.get.schema.fieldNames should contain(columnNameOfCorruptRecord)
+    resultDF.count shouldBe 13
+    resultDF.schema.fieldNames should contain(columnNameOfCorruptRecord)
   }
 
   test("Deal with corrupted records in DROPMALFORMED mode") {
@@ -119,9 +108,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.collect.size shouldBe 10
+    resultDF.collect.size shouldBe 10
   }
 
   test("Deal with corrupted records in FAILFAST mode") {
@@ -134,9 +121,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    Try(resultDF.get.collect) shouldBe a[Failure[_]]
+    Try(resultDF.collect) shouldBe a[Failure[_]]
   }
 
 }

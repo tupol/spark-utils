@@ -17,14 +17,14 @@ class OrcFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]()
     val parserConfig = OrcSourceConfiguration(options, None)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read.get
+    val resultDF = FileDataSource(inputConfig).read
 
     resultDF.count shouldBe 3
 
     val expectedSchema = loadSchemaFromFile("src/test/resources/sources/orc/sample_schema.json")
     resultDF.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
-    spark.source(inputConfig).read.get.comapreWith(resultDF).areEqual(true) shouldBe true
+    spark.source(inputConfig).read.comapreWith(resultDF).areEqual(true) shouldBe true
   }
 
 }

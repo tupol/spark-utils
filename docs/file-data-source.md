@@ -10,7 +10,7 @@ This framework provides for reading from a given path with the specified format 
 
 The framework is composed of two classes:
 - `FileDataSource`, which is created based on a `FileSourceConfiguration` class and provides one main function:
-    `def read(implicit spark: SparkSession): Try[DataFrame]`
+    `def read(implicit spark: SparkSession): DataFrame`
 - `FileSourceConfiguration`: the necessary configuration parameters
 
 **Sample code**

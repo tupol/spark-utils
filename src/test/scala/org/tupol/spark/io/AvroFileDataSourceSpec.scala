@@ -15,14 +15,14 @@ class AvroFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]()
     val parserConfig = AvroSourceConfiguration(options, None)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF1 = FileDataSource(inputConfig).read.get
+    val resultDF1 = FileDataSource(inputConfig).read
 
     resultDF1.count shouldBe 3
 
     val expectedSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
     resultDF1.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
-    val resultDF2 = spark.source(inputConfig).read.get
+    val resultDF2 = spark.source(inputConfig).read
     resultDF2.comapreWith(resultDF1).areEqual(true) shouldBe true
   }
 

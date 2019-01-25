@@ -13,7 +13,7 @@ columns and number of partition files.
 
 The framework is composed of two classes:
 - `FileDataSink`, which is created based on a `FileSinkConfiguration` class and provides one main function:
-    `def write(data: DataFrame): Try[DataFrame]`
+    `def write(data: DataFrame): DataFrame`
 - `FileSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**

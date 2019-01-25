@@ -6,8 +6,6 @@ import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{ FunSuite, Matchers }
 
-import scala.util.Try
-
 class SparkAppSpec extends FunSuite with Matchers with SharedSparkSession {
 
   val filesArg = Seq(
@@ -47,10 +45,10 @@ class SparkAppSpec extends FunSuite with Matchers with SharedSparkSession {
 
   object MockApp$ extends SparkApp[String, Unit] {
 
-    def buildConfig(config: Config): Try[String] = Try("Hello")
+    def createContext(config: Config): String = "Hello"
 
     // This method needs to be implemented and should contain the entire runnable logic.
-    override def run(implicit spark: SparkSession, config: String): Try[Unit] = ???
+    override def run(implicit spark: SparkSession, config: String): Unit = ???
   }
 }
 

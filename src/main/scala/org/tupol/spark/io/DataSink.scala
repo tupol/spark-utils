@@ -28,19 +28,17 @@ import org.apache.spark.sql.DataFrame
 import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
-import scala.util.Try
-
 /** Common trait for writing a DataFrame to an external resource */
 trait DataSink[Config <: DataSinkConfiguration] {
   def configuration: Config
-  def write(data: DataFrame): Try[DataFrame]
+  def write(data: DataFrame): DataFrame
 }
 
 /** Common trait for writing an already defined data DataFrame to an external resource */
 trait DataAwareSink[Config <: DataSinkConfiguration] {
   def data: DataFrame
   def sink: DataSink[Config]
-  def write: Try[DataFrame] = sink.write(data)
+  def write: DataFrame = sink.write(data)
 }
 
 /** Factory trait for DataAwareSinkFactory */

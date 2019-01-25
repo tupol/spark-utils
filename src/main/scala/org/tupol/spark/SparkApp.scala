@@ -28,17 +28,16 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.{ SparkConf, SparkFiles }
 
 import scala.util.Try
-
 import org.tupol.utils._
 
 /**
  * Trivial trait for executing basic Spark runnable applications.
  *
- * @tparam Configuration the type of the application configuration class.
+ * @tparam Context the type of the application context and configuration class.
  * @tparam Result The output type of the run method.
  *
  */
-trait SparkApp[Configuration, Result] extends SparkRunnable[Configuration, Result] with Logging {
+trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
 
   /**
    * This is the key for basically choosing a certain app and it should have
@@ -52,9 +51,9 @@ trait SparkApp[Configuration, Result] extends SparkRunnable[Configuration, Resul
 
   /**
    * This method needs to be implemented and should contain all logic related
-   * to parsing the configuration settings.
+   * to parsing the configuration settings and building the application context.
    */
-  def buildConfig(config: Config): Try[Configuration]
+  def createContext(config: Config): Context
 
   /**
    * Any object extending this trait becomes a runnable application.
@@ -62,14 +61,13 @@ trait SparkApp[Configuration, Result] extends SparkRunnable[Configuration, Resul
    * @param args
    */
   def main(implicit args: Array[String]): Unit = {
-    val runnableName = this.getClass.getName.replaceAll("\\$", "")
-    log.info(s"Running $runnableName")
-    implicit val spark = createSparkSession(runnableName)
+    log.info(s"Running $appName")
+    implicit val spark = createSparkSession(appName)
     implicit val conf = applicationConfiguration
 
     val outcome = for {
-      config <- buildConfig(conf)
-      result <- run(spark, config)
+      context <- Try(createContext(conf))
+      result <- Try(run(spark, context))
     } yield result
 
     outcome

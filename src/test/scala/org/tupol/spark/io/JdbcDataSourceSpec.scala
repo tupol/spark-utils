@@ -8,8 +8,6 @@ import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.JdbcSourceConfiguration
 import org.tupol.spark.testing.H2Database
 
-import scala.util.{ Failure, Success }
-
 class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession with H2Database {
 
   val TestTable = "test_table"
@@ -25,21 +23,17 @@ class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
     createTestTable(connection, TestData)
 
     val sourceConfig = JdbcSourceConfiguration(h2url, TestTable, h2user, h2password, h2driver)
-    val result = spark.source(sourceConfig).read
 
-    result shouldBe a[Success[_]]
+    noException shouldBe thrownBy(spark.source(sourceConfig).read)
 
-    result.get.as[JdbcTestRecord].collect should contain theSameElementsAs (TestData)
+    spark.source(sourceConfig).read.as[JdbcTestRecord].collect should contain theSameElementsAs (TestData)
   }
 
   test("Reading the input data fails if table can not be found") {
 
     val sourceConfig = JdbcSourceConfiguration(h2url, TestTable, h2user, h2password, h2driver)
-    val result = spark.source(sourceConfig).read
 
-    result shouldBe a[Failure[_]]
-    a[DataSourceException] should be thrownBy result.get
-
+    a[DataSourceException] should be thrownBy spark.source(sourceConfig).read
   }
 
   private def createTestTable(conection: Connection, testData: Seq[JdbcTestRecord]) = {

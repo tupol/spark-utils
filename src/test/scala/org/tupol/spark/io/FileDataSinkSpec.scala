@@ -7,8 +7,6 @@ import org.tupol.spark.implicits._
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
-import scala.util.{ Failure, Success }
-
 class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
 
   test("Saving the input data results in the same data") {
@@ -17,7 +15,7 @@ class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val inputData: DataFrame = spark.read.parquet(inputPath)
 
     val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet)
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
 
     val writtenData: DataFrame = spark.read.parquet(testPath1)
     writtenData.comapreWith(inputData).areEqual(true) shouldBe true
@@ -29,10 +27,9 @@ class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val inputData: DataFrame = spark.read.parquet(inputPath)
 
     val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet)
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
 
-    inputData.sink(sinkConfig).write shouldBe a[Failure[_]]
-    a[DataSinkException] should be thrownBy (inputData.sink(sinkConfig).write.get)
+    a[DataSinkException] should be thrownBy (inputData.sink(sinkConfig).write)
   }
 
   test("Saving the input partitioned results in the same data") {
@@ -43,7 +40,7 @@ class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     val childPartition = "string"
 
     val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet, None, None, Seq(rootPartition, "string"))
-    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
+    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
 
     val writtenData: DataFrame = spark.read.parquet(testPath1)
     writtenData.comapreWith(inputData).areEqual(true) shouldBe true

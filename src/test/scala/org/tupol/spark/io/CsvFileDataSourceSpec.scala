@@ -7,7 +7,7 @@ import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.CsvSourceConfiguration
 import org.tupol.spark.testing._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Failure, Try }
 
 class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
 
@@ -19,12 +19,12 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val delimiter = ","
     val parserConfig = CsvSourceConfiguration(options, None, delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read.get
+    val resultDF = FileDataSource(inputConfig).read
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
 
     resultDF.count shouldBe csvDataFrame.count
 
-    spark.source(inputConfig).read.get.comapreWith(resultDF).areEqual(true) shouldBe true
+    spark.source(inputConfig).read.comapreWith(resultDF).areEqual(true) shouldBe true
   }
 
   test("The number of records in multiple csv files provided must be the same in the output result") {
@@ -36,10 +36,9 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = CsvSourceConfiguration(options, None, delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-    resultDF shouldBe a[Success[_]]
 
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
-    resultDF.get.count shouldBe csvDataFrame.count
+    resultDF.count shouldBe csvDataFrame.count
   }
 
   test("User must be able to specify a schema ") {
@@ -57,13 +56,11 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.schema.fieldNames should contain("year")
-    resultDF.get.schema.fieldNames should contain("make")
-    resultDF.get.schema.fieldNames should contain("model")
-    resultDF.get.schema.fieldNames should contain("comment")
-    resultDF.get.schema.fieldNames should contain("blank")
+    resultDF.schema.fieldNames should contain("year")
+    resultDF.schema.fieldNames should contain("make")
+    resultDF.schema.fieldNames should contain("model")
+    resultDF.schema.fieldNames should contain("comment")
+    resultDF.schema.fieldNames should contain("blank")
   }
 
   test("Providing a good csv schema with the parsing option PERMISSIVE, expecting a success run and a successful dataframe materialization") {
@@ -82,9 +79,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count should be >= 0L
+    resultDF.count should be >= 0L
   }
 
   test("Providing a good csv schema with the parsing option DROPMALFORMED, expecting a success run and a successful dataframe materialization") {
@@ -106,9 +101,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").schema(customSchema)
       .option("header", header).option("mode", mode).option("delimiter", delimiter).load(inputPath)
 
-    resultDF shouldBe a[Success[_]]
-
-    resultDF.get.count should be <= csvDataFrame.count
+    resultDF.count should be <= csvDataFrame.count
   }
 
   test("Providing a good csv schema fitting perfectly the data with the parsing option FAILFAST, expecting a success run and a successful dataframe materialization") {
@@ -125,9 +118,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count should be >= 0L
+    resultDF.count should be >= 0L
   }
 
   test("Providing a wrong csv schema with the parsing option PERMISSIVE, expecting a success run and a successful dataframe materialization") {
@@ -145,9 +136,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count should equal(csvDataFrame.count)
+    resultDF.count should equal(csvDataFrame.count)
   }
 
   test("Providing a wrong csv schema with the parsing option DROPMALFORMED, expecting a success run and a successful dataframe materialization") {
@@ -166,9 +155,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
 
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    resultDF.get.count should be <= csvDataFrame.count
+    resultDF.count should be <= csvDataFrame.count
   }
 
   test("Providing a wrong csv schema with the parsing option FAILFAST, expecting a success run and a failed dataframe materialization") {
@@ -185,8 +172,6 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
     val resultDF = FileDataSource(inputConfig).read
-
-    resultDF shouldBe a[Success[_]]
-    Try(resultDF.get.collect) shouldBe a[Failure[_]]
+    Try(resultDF.collect) shouldBe a[Failure[_]]
   }
 }

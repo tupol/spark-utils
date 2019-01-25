@@ -12,7 +12,7 @@ columns and number of partition files.
 
 The framework is composed of two classes:
 - `JdbcDataSink`, which is created based on a `JdbcSinkConfiguration` class and provides one main function:
-    `def write(data: DataFrame): Try[DataFrame]`
+    `def write(data: DataFrame): DataFrame`
 - `JdbcSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**

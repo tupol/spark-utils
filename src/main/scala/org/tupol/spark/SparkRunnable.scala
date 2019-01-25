@@ -25,25 +25,23 @@ package org.tupol.spark
 
 import org.apache.spark.sql.SparkSession
 
-import scala.util.Try
-
 /**
  * Trivial trait for creating basic runnable Spark applications.
  * These runnable still needs a runner or an app to run.
  *
- * @tparam Configuration the type of the application configuration class.
+ * @tparam Context the type of the application context or configuration class.
  * @tparam Result The output type of the run method.
  *
  */
-trait SparkRunnable[Configuration, Result] {
+trait SparkRunnable[Context, Result] {
 
   /**
    * This method needs to be implemented and should contain the entire runnable logic.
    *
-   * @param config configuration instance that should contain all the application specific configuration
+   * @param context context instance that should contain all the application specific configuration
    * @param spark active spark session
    * @return
    */
-  def run(implicit spark: SparkSession, config: Configuration): Try[Result]
+  def run(implicit spark: SparkSession, context: Context): Result
 
 }

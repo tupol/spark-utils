@@ -10,11 +10,11 @@ a Spark application.
 /**
  * Trivial trait for executing basic Spark runnable applications.
  *
- * @tparam Configuration the type of the application configuration class.
+ * @tparam Context the type of the application context and configuration class.
  * @tparam Result The output type of the run method.
  *
  */
-trait SparkRunnable[Configuration, Result] extends SparkRunnable[Configuration, Result] with Logging {
+trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
 
   /**
    * This is the key for basically choosing a certain app and it should have
@@ -28,9 +28,9 @@ trait SparkRunnable[Configuration, Result] extends SparkRunnable[Configuration, 
 
   /**
    * This method needs to be implemented and should contain all logic related
-   * to parsing the configuration settings.
+   * to parsing the configuration settings and building the application context.
    */
-  def buildConfig(config: Config): Try[Configuration]
+  def createContext(config: Config): Context
 
   ....
   
@@ -39,12 +39,12 @@ trait SparkRunnable[Configuration, Result] extends SparkRunnable[Configuration, 
  
 Using this API is fairly easy, and it comes down mainly to defining and implementing two functions:
  - `run` method inherited from the [`SparkRunnable`](spark-runnable.md) trait;
- - `buildConfig` method that creates the application configuration out of the given
+ - `createContext` method that creates the application configuration out of the given
     [Typesafe `Config`](https://github.com/lightbend/config/blob/master/config/src/main/java/com/typesafe/config/Config.java)
     instance.
 
 One should always think about the return type of the `SparkApp` is about to create, though
-`SparkApp[Config, Result[Unit]]` is also possible.
+`SparkApp[Context, Result[Unit]]` is also possible.
 It is expected for the user to define a friendly `appName` that will be used as a configuration path marker, but a
 default name, consisting of the simple class name is provided as an application name.
 

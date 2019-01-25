@@ -21,7 +21,7 @@ The [`SparkRunnable`](docs/spark-runnable.md) and [`SparkApp`](docs/spark-app.md
 provide for easy Spark application creation with configuration that can be managed through configuration files or
 application parameters.
 
-The IO frameworks for [loading](docs/data-source.md) and [saving](docs/data-sink.md) data frames add extra convenience
+The IO frameworks for [reading](docs/data-source.md) and [writing](docs/data-sink.md) data frames add extra convenience
 for setting up batch jobs that transform various types of files.
 
 Last but not least, there are many utility functions that provide convenience for loading resources, dealing with
@@ -31,7 +31,7 @@ Most of the common features are also implemented as *decorators* to main Spark c
 and `StructType` and they are conveniently available by importing the `org.tupol.spark.implicits._` package.
 
 The main utilities and frameworks available:
-- [SparkRunnable](docs/spark-runnable.md)
+- [SparkApp](docs/spark-app.md) & [SparkRunnable](docs/spark-runnable.md)
 - [DataSource Framework](docs/data-source.md)
 - [DataSink Framework](docs/data-sink.md)
 
@@ -67,6 +67,11 @@ of a generic format converter and a SQL processor.
 **0.3.0-SNAPSHOT**
 
  - Split `SparkRunnable` into `SparkRunnable` and `SparkApp`
+ - Changed the `SparkRunnable` API; now `run()` returns `Result` instead of `Try[Result]`
+ - Changed the `SparkApp` API; now `buildConfig()` was renamed to `createContext()` and
+   now it returns `Context` instead of `Try[Context]`
+ - Changed the `DataSource` API; now `read()` returns `DataFrame` instead of `Try[DataFrame]`
+ - Changed the `DataSink` API; now `write()` returns `DataFrame` instead of `Try[DataFrame]`
  - Small documentation improvements
 
 **0.2.0**

@@ -32,7 +32,7 @@ import org.tupol.utils._
 import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
-import scala.util.{ Failure, Try }
+import scala.util.{ Failure, Success, Try }
 
 case class FileDataSource(configuration: FileSourceConfiguration) extends DataSource[FileSourceConfiguration] with Logging {
 
@@ -61,15 +61,15 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
-  def read(implicit spark: SparkSession): Try[DataFrame] = {
+  def read(implicit spark: SparkSession): DataFrame = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
     Try(createReader(configuration.sourceConfiguration).load(configuration.path))
       .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'")) match {
         case Failure(t) =>
           val message = s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'"
           logError(message, t)
-          Failure(DataSourceException(message, t))
-        case x => x
+          throw new DataSourceException(message, t)
+        case Success(s) => s
       }
   }
 

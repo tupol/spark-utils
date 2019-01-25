@@ -10,7 +10,7 @@ This framework provides for reading from a given path with the specified format 
 
 The framework is composed of two main traits:
 - `DataSink`, which is created based on a `FileSourceConfiguration` class and provides one main function:
-    `def write(data: DataFrame): Try[DataFrame]`
+    `def write(data: DataFrame): DataFrame`
 - `DataSinkConfiguration`: a marker trait to define `DataSink` configuration classes
 
 
