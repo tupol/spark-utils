@@ -33,7 +33,7 @@ package object sources {
 
   val ColumnNameOfCorruptRecord = "columnNameOfCorruptRecord"
 
-  sealed trait SourceConfiguration extends FormatAwareDataSourceConfiguration {
+  trait SourceConfiguration extends FormatAwareDataSourceConfiguration {
     /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
     def options: Map[String, String]
     /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
