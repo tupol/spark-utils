@@ -47,7 +47,7 @@ class SparkAppSpec extends FunSuite with Matchers with SharedSparkSession {
 
     def createContext(config: Config): String = "Hello"
 
-    // This method needs to be implemented and should contain the entire runnable logic.
+    // This function needs to be implemented and should contain the entire runnable logic.
     override def run(implicit spark: SparkSession, config: String): Unit = ???
   }
 }

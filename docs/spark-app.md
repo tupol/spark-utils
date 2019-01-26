@@ -10,36 +10,33 @@ a Spark application.
 /**
  * Trivial trait for executing basic Spark runnable applications.
  *
- * @tparam Context the type of the application context and configuration class.
- * @tparam Result The output type of the run method.
+ * @tparam Context the type of the application context class.
+ * @tparam Result The output type of the run function.
  *
  */
 trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
 
   /**
    * This is the key for basically choosing a certain app and it should have
-   * the form of '_APP_NAME_....', reflected also in the configuration structure.
+   * the form of 'APP_NAME_....', reflected also in the configuration structure.
    *
    * By default this will return the simple class name.
-   *
-   * @return
    */
   def appName: String = getClass.getSimpleName.replaceAll("\\$", "")
 
   /**
-   * This method needs to be implemented and should contain all logic related
+   * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
    */
   def createContext(config: Config): Context
 
   ....
-  
 }
 ```
  
 Using this API is fairly easy, and it comes down mainly to defining and implementing two functions:
- - `run` method inherited from the [`SparkRunnable`](spark-runnable.md) trait;
- - `createContext` method that creates the application configuration out of the given
+ - `run()` function inherited from the [`SparkRunnable`](spark-runnable.md) trait;
+ - `createContext()` function that creates the application configuration out of the given
     [Typesafe `Config`](https://github.com/lightbend/config/blob/master/config/src/main/java/com/typesafe/config/Config.java)
     instance.
 
@@ -48,13 +45,22 @@ One should always think about the return type of the `SparkApp` is about to crea
 It is expected for the user to define a friendly `appName` that will be used as a configuration path marker, but a
 default name, consisting of the simple class name is provided as an application name.
 
+The application is actually executed by the `main()` function, which makes any application implementing `SparkApp`
+an actual Spark application. The following steps will be performed:
+
+1. Configuration initialization and application context creation
+2. Spark session creation
+3. Execution of the `run()` function
+4. Logging the steps and the success or failure of the application; including the entire configuration used.
+5. Return the result and exit
+
 
 ## Configuration
 
-The `SparkApp` configuration is done through the `config: Config` parameter of the `run()` method. 
+The `SparkApp` configuration is done through the `config: Config` parameter of the `run()` function.
 
-The `SparkApp` also has a `main()` method, which can be used to pass application parameters.
-Using the `main()` method, configuration is passed in the following ways, in the order specified bellow:
+The `SparkApp` also has a `main()` function, which can be used to pass application parameters.
+Using the `main()` function, configuration is passed in the following ways, in the order specified bellow:
 1. Application parameters; they are passed in a properties style, separated by whitespaces, like
     `app.name.param1=param1value app.name.param2=param2value`.
 2. Configuration file; passed as an argument to `spark-submit --files=..../application.conf`
@@ -64,7 +70,7 @@ The order is important because the a parameter defined in the application parame
     with the same name defined in the application.conf, which in turn overwrites the parameter with the same name
     from the `reference.conf`.
 
-The `application.conf` and the `reference.conf` are acceptable in properties, json or HOCON formats.
+The `application.conf` and the `reference.conf` are acceptable in Java properties, Json or HOCON formats.
 See also the [Typesafe Config](https://github.com/typesafehub/config) project for more details.
 
 

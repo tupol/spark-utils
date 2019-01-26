@@ -33,8 +33,8 @@ import org.tupol.utils._
 /**
  * Trivial trait for executing basic Spark runnable applications.
  *
- * @tparam Context the type of the application context and configuration class.
- * @tparam Result The output type of the run method.
+ * @tparam Context the type of the application context class.
+ * @tparam Result The output type of the run function.
  *
  */
 trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
@@ -44,13 +44,11 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logg
    * the form of '_APP_NAME_....', reflected also in the configuration structure.
    *
    * By default this will return the simple class name.
-   *
-   * @return
    */
   def appName: String = getClass.getSimpleName.replaceAll("\\$", "")
 
   /**
-   * This method needs to be implemented and should contain all logic related
+   * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
    */
   def createContext(config: Config): Context
