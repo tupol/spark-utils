@@ -3,8 +3,8 @@
 
 ## Motivation ##
 
-One of the biggest challenges after taking the first steps into the world of writing Spark applications in Scala
-is taking it to production in a professional manner.
+One of the biggest challenges after taking the first steps into the world of writing
+[Apache Spark](https://spark.apache.org/) applications in Scala is taking them to production.
 
 An application of any kind needs to be easy to run and easy to configure.
 
@@ -14,7 +14,7 @@ than the details of configuring the application and setting up the Spark context
 
 ## Description ##
 
-This project contains some basic utilities that can help setting up a Spark project.
+This project contains some basic utilities that can help setting up a Spark application project.
 
 The [`SparkRunnable`](docs/spark-runnable.md) and [`SparkApp`](docs/spark-app.md) together with the
 [configuration framework](https://github.com/tupol/scala-utils/blob/master/docs/configuration-framework.md)
