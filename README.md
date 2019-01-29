@@ -64,7 +64,7 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
-**0.3.0-SNAPSHOT**
+**0.3.0**
 
  - Split `SparkRunnable` into `SparkRunnable` and `SparkApp`
  - Changed the `SparkRunnable` API; now `run()` returns `Result` instead of `Try[Result]`
