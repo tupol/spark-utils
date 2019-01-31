@@ -27,7 +27,6 @@ trait SparkRunnable[Context, Result] {
   def run(implicit spark: SparkSession, context: Context): Result
 
 }
-
 ```
  
 Using this API is fairly easy, and it comes down mainly to defining the `run()` function.

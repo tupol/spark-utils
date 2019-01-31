@@ -33,7 +33,7 @@ import scalaz.ValidationNel
 import scala.util.{ Failure, Success, Try }
 
 /**  JdbcDataSink trait */
-case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[JdbcSinkConfiguration] with Logging {
+case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[JdbcSinkConfiguration, DataFrame] with Logging {
 
   /** Configure a `writer` for the given `DataFrame` based on the given `JdbcDataSinkConfig` */
   private def configureWriter(data: DataFrame, configuration: JdbcSinkConfiguration): DataFrameWriter[Row] = {
@@ -61,8 +61,8 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
 }
 
 /** JdbcDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFrame) extends DataAwareSink[JdbcSinkConfiguration] {
-  override def sink: DataSink[JdbcSinkConfiguration] = JdbcDataSink(configuration)
+case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFrame) extends DataAwareSink[JdbcSinkConfiguration, DataFrame] {
+  override def sink: DataSink[JdbcSinkConfiguration, DataFrame] = JdbcDataSink(configuration)
 }
 
 /**

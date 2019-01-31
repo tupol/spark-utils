@@ -7,7 +7,6 @@ import org.scalatest.{ BeforeAndAfterAll, Suite }
 
 import scala.util.Try
 
-
 trait StringSocketSpec extends BeforeAndAfterAll {
   this: Suite =>
 
@@ -27,7 +26,7 @@ trait StringSocketSpec extends BeforeAndAfterAll {
     if (_server != null) _server.close
   }
 
-  def send(record: String): Unit = {
+  def publishStringMessageToSocket(record: String): Unit = {
     _socket = if (_socket == null) Try(_server.accept()).get else _socket
     val out = new PrintStream(_socket.getOutputStream())
     out.println(record)
@@ -35,6 +34,6 @@ trait StringSocketSpec extends BeforeAndAfterAll {
     Thread.sleep(delayMillis)
   }
 
-  def send(records: Seq[String]): Unit = records.foreach(send)
+  def publishStringMessagesToSocket(records: Seq[String]): Unit = records.foreach(publishStringMessageToSocket)
 
 }

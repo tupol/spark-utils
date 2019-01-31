@@ -81,11 +81,11 @@ package object io {
 
   implicit val DataAwareSinkFactory =
     new DataAwareSinkFactory {
-      override def apply[C <: DataSinkConfiguration](configuration: C, data: DataFrame): DataAwareSink[C] =
+      override def apply[C <: DataSinkConfiguration, WO](configuration: C, data: DataFrame): DataAwareSink[C, WO] =
         configuration match {
           //TODO There must be a better way to use the type system without the type cast
-          case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C]]
-          case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C]]
+          case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+          case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
           case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
         }
     }

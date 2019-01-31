@@ -10,7 +10,6 @@ val scalaUtilsVersion = "0.2.0"
 val sparkVersion = "2.3.2"
 val sparkXmlVersion = "0.4.1"
 val sparkAvroVersion = "4.0.0"
-val kafkaVersion = "0.10.2.2"
 
 // ------------------------------
 // DEPENDENCIES AND RESOLVERS

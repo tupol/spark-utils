@@ -21,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 package org.tupol.spark.streaming.structured
 
 import com.typesafe.config.Config
@@ -79,11 +78,12 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
 }
 
 /**
- * Basic configuration for the `FileDataSource``
+ * Basic configuration for the `FileDataSource`
  * @param path
  * @param sourceConfiguration
  */
-case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration) extends FormatAwareDataSourceConfiguration {
+case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration)
+  extends FormatAwareDataSourceConfiguration with StreamingConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
   override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"
