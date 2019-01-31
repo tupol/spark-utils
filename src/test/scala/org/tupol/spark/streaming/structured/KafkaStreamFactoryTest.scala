@@ -8,7 +8,7 @@ import org.scalatest.time.{ Millis, Span }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType
 
-class KafkaStreamFactoryTest extends FlatSpec
+class KafkaStreamFactoryTest extends FunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with EmbeddedKafka {
 
@@ -22,15 +22,15 @@ class KafkaStreamFactoryTest extends FlatSpec
     "subscribe" -> topic,
     "startingOffsets" -> "earliest")
 
-  val TestConfig = StreamDataSourceConfiguration(FormatType.Kafka, TestOptions, None)
+  val TestConfig = GenericStreamDataSourceConfiguration(FormatType.Kafka, TestOptions, None)
 
-  "String messages" should "be written to the kafka stream, transformed and read back" in {
+  test("String messages should be written to the kafka stream and read back") {
 
     import spark.implicits._
 
     withRunningKafka {
 
-      val data = StreamDataSource(TestConfig).read
+      val data = GenericStreamDataSource(TestConfig).read
 
       val streamingQuery = data.writeStream
         .format("memory")

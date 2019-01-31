@@ -72,7 +72,10 @@ of a generic format converter and a SQL processor.
 
 **0.4.0-SNAPSHOT**
 
-- Added configuration variable substitution support
+- Added the `StreamingConfiguration` marker trait
+- Added `GenericStreamDataSource` and `FileStreamDataSource`
+- Added `GenericStreamDataSink`
+- API Changes: Added a new type parameter to the `DataSink` that describes the type of the output
 
 **0.3.2-SNAPSHOT**
 

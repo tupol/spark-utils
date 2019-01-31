@@ -9,7 +9,7 @@ import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType
 import org.tupol.spark.testing.StringSocketSpec
 
-class SocketStreamFactoryTest extends FlatSpec
+class SocketStreamFactoryTest extends FunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with StringSocketSpec {
 
@@ -19,13 +19,13 @@ class SocketStreamFactoryTest extends FlatSpec
     "host" -> s"$host",
     "port" -> s"$port")
 
-  val TestConfig = StreamDataSourceConfiguration(FormatType.Socket, TestOptions, None)
+  val TestConfig = GenericStreamDataSourceConfiguration(FormatType.Socket, TestOptions, None)
 
-  "String messages" should "be written to the socket stream, transformed and read back" in {
+  test("String messages should be written to the socket stream and read back") {
 
     import spark.implicits._
 
-    val data = StreamDataSource(TestConfig).read
+    val data = GenericStreamDataSource(TestConfig).read
       .withColumn("timestamp", current_timestamp())
 
     val streamingQuery = data.writeStream
@@ -39,7 +39,7 @@ class SocketStreamFactoryTest extends FlatSpec
     val testMessages = (1 to 4).map(i => f"test-message-$i%02d")
 
     testMessages.foreach { message =>
-      send(message)
+      publishStringMessageToSocket(message)
       eventually {
         val received = result.select("value", "timestamp").as[(String, Long)]
           .collect().sortBy(_._2).reverse.headOption.map(_._1)

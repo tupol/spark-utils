@@ -30,7 +30,7 @@ import org.tupol.utils.config.Configurator
 import scala.util.{ Failure, Success, Try }
 
 /**  FileDataSink trait */
-case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[FileSinkConfiguration] with Logging {
+case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[FileSinkConfiguration, DataFrame] with Logging {
 
   /**
    * Configure a `writer` for the given `DataFrame` using the given `FileSinkConfiguration`,
@@ -96,8 +96,8 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
 }
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFrame) extends DataAwareSink[FileSinkConfiguration] {
-  override def sink: DataSink[FileSinkConfiguration] = FileDataSink(configuration)
+case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFrame) extends DataAwareSink[FileSinkConfiguration, DataFrame] {
+  override def sink: DataSink[FileSinkConfiguration, DataFrame] = FileDataSink(configuration)
 }
 
 /**

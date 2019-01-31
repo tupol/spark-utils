@@ -9,18 +9,19 @@ import org.scalatest._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{ Millis, Span }
 import org.tupol.spark.SharedSparkSession
+import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.TextSourceConfiguration
 import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.Random
 
-class FileStreamFactoryTest extends FlatSpec
+class FileStreamFactoryTest extends FunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with TestTempFilePath1 {
 
   implicit override val patienceConfig = PatienceConfig(timeout = scaled(Span(10000, Millis)))
 
-  "String messages" should "be written to the file stream, transformed and read back" in {
+  test("String messages should be written to the file stream and read back") {
 
     import spark.implicits._
 
@@ -30,7 +31,7 @@ class FileStreamFactoryTest extends FlatSpec
     val parserConfig = TextSourceConfiguration(options, None)
     val inputConfig = FileStreamDataSourceConfiguration(testPath1, parserConfig)
 
-    val data = FileStreamDataSource(inputConfig).read
+    val data = spark.source(inputConfig).read
       .withColumn("timestamp", current_timestamp())
 
     val streamingQuery = data.writeStream

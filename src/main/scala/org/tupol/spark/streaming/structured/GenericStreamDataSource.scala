@@ -21,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 package org.tupol.spark.streaming.structured
 
 import org.apache.spark.sql.streaming.DataStreamReader
@@ -36,10 +35,11 @@ import scalaz.ValidationNel
 
 import scala.util.{ Failure, Success, Try }
 
-case class StreamDataSource(configuration: StreamDataSourceConfiguration) extends DataSource[StreamDataSourceConfiguration] with Logging {
+case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfiguration)
+  extends DataSource[GenericStreamDataSourceConfiguration] with Logging {
 
   /** Create and configure a `DataFrameReader` based on the given `SourceConfiguration` */
-  private def createReader(sourceConfiguration: StreamDataSourceConfiguration)(implicit spark: SparkSession): DataStreamReader = {
+  private def createReader(sourceConfiguration: GenericStreamDataSourceConfiguration)(implicit spark: SparkSession): DataStreamReader = {
 
     val dataFormat = sourceConfiguration.format.toString
     val basicReader = spark.readStream
@@ -62,23 +62,23 @@ case class StreamDataSource(configuration: StreamDataSourceConfiguration) extend
   }
 }
 
-case class StreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
-  schema: Option[StructType] = None) extends SourceConfiguration {
+case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
+  schema: Option[StructType] = None) extends SourceConfiguration with StreamingConfiguration {
   override def toString: String = {
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
     s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
   }
 }
-object StreamDataSourceConfiguration extends Configurator[StreamDataSourceConfiguration] {
+object GenericStreamDataSourceConfiguration extends Configurator[GenericStreamDataSourceConfiguration] {
   import com.typesafe.config.Config
   import org.tupol.utils.config._
   import scalaz.syntax.applicative._
 
-  def validationNel(config: Config): ValidationNel[Throwable, StreamDataSourceConfiguration] = {
+  def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSourceConfiguration] = {
     config.extract[FormatType]("format") |@|
       config.extract[Map[String, String]]("options") |@|
       config.extract[Option[StructType]]("schema") apply
-      StreamDataSourceConfiguration.apply
+      GenericStreamDataSourceConfiguration.apply
   }
 }
