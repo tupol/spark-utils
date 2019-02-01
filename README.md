@@ -64,6 +64,10 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
+**0.3.1**
+
+- Added configuration variable substitution support
+
 **0.3.0**
 
  - Split `SparkRunnable` into `SparkRunnable` and `SparkApp`
