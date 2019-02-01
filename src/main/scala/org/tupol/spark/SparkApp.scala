@@ -162,7 +162,11 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logg
       configurationFiles.collect { case Some(config) => config }.
         foldLeft(parametersConf)((acc, conf) => acc.withFallback(conf)).
         withFallback(ConfigFactory.defaultReference())
-    val config = fullConfig.getConfig(appName)
+    val config = Try(fullConfig.resolve())
+      .logFailure(_ => log.warn("Failed to resolve the variables locally."))
+      .orElse(Try(fullConfig.resolveWith(parametersConf)))
+      .logFailure(_ => log.warn("Failed to resolve the variables from the application arguments."))
+      .getOrElse(fullConfig).getConfig(appName)
 
     log.debug(s"$appName: Configuration:\n${renderConfig(config)}")
 

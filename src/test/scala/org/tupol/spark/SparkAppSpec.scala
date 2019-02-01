@@ -43,6 +43,18 @@ class SparkAppSpec extends FunSuite with Matchers with SharedSparkSession {
     conf.getBoolean("file.application.conf") shouldBe true
   }
 
+  test("SparkApp.applicationConfiguration performs variable substitution") {
+    val conf = MockApp$.applicationConfiguration(spark, Array(
+      "MockApp.param=\"param\"", "my.var=\"MYVAR\""))
+    conf.getString("param") shouldBe "param"
+    conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
+    conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
+    conf.getString("reference") shouldBe "reference"
+    conf.getString("substitute.my-var") shouldBe "MYVAR"
+    conf.getString("substitute.my-other-var") shouldBe "MYVAR"
+    conf.getBoolean("file.application.conf") shouldBe true
+  }
+
   object MockApp$ extends SparkApp[String, Unit] {
 
     def createContext(config: Config): String = "Hello"
