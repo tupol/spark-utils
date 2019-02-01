@@ -39,7 +39,7 @@ The main utilities and frameworks available:
 ## Prerequisites ##
 
 * Java 6 or higher
-* Scala 2.11,or 2.12
+* Scala 2.11 or 2.12
 * Apache Spark 2.3.X
 
 
@@ -49,12 +49,12 @@ Spark Utils is published to Sonatype OSS and Maven Central:
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest version is `0.3.0-SNAPSHOT`
+- Latest version is `0.3.1`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.3.0-SNAPSHOT"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.3.1"
 ```
 
 A nice example on how this library can be used can be found in the
@@ -85,6 +85,11 @@ of a generic format converter and a SQL processor.
  - Added `JdbcDataSource` and `JdbcDataSink` IO frameworks
  - Moved all useful implicit conversions into `org.tupol.spark.implicits`
  - Added testing utilities under `org.tupol.spark.testing`
+
+
+## What's next? ##
+
+The current development branch is `4.x`. The plan is to bring structured streaming support as well.
 
 
 ## ToDoS, Thoughts & Suggestions ##
