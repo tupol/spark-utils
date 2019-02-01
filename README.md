@@ -55,12 +55,12 @@ Spark Utils is published to Sonatype OSS and Maven Central:
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest version is `0.3.1`
+- Latest version is `0.4.0-SNAPSHOT`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.3.1"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.0-SNAPSHOT"
 ```
 
 A nice example on how this library can be used can be found in the
