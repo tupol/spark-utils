@@ -70,6 +70,10 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
+**0.4.0-SNAPSHOT**
+
+- Added configuration variable substitution support
+
 **0.3.2-SNAPSHOT**
 
 - Added support for bucketing in data sinks
