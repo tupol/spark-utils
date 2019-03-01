@@ -64,3 +64,9 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
     - `timestampFormat`: default `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`
   - more details available [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter);
 
+
+## References
+
+For the more details about the optional parameters consult the
+[DataFrameWriter](https://spark.apache.org/docs/2.3.2/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameWriter)
+API and sources.

@@ -97,7 +97,7 @@ object FileSourceConfiguration extends Configurator[FileSourceConfiguration] {
     format match {
       case scalaz.Success(_) =>
         config.extract[String]("path") |@|
-          SourceConfiguration.validationNel(config) apply
+          config.extract[SourceConfiguration] apply
           FileSourceConfiguration.apply
       case scalaz.Failure(e) =>
         scalaz.Failure[NonEmptyList[Throwable]](e)

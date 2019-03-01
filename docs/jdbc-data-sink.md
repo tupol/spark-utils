@@ -55,8 +55,9 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
     passed through the `application.conf` file
   - for more details about the available options please check the [References](#references) section.
-- `mode`: the save mode can be `overwrite`, `append`, `ignore` and `error`; more details available
-    [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter)
+- `mode` *Optional*
+    - the save mode can be `overwrite`, `append`, `ignore` and `error`;
+    - more details available [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter)
 - `options` *Optional*
   - additional options that can be passed to the Apache Spark `DataFrameWriter`;
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
@@ -67,6 +68,6 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
 ## References
 
 For the more details about the optional parameters consult the
-[DataFrameWriter](https://spark.apache.org/docs/2.3.1/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameReader)
+[DataFrameWriter](https://spark.apache.org/docs/2.3.2/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameWriter)
 API and sources, especially
-[JDBCOptions](https://github.com/apache/spark/blob/master/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/jdbc/JDBCOptions.scala).
+[JDBCOptions](https://github.com/apache/spark/2.3.2/master/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/jdbc/JDBCOptions.scala).

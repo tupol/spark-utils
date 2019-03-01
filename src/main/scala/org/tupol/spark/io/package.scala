@@ -26,7 +26,7 @@ package org.tupol.spark
 import com.typesafe.config.{ Config, ConfigRenderOptions }
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
-import org.tupol.spark.io.sources.JdbcSourceConfiguration
+import org.tupol.spark.io.sources.{ JdbcSourceConfiguration, SourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 import org.tupol.utils.config.Extractor
@@ -66,6 +66,7 @@ package object io {
   implicit val FileSinkConfigExtractor = FileSinkConfiguration
   implicit val JdbcSourceConfigExtractor = JdbcSourceConfiguration
   implicit val JdbcSinkConfigExtractor = JdbcSinkConfiguration
+  implicit val SourceConfigExtractor = SourceConfiguration
 
   implicit val DataSourceFactory =
     new DataSourceFactory {
