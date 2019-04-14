@@ -2,13 +2,12 @@ package org.tupol.spark.streaming.structured
 
 import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
 import org.apache.spark.sql.execution.streaming.MemoryStream
-import org.apache.spark.sql.streaming.StreamingQuery
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.implicits._
 import org.tupol.spark.io.FormatType
+import org.tupol.spark.streaming.structured.implicits._
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
@@ -42,7 +41,7 @@ class KafkaStreamDataSinkSpec extends FunSuite with Matchers with Eventually wit
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Kafka, TestOptions, Some("TestQuery"))
 
     withRunningKafka {
-      val steamingQuery = Try(data.sink[GenericStreamDataSinkConfiguration, StreamingQuery](sinkConfig).write)
+      val steamingQuery = Try(data.sink(sinkConfig).write)
       steamingQuery shouldBe a[Success[_]]
       eventually {
         val writtenData = consumeNumberStringMessagesFrom(topic, 2)

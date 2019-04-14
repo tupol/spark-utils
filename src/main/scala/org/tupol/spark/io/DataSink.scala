@@ -25,6 +25,7 @@ package org.tupol.spark.io
 
 import com.typesafe.config.Config
 import org.apache.spark.sql.DataFrame
+import org.tupol.spark.streaming.structured.GenericStreamDataSinkConfiguration
 import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
@@ -58,6 +59,7 @@ object FormatAwareDataSinkConfiguration extends Configurator[FormatAwareDataSink
       case scalaz.Success(formatString) =>
         formatString match {
           case FormatType.Jdbc => JdbcSinkConfiguration.validationNel(config)
+          case FormatType.Kafka => GenericStreamDataSinkConfiguration.validationNel(config)
           case f if (FormatType.AcceptableFileFormats.contains(f)) => FileSinkConfiguration.validationNel(config)
           case unsupportedFormat => scalaz.Failure[NonEmptyList[Throwable]](new IllegalArgumentException(s"Unsupported format '$unsupportedFormat'").toNel)
         }

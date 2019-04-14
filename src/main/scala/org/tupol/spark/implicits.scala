@@ -105,8 +105,8 @@ package object implicits {
     def flattenFields: DataFrame = sql.flattenFields(dataFrame)
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def sink[SC <: DataSinkConfiguration, WO](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, WO] =
-      sinkFactory(configuration, dataFrame)
+    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrame] =
+      sinkFactory.apply[SC, DataFrame](configuration, dataFrame)
 
     /** Not all column names are compliant to the Avro format. This function renames to columns to be Avro compliant */
     def makeAvroCompliant(implicit spark: SparkSession): DataFrame =
