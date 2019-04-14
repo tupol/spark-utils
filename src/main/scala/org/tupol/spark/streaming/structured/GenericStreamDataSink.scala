@@ -26,7 +26,7 @@ package org.tupol.spark.streaming.structured
 import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery, Trigger }
 import org.apache.spark.sql.{ DataFrame, Row }
 import org.tupol.spark.Logging
-import org.tupol.spark.io.{ DataAwareSink, DataSink, DataSinkConfiguration, DataSinkException, FormatType }
+import org.tupol.spark.io.{ DataAwareSink, DataSink, DataSinkException, FormatAwareDataSinkConfiguration, FormatType }
 import org.tupol.utils.config.Configurator
 import scalaz.ValidationNel
 
@@ -73,7 +73,7 @@ case class GenericStreamDataAwareSink(configuration: GenericStreamDataSinkConfig
 case class GenericStreamDataSinkConfiguration(format: FormatType, options: Map[String, String],
   queryName: Option[String] = None, trigger: Option[Trigger] = None,
   partitionColumns: Seq[String] = Seq(), outputMode: Option[String] = None)
-  extends DataSinkConfiguration with StreamingConfiguration {
+  extends FormatAwareDataSinkConfiguration with StreamingConfiguration {
   override def toString: String = {
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     s"format: '$format', options: {$optionsStr}, query name: ${queryName.getOrElse("not specified")}, " +
