@@ -52,13 +52,36 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
           s"[${partitions.mkString(", ")}].")
         writer.partitionBy(partitions: _*)
     }
-    partitionsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(configuration.options)
+    val bucketsWriter = configuration.buckets match {
+      case None => partitionsWriter
+      case Some(bc) =>
+        logDebug(s"Initializing the DataFrameWriter to bucket the data into ${bc.number} buckets " +
+          s"using the following partition columns: ${bc.bucketColumns.mkString(", ")}].")
+        val sortedWriter = bc.sortByColumns match {
+          case Nil => partitionsWriter
+          case _ =>
+            logDebug(s"Buckets will be sorted by the following columns: ${bc.sortByColumns.mkString(", ")}].")
+            partitionsWriter.sortBy(bc.sortByColumns.head, bc.sortByColumns.tail: _*)
+        }
+        sortedWriter.bucketBy(bc.number, bc.bucketColumns.head, bc.bucketColumns.tail: _*)
+    }
+    bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(configuration.options)
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
   def write(data: DataFrame): DataFrame = {
-    logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
-    Try(configureWriter(data, configuration).save(configuration.path)) match {
+
+    Try {
+      configuration.buckets match {
+        case Some(bc) =>
+          logInfo(s"Writing data to Hive as '${configuration.format}' in the '${configuration.path}' table. " +
+            s"Notice that the path parameter is used as a table name in this case.")
+          configureWriter(data, configuration).saveAsTable(configuration.path)
+        case None =>
+          logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
+          configureWriter(data, configuration).save(configuration.path)
+      }
+    } match {
       case Success(_) =>
         logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration.path}' " +
           s"(Full configuration: ${configuration}).")
@@ -87,10 +110,14 @@ case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFra
  * @param partitionFilesNumber the number of partitions that the data will be partitioned to;
  *                         if not given the number of partitions will be left unchanged
  * @param partitionColumns optionally the writer can layout data in partitions similar to the hive partitions
+ * @param buckets optionally the writer can bucket the data, similar to Hive bucketing
+ * @param options other sink specific options
  *
  */
 case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveMode: Option[String] = None,
-  partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq(), options: Map[String, String] = Map())
+  partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq(),
+  buckets: Option[BucketsConfiguration] = None,
+  options: Map[String, String] = Map())
   extends FormatAwareDataSinkConfiguration {
   def saveMode = optionalSaveMode.getOrElse("default")
   override def toString: String = {
@@ -98,6 +125,7 @@ case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveM
     s"path: '$path', format: '$format', save mode: '$saveMode', " +
       s"partition files number: ${partitionFilesNumber.getOrElse("not specified")}, " +
       s"partition columns: [${partitionColumns.mkString(", ")}], " +
+      s"bucketing: ${buckets.getOrElse("None")}, " +
       s"options: {$optionsStr}"
   }
 }
@@ -106,11 +134,13 @@ object FileSinkConfiguration extends Configurator[FileSinkConfiguration] with Lo
   import com.typesafe.config.Config
   import org.tupol.utils.config._
   import scalaz.ValidationNel
+  import scalaz.syntax.applicative._
+
+  implicit val bucketsExtractor = BucketsConfiguration
 
   def apply(path: String, format: FormatType): FileSinkConfiguration = new FileSinkConfiguration(path, format, None, None, Seq())
 
   def validationNel(config: Config): ValidationNel[Throwable, FileSinkConfiguration] = {
-    import scalaz.syntax.applicative._
     config.extract[String]("path") |@|
       config.extract[FormatType]("format") |@|
       config.extract[Option[String]]("mode") |@|
@@ -121,7 +151,40 @@ object FileSinkConfiguration extends Configurator[FileSinkConfiguration] with Lo
         case (Some(partition_columns)) => partition_columns
         case None => Seq[String]()
       } |@|
+      config.extract[Option[BucketsConfiguration]]("buckets") |@|
       config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
       FileSinkConfiguration.apply
+  }
+}
+
+/**
+ * Bucketing configuration
+ * @param number number of buckets
+ * @param bucketColumns columns for bucketing
+ * @param sortByColumns optional sort columns for bucketing
+ */
+case class BucketsConfiguration(number: Int, bucketColumns: Seq[String], sortByColumns: Seq[String] = Seq()) {
+  override def toString: String = {
+    s"number of buckets: '$number', " +
+      s"bucketing columns: [${bucketColumns.mkString(", ")}], " +
+      s"sortBy columns: [${sortByColumns.mkString(", ")}]"
+  }
+}
+
+object BucketsConfiguration extends Configurator[BucketsConfiguration] {
+  import com.typesafe.config.Config
+  import org.tupol.utils.config._
+  import scalaz.ValidationNel
+  import scalaz.syntax.applicative._
+
+  def validationNel(config: Config): ValidationNel[Throwable, BucketsConfiguration] = {
+    config.extract[Int]("number")
+      .ensure(new IllegalArgumentException("The number of buckets must be a positive integer > 0.").toNel)(_ > 0) |@|
+      config.extract[Seq[String]]("bucketColumns")
+      .ensure(new IllegalArgumentException("At least one column needs to be specified for bucketing.").toNel)(_.size > 0) |@|
+      config.extract[Option[Seq[String]]]("sortByColumns").map {
+        case (Some(sortByColumns)) => sortByColumns
+        case None => Seq[String]()
+      } apply BucketsConfiguration.apply
   }
 }

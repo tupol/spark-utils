@@ -64,6 +64,10 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
+**0.3.2-SNAPSHOT**
+
+- Added support for bucketing in data sinks
+
 **0.3.1**
 
 - Added configuration variable substitution support
@@ -90,11 +94,6 @@ of a generic format converter and a SQL processor.
 ## What's next? ##
 
 The current development branch is `4.x`. The plan is to bring structured streaming support as well.
-
-
-## ToDoS, Thoughts & Suggestions ##
-
-- [ ] Consider changing the `SparkApp` to take a `Configurator[T]` as a parameter to replace the `buildConfig` function
 
 
 ## License ##
