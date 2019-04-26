@@ -1,5 +1,11 @@
 # Spark Utils #
 
+[![Maven Central](https://img.shields.io/maven-central/v/org.tupol/spark-utils_2.11.svg)](https://mvnrepository.com/artifact/org.tupol/spark-utils) &nbsp;
+[![GitHub](https://img.shields.io/github/license/tupol/spark-utils.svg)](https://github.com/tupol/spark-utils/blob/master/LICENSE) &nbsp; 
+[![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)](https://travis-ci.com/tupol/spark-utils) &nbsp; 
+[![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg?token=f2cae0f9-9f26-4b23-aff1-b2ad96561fbc)](https://codecov.io/gh/tupol/spark-utils) &nbsp;
+[![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)](https://gitter.im/spark-utils/spark-utils?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) &nbsp; 
+
 
 ## Motivation ##
 
@@ -64,6 +70,10 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
+**0.3.2-SNAPSHOT**
+
+- Added support for bucketing in data sinks
+
 **0.3.1**
 
 - Added configuration variable substitution support
@@ -90,11 +100,6 @@ of a generic format converter and a SQL processor.
 ## What's next? ##
 
 The current development branch is `4.x`. The plan is to bring structured streaming support as well.
-
-
-## ToDoS, Thoughts & Suggestions ##
-
-- [ ] Consider changing the `SparkApp` to take a `Configurator[T]` as a parameter to replace the `buildConfig` function
 
 
 ## License ##

@@ -76,4 +76,18 @@ class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession wi
     filesPerChildPartition should contain theSameElementsAs (stringPartitions.map(_ => partitionFiles))
   }
 
+  test("Saving the input bucketed results in the same data") {
+
+    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputData: DataFrame = spark.read.parquet(inputPath)
+    val buckets = BucketsConfiguration(1, Seq("int", "string"), Seq("int", "string"))
+    val tableName = "test_output_table"
+
+    val sinkConfig = FileSinkConfiguration(tableName, FormatType.Json, Some("overwrite"), None, Seq(), Some(buckets))
+    inputData.sink(sinkConfig).write
+
+    val writtenData: DataFrame = spark.sql(s"select * from $tableName")
+    writtenData.comapreWith(inputData).areEqual(true) shouldBe true
+  }
+
 }

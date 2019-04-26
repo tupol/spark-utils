@@ -49,7 +49,8 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
         logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
         val schema = sourceConfiguration.columnNameOfCorruptRecord
           .map { columnNameOfCorruptRecord =>
-            logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; adding column '$columnNameOfCorruptRecord' to the input schema.")
+            logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; " +
+              s"adding column '$columnNameOfCorruptRecord' to the input schema.")
             inputSchema.add(columnNameOfCorruptRecord, StringType)
           }
           .getOrElse(inputSchema)
@@ -64,7 +65,8 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
   def read(implicit spark: SparkSession): DataFrame = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
     Try(createReader(configuration.sourceConfiguration).load(configuration.path))
-      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'")) match {
+      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
+        s"from '${configuration.path}'")) match {
         case Failure(t) =>
           val message = s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'"
           logError(message, t)

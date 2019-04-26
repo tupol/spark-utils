@@ -1,0 +1,20 @@
+language: scala
+
+sudo: false
+
+dist: trusty
+
+jdk: openjdk8
+
+cache:
+  directories:
+  - $HOME/.ivy2
+
+scala:
+  - 2.11.12
+
+script:
+  - sbt clean coverage test coverageReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

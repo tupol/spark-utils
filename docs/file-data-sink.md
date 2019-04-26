@@ -54,6 +54,17 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
     appropriate for the application;
   - for example, one might target a partition number so that the partition file size inside a
     partition folder are around 100 MB
+- `buckets` *Optional*
+  - define if the output will be bucketed "Hive" style
+  - if any of these parameters fail during configuration validation the entire bucketing 
+    configuration will be ignored
+  - the used output function is `saveAsTable` using the `path` parameter as the table name
+  - `number` **Required** 
+    - the number of buckets
+  - `bucketColumns` **Required** 
+    - columns used for bucketing
+  - `sortByColumns` *Optional*
+    - sort columns
 - `options` *Optional*
   - additional options that can be passed to the Apache Spark `DataFrameWriter`;
   - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
