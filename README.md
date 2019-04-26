@@ -1,5 +1,11 @@
 # Spark Utils #
 
+[![Maven Central](https://img.shields.io/maven-central/v/org.tupol/spark-utils_2.11.svg)](https://mvnrepository.com/artifact/org.tupol/spark-utils) &nbsp;
+[![GitHub](https://img.shields.io/github/license/tupol/spark-utils.svg)](https://github.com/tupol/spark-utils/blob/master/LICENSE) &nbsp; 
+[![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)](https://travis-ci.com/tupol/spark-utils) &nbsp; 
+[![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg?token=f2cae0f9-9f26-4b23-aff1-b2ad96561fbc)](https://codecov.io/gh/tupol/spark-utils) &nbsp;
+[![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)](https://gitter.im/spark-utils/spark-utils?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) &nbsp; 
+
 
 ## Motivation ##
 
