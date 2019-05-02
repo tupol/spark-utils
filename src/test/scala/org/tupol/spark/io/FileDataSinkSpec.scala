@@ -1,7 +1,7 @@
 package org.tupol.spark.io
 
 import org.apache.spark.sql.DataFrame
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.testing._

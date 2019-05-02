@@ -1,4 +1,4 @@
-package org.tupol.spark.streaming.structured
+package org.tupol.spark.io.streaming.structured
 
 import java.io.File
 
@@ -15,7 +15,7 @@ import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.Random
 
-class FileStreamFactoryTest extends FunSuite
+class FileStreamDataSourceSpec extends FunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with TestTempFilePath1 {
 

@@ -1,4 +1,4 @@
-package org.tupol.spark.streaming.structured
+package org.tupol.spark.io.streaming.structured
 
 import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
 import org.apache.spark.sql.streaming.Trigger
@@ -6,9 +6,9 @@ import org.scalatest._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{ Millis, Span }
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.FormatType
+import org.tupol.spark.implicits._
 
-class KafkaStreamFactoryTest extends FunSuite
+class KafkaStreamDataSourceSpec extends FunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with EmbeddedKafka {
 
@@ -17,12 +17,7 @@ class KafkaStreamFactoryTest extends FunSuite
   implicit val config = EmbeddedKafkaConfig()
   val topic = "testTopic"
 
-  val TestOptions = Map(
-    "kafka.bootstrap.servers" -> s":${config.kafkaPort}",
-    "subscribe" -> topic,
-    "startingOffsets" -> "earliest")
-
-  val TestConfig = GenericStreamDataSourceConfiguration(FormatType.Kafka, TestOptions, None)
+  val TestConfig = KafkaStreamDataSourceConfiguration(s":${config.kafkaPort}", KafkaSubscription("subscribe", topic), Some("earliest"))
 
   test("String messages should be written to the kafka stream and read back") {
 
@@ -30,7 +25,7 @@ class KafkaStreamFactoryTest extends FunSuite
 
     withRunningKafka {
 
-      val data = GenericStreamDataSource(TestConfig).read
+      val data = spark.source(TestConfig).read
 
       val streamingQuery = data.writeStream
         .format("memory")

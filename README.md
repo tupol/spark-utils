@@ -5,6 +5,7 @@
 [![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)](https://travis-ci.com/tupol/spark-utils) &nbsp; 
 [![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg)](https://codecov.io/gh/tupol/spark-utils) &nbsp;
 [![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)](https://gitter.im/spark-utils/spark-utils?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) &nbsp; 
+[![Twitter](https://img.shields.io/twitter/url/https/_tupol.svg?color=%2317A2F2)](https://twitter.com/_tupol) &nbsp; 
 
 
 ## Motivation ##
@@ -14,8 +15,9 @@ One of the biggest challenges after taking the first steps into the world of wri
 
 An application of any kind needs to be easy to run and easy to configure.
 
-This project is trying to help developers write Spark applications focusing mainly on the application logic rather
-than the details of configuring the application and setting up the Spark context.
+This project is trying to help developers write Spark applications focusing mainly on the 
+application logic rather than the details of configuring the application and setting up the 
+Spark context.
 
 
 ## Description ##
@@ -38,8 +40,8 @@ and `StructType` and they are conveniently available by importing the `org.tupol
 
 The main utilities and frameworks available:
 - [SparkApp](docs/spark-app.md) & [SparkRunnable](docs/spark-runnable.md)
-- [DataSource Framework](docs/data-source.md)
-- [DataSink Framework](docs/data-sink.md)
+- [DataSource Framework](docs/data-source.md) for both batch and streaming applications
+- [DataSink Framework](docs/data-sink.md) for both batch and streaming applications
 
 
 ## Prerequisites ##
@@ -73,7 +75,7 @@ of a generic format converter and a SQL processor.
 **0.4.0-SNAPSHOT**
 
 - Added the `StreamingConfiguration` marker trait
-- Added `GenericStreamDataSource` and `FileStreamDataSource`
+- Added `GenericStreamDataSource`, `FileStreamDataSource` and `KafkaStreamDataSource`
 - Added `GenericStreamDataSink`
 - API Changes: Added a new type parameter to the `DataSink` that describes the type of the output
 

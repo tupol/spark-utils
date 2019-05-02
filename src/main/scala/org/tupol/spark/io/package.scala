@@ -27,6 +27,7 @@ import com.typesafe.config.{ Config, ConfigRenderOptions }
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
 import org.tupol.spark.io.sources.{ JdbcSourceConfiguration, SourceConfiguration }
+import org.tupol.spark.io.streaming.structured.{ FileStreamDataSource, FileStreamDataSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 import org.tupol.utils.config.Extractor
@@ -67,6 +68,10 @@ package object io {
   implicit val JdbcSourceConfigExtractor = JdbcSourceConfiguration
   implicit val JdbcSinkConfigExtractor = JdbcSinkConfiguration
   implicit val SourceConfigExtractor = SourceConfiguration
+  implicit val GenericStreamDataSourceConfigurationExtractor = GenericStreamDataSourceConfiguration
+  implicit val GenericStreamDataSinkConfigurationExtractor = GenericStreamDataSinkConfiguration
+  implicit val FileStreamDataSourceConfigurationExtractor = FileStreamDataSourceConfiguration
+  implicit val KafkaStreamDataSourceConfigurationExtractor = KafkaStreamDataSourceConfiguration
 
   implicit val DataSourceFactory =
     new DataSourceFactory {
@@ -75,6 +80,9 @@ package object io {
           //TODO There must be a better way to use the type system without the type cast
           case c: FileSourceConfiguration => FileDataSource(c).asInstanceOf[DataSource[C]]
           case c: JdbcSourceConfiguration => JdbcDataSource(c).asInstanceOf[DataSource[C]]
+          case c: FileStreamDataSourceConfiguration => FileStreamDataSource(c).asInstanceOf[DataSource[C]]
+          case c: KafkaStreamDataSourceConfiguration => KafkaStreamDataSource(c).asInstanceOf[DataSource[C]]
+          case c: GenericStreamDataSourceConfiguration => GenericStreamDataSource(c).asInstanceOf[DataSource[C]]
           case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
         }
     }
@@ -82,11 +90,20 @@ package object io {
   implicit val DataAwareSinkFactory =
     new DataAwareSinkFactory {
       override def apply[C <: DataSinkConfiguration, WO](configuration: C, data: DataFrame): DataAwareSink[C, WO] =
-        configuration match {
-          //TODO There must be a better way to use the type system without the type cast
-          case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-          case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-          case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
+        data.isStreaming match {
+          case false =>
+            configuration match {
+              //TODO There must be a better way to use the type system without the type cast
+              case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
+            }
+          case true =>
+            configuration match {
+              //TODO There must be a better way to use the type system without the type cast
+              case c: GenericStreamDataSinkConfiguration => GenericStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
+            }
         }
     }
 
