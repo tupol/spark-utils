@@ -60,6 +60,21 @@ class BucketsConfigurationSpec extends FunSuite with Matchers {
     val configStr =
       """
         |number=0
+        |bucketColumns=["a", "b", "c"]
+        |sortByColumns=["a", "b" ]
+      """.stripMargin
+    val config = ConfigFactory.parseString(configStr)
+
+    a[ConfigurationException] shouldBe thrownBy(config.extract[BucketsConfiguration].get)
+  }
+
+  test("Failed BucketsConfiguration, number < 0") {
+
+    val configStr =
+      """
+        |number=-1
+        |bucketColumns=["a", "b", "c"]
+        |sortByColumns=["a", "b" ]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 

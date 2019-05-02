@@ -15,8 +15,9 @@ One of the biggest challenges after taking the first steps into the world of wri
 
 An application of any kind needs to be easy to run and easy to configure.
 
-This project is trying to help developers write Spark applications focusing mainly on the application logic rather
-than the details of configuring the application and setting up the Spark context.
+This project is trying to help developers write Spark applications focusing mainly on the 
+application logic rather than the details of configuring the application and setting up the 
+Spark context.
 
 
 ## Description ##
@@ -39,8 +40,8 @@ and `StructType` and they are conveniently available by importing the `org.tupol
 
 The main utilities and frameworks available:
 - [SparkApp](docs/spark-app.md) & [SparkRunnable](docs/spark-runnable.md)
-- [DataSource Framework](docs/data-source.md)
-- [DataSink Framework](docs/data-sink.md)
+- [DataSource Framework](docs/data-source.md) for both batch and streaming applications
+- [DataSink Framework](docs/data-sink.md) for both batch and streaming applications
 
 
 ## Prerequisites ##

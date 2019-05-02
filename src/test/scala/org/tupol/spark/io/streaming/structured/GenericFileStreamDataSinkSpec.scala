@@ -1,4 +1,4 @@
-package org.tupol.spark.streaming.structured
+package org.tupol.spark.io.structured
 
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.execution.streaming.MemoryStream
@@ -8,13 +8,14 @@ import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType
-import org.tupol.spark.streaming.structured.implicits._
+import org.tupol.spark.io.streaming.structured.GenericStreamDataSinkConfiguration
+import org.tupol.spark.implicits._
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.{ TestTempFilePath1, TestTempFilePath2 }
 
 import scala.util.{ Success, Try }
 
-class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
+class GenericFileStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
   with TestTempFilePath1 with TestTempFilePath2 {
 
   import spark.implicits._
@@ -36,7 +37,7 @@ class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually w
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Json, writeOptions, Some("testQuery"),
       Some(Trigger.ProcessingTime("1 second")))
 
-    val steamingQuery = Try(data.sink(sinkConfig).write)
+    val steamingQuery = Try(data.streamingSink(sinkConfig).write)
     steamingQuery shouldBe a[Success[_]]
 
     eventually {
@@ -58,7 +59,7 @@ class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually w
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Parquet, writeOptions, Some("testQuery"),
       Some(Trigger.ProcessingTime("1 second")))
 
-    val steamingQuery = Try(data.sink(sinkConfig).write)
+    val steamingQuery = Try(data.streamingSink(sinkConfig).write)
     steamingQuery shouldBe a[Success[_]]
 
     eventually {

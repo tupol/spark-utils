@@ -25,7 +25,7 @@ package org.tupol.spark.io
 
 import com.typesafe.config.Config
 import org.apache.spark.sql.DataFrame
-import org.tupol.spark.streaming.structured.GenericStreamDataSinkConfiguration
+import org.tupol.spark.io.streaming.structured.GenericStreamDataSinkConfiguration
 import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 

@@ -18,7 +18,7 @@ The framework is composed of two classes:
     ...
     implicit val sparkSession = ...
     val sourceConfiguration = JdbcDataSourceConfig(inputPath, parserConfig)
-    val dataframe = JdbcDataSource(inputConfig).read
+    val dataframe = JdbcDataSource(sourceConfiguration).read
 ```
 
 Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
@@ -26,6 +26,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 **Sample code**
 ```scala
     import org.tupol.spark.io._
+    import org.tupol.spark.implicits._
     ...
     val sourceConfiguration = JdbcDataSourceConfig(inputPath, parserConfig)
     val dataframe = spark.source(sourceConfiguration).read

@@ -9,7 +9,7 @@ This framework provides for reading from a given path with the specified format 
 `csv`, `jdbc`...
 
 The framework is composed of two main traits:
-- `DataSource`, which is created based on a `FileSourceConfiguration` class and provides one main function:
+- `DataSource`, which is created based on a `DataSourceConfiguration` class and provides one main function:
     `def read(implicit spark: SparkSession): DataFrame`
 - `DataSourceConfiguration`: a marker trait to define `DataSource` configuration classes
 
@@ -59,5 +59,8 @@ val dataSource: DataSource = spark.source(dataSourceConfiguration)
 
 ## Configuration Parameters
 
-- [FileDataSource Configuration Parameters](file-data-source.md#configuration-parameters)
-- [JdbcDataSource Configuration Parameters](jdbc-data-source.md#configuration-parameters)
+- [`FileDataSource` Configuration Parameters](file-data-source.md#configuration-parameters)
+- [`JdbcDataSource` Configuration Parameters](jdbc-data-source.md#configuration-parameters)
+- [`FileStreamDataSource` Configuration Parameters](streaming-file-data-source.md#configuration-parameters)
+- [`KafkaStreamDataSource` Configuration Parameters](streaming-kafka-data-sourcemd#configuration-parameters)
+- [`GenericStreamDataSource` Configuration Parameters](streaming-generic-data-sourcemd#configuration-parameters)

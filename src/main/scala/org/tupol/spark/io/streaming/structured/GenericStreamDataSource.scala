@@ -21,13 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package org.tupol.spark.streaming.structured
+package org.tupol.spark.io.streaming.structured
 
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
-import org.tupol.spark.io.sources.SourceConfiguration
 import org.tupol.spark.io._
 import org.tupol.utils._
 import org.tupol.utils.config.Configurator
@@ -38,23 +37,24 @@ import scala.util.{ Failure, Success, Try }
 case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfiguration)
   extends DataSource[GenericStreamDataSourceConfiguration] with Logging {
 
-  /** Create and configure a `DataFrameReader` based on the given `SourceConfiguration` */
+  /** Create and configure a `DataFrameReader` based on the given `GenericStreamDataSourceConfiguration` */
   private def createReader(sourceConfiguration: GenericStreamDataSourceConfiguration)(implicit spark: SparkSession): DataStreamReader = {
 
     val dataFormat = sourceConfiguration.format.toString
     val basicReader = spark.readStream
       .format(dataFormat)
       .options(sourceConfiguration.options)
+
     basicReader
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
   def read(implicit spark: SparkSession): DataFrame = {
-    logInfo(s"Reading data from $configuration.")
+    logInfo(s"Reading data as '${configuration.format}' from '${configuration}'.")
     Try(createReader(configuration).load())
-      .logSuccess(_ => logInfo(s"Successfully read the data from $configuration")) match {
+      .logSuccess(_ => logInfo(s"Successfully read the data as '${configuration.format}' from '${configuration}'")) match {
         case Failure(t) =>
-          val message = s"Failed to read the data from $configuration."
+          val message = s"Failed to read the data as '${configuration.format}' from '${configuration}'"
           logError(message, t)
           throw new DataSourceException(message, t)
         case Success(x) => x
@@ -63,7 +63,7 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
 }
 
 case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
-  schema: Option[StructType] = None) extends SourceConfiguration with StreamingConfiguration {
+  schema: Option[StructType] = None) extends StreamingSourceConfiguration {
   override def toString: String = {
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
