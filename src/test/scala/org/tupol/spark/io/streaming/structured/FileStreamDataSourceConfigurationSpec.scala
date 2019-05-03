@@ -64,6 +64,20 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
     result.isSuccess shouldBe false
   }
 
+  test("Failed to extract FileStreamDataSourceConfiguration if the format is incorrect") {
+
+    val configStr =
+      """
+        |input.format="unknown"
+        |input.path="INPUT_PATH"
+      """.stripMargin
+    val config = ConfigFactory.parseString(configStr)
+
+    val result = FileStreamDataSourceConfiguration(config.getConfig("input"))
+
+    result.isSuccess shouldBe false
+  }
+
   test("Failed to extract FileStreamDataSourceConfiguration out of an empty configuration string") {
 
     val configStr = ""

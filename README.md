@@ -72,6 +72,13 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
+**0.4.0-SNAPSHOT**
+
+- Added the `StreamingConfiguration` marker trait
+- Added `GenericStreamDataSource`, `FileStreamDataSource` and `KafkaStreamDataSource`
+- Added `GenericStreamDataSink`
+- API Changes: Added a new type parameter to the `DataSink` that describes the type of the output
+
 **0.3.2**
 
 - Added support for bucketing in data sinks

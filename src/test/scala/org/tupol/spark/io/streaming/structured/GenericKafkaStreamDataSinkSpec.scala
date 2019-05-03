@@ -6,9 +6,9 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.FormatType
-import org.tupol.spark.io.streaming.structured.GenericStreamDataSinkConfiguration
 import org.tupol.spark.implicits._
+import org.tupol.spark.io.streaming.structured.GenericStreamDataSinkConfiguration
+import org.tupol.spark.io.{ DataSinkException, FormatType }
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
@@ -51,6 +51,27 @@ class GenericKafkaStreamDataSinkSpec extends FunSuite with Matchers with Eventua
         writtenDataFrame.comapreWith(TestDataFrame).areEqual(false) shouldBe true
       }
       steamingQuery.get.stop
+    }
+  }
+
+  test("Fail gracefully") {
+    val TestData = Seq(
+      TestRecord("v1", 1, 1.1, true),
+      TestRecord("v2", 2, 2.2, false))
+
+    val inputStream = MemoryStream[TestRecord]
+    val data = inputStream.toDF.toJSON.toDF("value")
+    inputStream.addData(TestData)
+
+    val TestOptions = Map(
+      "kafka.bootstrap.servers" -> s"unknown_host:0000000",
+      "topic" -> topic,
+      "checkpointLocation" -> "")
+
+    val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Kafka, TestOptions, Some("TestQuery"))
+
+    withRunningKafka {
+      a[DataSinkException] shouldBe thrownBy(data.streamingSink(sinkConfig).write)
     }
   }
 

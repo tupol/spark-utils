@@ -91,7 +91,7 @@ object KafkaStreamDataSourceConfiguration extends Configurator[KafkaStreamDataSo
     import scalaz.syntax.applicative._
 
     val format = config.extract[Option[FormatType]]("format").ensure(
-      new IllegalArgumentException(s"This is a Kafka Data Dource, only the $Kafka format is supported.").toNel)(f =>
+      new IllegalArgumentException(s"This is a Kafka Data Source, only the $Kafka format is supported.").toNel)(f =>
         f.map(_ == Kafka).getOrElse(true))
 
     format match {

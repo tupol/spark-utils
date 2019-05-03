@@ -56,6 +56,12 @@ class GenericFileStreamDataSourceSpec extends FunSuite
     streamingQuery.stop
   }
 
+  test("Fail gracefully") {
+    val options = Map[String, String]("path" -> testPath1)
+    val inputConfig = GenericStreamDataSourceConfiguration(FormatType.Text, options, None)
+    an[Exception] shouldBe thrownBy(spark.source(inputConfig).read)
+  }
+
   def addFile(text: String, parentFile: File): Unit = {
     val file = new File(parentFile, f"test-${math.abs(Random.nextLong())}%010d")
     FileUtils.write(file, text)

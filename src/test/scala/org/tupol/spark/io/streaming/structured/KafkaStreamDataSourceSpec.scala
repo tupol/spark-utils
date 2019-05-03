@@ -48,5 +48,11 @@ class KafkaStreamDataSourceSpec extends FunSuite
       streamingQuery.stop
     }
   }
+  test("Fail gracefully") {
+    val inputConfig = KafkaStreamDataSourceConfiguration(
+      "unknown_host:0000000",
+      KafkaSubscription("subscribe", topic), Some("earliest"))
+    an[Exception] shouldBe thrownBy(spark.source(inputConfig).read)
+  }
 
 }
