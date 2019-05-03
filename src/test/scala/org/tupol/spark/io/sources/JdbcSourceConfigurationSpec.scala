@@ -1,25 +1,24 @@
-package org.tupol.spark.io.source
+package org.tupol.spark.io.sources
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.spark.io.sources.{ ParquetSourceConfiguration, SourceConfiguration }
 
 import scala.util.Success
 
-class ParquetSourceConfigurationSpec extends FunSuite with Matchers {
+class JdbcSourceConfigurationSpec extends FunSuite with Matchers {
 
   test("Parse configuration without schema") {
 
     val configStr = """
-                      |format="parquet"
-                      |path="INPUT_PATH"
+                      |format="jdbc"
+                      |url="OUTPUT_URL"
+                      |table="SOURCE_TABLE"
                     """.stripMargin
-
     val config = ConfigFactory.parseString(configStr)
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-    converterConfig.get shouldBe a[ParquetSourceConfiguration]
+    converterConfig.get shouldBe a[JdbcSourceConfiguration]
     converterConfig.get.schema.isDefined shouldBe false
 
   }

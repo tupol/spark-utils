@@ -27,7 +27,7 @@ import com.typesafe.config.{ Config, ConfigRenderOptions }
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
 import org.tupol.spark.io.sources.{ JdbcSourceConfiguration, SourceConfiguration }
-import org.tupol.spark.io.streaming.structured.{ FileStreamDataSource, FileStreamDataSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration }
+import org.tupol.spark.io.streaming.structured.{ FileStreamDataAwareSink, FileStreamDataSinkConfiguration, FileStreamDataSource, FileStreamDataSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataAwareSink, KafkaStreamDataSinkConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 import org.tupol.utils.config.Extractor
@@ -69,9 +69,11 @@ package object io {
   implicit val JdbcSinkConfigExtractor = JdbcSinkConfiguration
   implicit val SourceConfigExtractor = SourceConfiguration
   implicit val GenericStreamDataSourceConfigurationExtractor = GenericStreamDataSourceConfiguration
-  implicit val GenericStreamDataSinkConfigurationExtractor = GenericStreamDataSinkConfiguration
   implicit val FileStreamDataSourceConfigurationExtractor = FileStreamDataSourceConfiguration
   implicit val KafkaStreamDataSourceConfigurationExtractor = KafkaStreamDataSourceConfiguration
+  implicit val GenericStreamDataSinkConfigurationExtractor = GenericStreamDataSinkConfiguration
+  implicit val FileStreamDataSinkConfigurationExtractor = FileStreamDataSinkConfiguration
+  implicit val KafkaStreamDataSinkConfigurationExtractor = KafkaStreamDataSinkConfiguration
 
   implicit val DataSourceFactory =
     new DataSourceFactory {
@@ -101,6 +103,8 @@ package object io {
           case true =>
             configuration match {
               //TODO There must be a better way to use the type system without the type cast
+              case c: FileStreamDataSinkConfiguration => FileStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case c: KafkaStreamDataSinkConfiguration => KafkaStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
               case c: GenericStreamDataSinkConfiguration => GenericStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
               case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
             }

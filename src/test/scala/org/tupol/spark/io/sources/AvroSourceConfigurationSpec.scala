@@ -16,13 +16,10 @@ class AvroSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[AvroSourceConfiguration]
-
     converterConfig.get.schema.isDefined shouldBe false
 
   }

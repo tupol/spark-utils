@@ -16,13 +16,10 @@ class OrcSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[OrcSourceConfiguration]
-
     converterConfig.get.schema.isDefined shouldBe false
 
   }

@@ -43,6 +43,7 @@ The main utilities and frameworks available:
 - [DataSource Framework](docs/data-source.md) for both batch and streaming applications
 - [DataSink Framework](docs/data-sink.md) for both batch and streaming applications
 
+Latest stable API documentation is available [here](https://www.javadoc.io/doc/org.tupol/spark-utils_2.11/0.3.1).
 
 ## Prerequisites ##
 
