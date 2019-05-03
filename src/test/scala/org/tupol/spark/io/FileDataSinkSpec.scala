@@ -9,6 +9,8 @@ import org.tupol.spark.testing.files.TestTempFilePath1
 
 class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
 
+  override val sparkConfig = super.sparkConfig + ("spark.io.compression.codec" -> "snappy")
+
   test("Saving the input data results in the same data") {
 
     val inputPath = "src/test/resources/sources/parquet/sample.parquet"

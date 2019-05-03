@@ -6,7 +6,7 @@ import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{ FunSuite, Matchers }
 
-class SparkAppSpec extends FunSuite with Matchers with SharedSparkSession {
+class SparkAppSpec extends FunSuite with Matchers with LocalSparkSession {
 
   val filesArg = Seq(
     new File("src/test/resources/MockApp/application.conf").getAbsolutePath)
@@ -55,12 +55,42 @@ class SparkAppSpec extends FunSuite with Matchers with SharedSparkSession {
     conf.getBoolean("file.application.conf") shouldBe true
   }
 
-  object MockApp$ extends SparkApp[String, Unit] {
-
-    def createContext(config: Config): String = "Hello"
-
-    // This function needs to be implemented and should contain the entire runnable logic.
-    override def run(implicit spark: SparkSession, config: String): Unit = ???
+  test("SparkApp.main successfully completes") {
+    noException shouldBe thrownBy(MockApp$.main(Array()))
+    spark.sparkContext.isStopped shouldBe true
   }
+
+  test("SparkApp.main successfully completes with no configuration expected") {
+    noException shouldBe thrownBy(MockAppNoConfig.main(Array()))
+    spark.sparkContext.isStopped shouldBe true
+  }
+
+  test("SparkApp.main fails gracefully if SparkApp.run fails") {
+    a[MockApException] shouldBe thrownBy(MockAppFailure.main(Array()))
+    spark.sparkContext.isStopped shouldBe true
+  }
+
+  test("SparkApp.appName gets the simple class name") {
+    MockApp$.appName shouldBe "MockApp"
+    MockAppFailure.appName shouldBe "MockAppFailure"
+  }
+
+  object MockApp$ extends SparkApp[String, Unit] {
+    def createContext(config: Config): String = "Hello"
+    override def run(implicit spark: SparkSession, config: String): Unit = Unit
+  }
+
+  object MockAppNoConfig extends SparkApp[String, Unit] {
+    def createContext(config: Config): String = "Hello"
+    override def run(implicit spark: SparkSession, config: String): Unit = Unit
+  }
+
+  object MockAppFailure extends SparkApp[String, Unit] {
+    def createContext(config: Config): String = "Hello"
+    override def run(implicit spark: SparkSession, config: String): Unit = throw new MockApException
+  }
+
+  class MockApException extends Exception
+
 }
 
