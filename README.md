@@ -5,6 +5,7 @@
 [![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)](https://travis-ci.com/tupol/spark-utils) &nbsp; 
 [![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg)](https://codecov.io/gh/tupol/spark-utils) &nbsp;
 [![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)](https://gitter.im/spark-utils/spark-utils?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) &nbsp; 
+[![Twitter](https://img.shields.io/twitter/url/https/_tupol.svg?color=%2317A2F2)](https://twitter.com/_tupol) &nbsp; 
 
 
 ## Motivation ##
@@ -55,12 +56,12 @@ Spark Utils is published to Sonatype OSS and Maven Central:
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest version is `0.3.1`
+- Latest version is `0.3.2`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.3.1"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.3.2"
 ```
 
 A nice example on how this library can be used can be found in the
@@ -70,9 +71,10 @@ of a generic format converter and a SQL processor.
 
 ## What's new? ##
 
-**0.3.2-SNAPSHOT**
+**0.3.2**
 
 - Added support for bucketing in data sinks
+- Improved the community resources
 
 **0.3.1**
 
