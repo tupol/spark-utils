@@ -5,12 +5,14 @@
 
 The `DataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
 
-This framework provides for reading from a given path with the specified format like `avro`, `parquet`, `orc`, `json`,
-`csv`, `jdbc`...
+This framework provides for reading from a given path with the specified format like 
+`avro`, `parquet`, `orc`, `json`, `csv`, `jdbc`...
 
 The framework is composed of two main traits:
-- `DataSource`, which is created based on a `FileSourceConfiguration` class and provides one main function:
-    `def read(implicit spark: SparkSession): DataFrame`
+- `DataSource`, which is created based on a `DataSourceConfiguration` class and provides one main function:
+  ```scala 
+  def read(implicit spark: SparkSession): DataFrame
+  ```
 - `DataSourceConfiguration`: a marker trait to define `DataSource` configuration classes
 
 
@@ -20,6 +22,9 @@ The framework provides the following predefined `DataSource` implementations:
 
 - [FileDataSource](file-data-source.md)
 - [JdbcDataSource](jdbc-data-source.md)
+- [FileStreamDataSource](streaming-file-data-source.md)
+- [KafkaStreamDataSource](streaming-kafka-data-source.md)
+- [GenericStreamDataSource](streaming-generic-data-source.md)
 
 For convenience the `DataSourceFactory` trait and the default implementation are provided.
 To create a `DataSource` out of a given TypeSafe `Config` instance, one can call
@@ -59,5 +64,8 @@ val dataSource: DataSource = spark.source(dataSourceConfiguration)
 
 ## Configuration Parameters
 
-- [FileDataSource Configuration Parameters](file-data-source.md#configuration-parameters)
-- [JdbcDataSource Configuration Parameters](jdbc-data-source.md#configuration-parameters)
+- [`FileDataSource` Configuration Parameters](file-data-source.md#configuration-parameters)
+- [`JdbcDataSource` Configuration Parameters](jdbc-data-source.md#configuration-parameters)
+- [`FileStreamDataSource` Configuration Parameters](streaming-file-data-source.md#configuration-parameters)
+- [`KafkaStreamDataSource` Configuration Parameters](streaming-kafka-data-source.md#configuration-parameters)
+- [`GenericStreamDataSource` Configuration Parameters](streaming-generic-data-source.md#configuration-parameters)

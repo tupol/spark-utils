@@ -63,7 +63,7 @@ package object sql {
    * If the DataFrame contains nested types, they are all unpacked to individual columns, having the column name as a
    * string representing the original hierarchy, separated by `_` characters.
    *
-   * For example, a column containing a structure like `someCol: { fieldA, fieldB}` will be transformed into two columns
+   * For example, a column containing a structure like `someCol: { fieldA, fieldB }` will be transformed into two columns
    * like `someCol_fieldA` and `someCol_fieldB`.
    *
    * @param dataFrame

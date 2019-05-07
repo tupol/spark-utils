@@ -29,21 +29,21 @@ import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 /** Common trait for writing a DataFrame to an external resource */
-trait DataSink[Config <: DataSinkConfiguration] {
+trait DataSink[Config <: DataSinkConfiguration, WriteOut] {
   def configuration: Config
-  def write(data: DataFrame): DataFrame
+  def write(data: DataFrame): WriteOut
 }
 
 /** Common trait for writing an already defined data DataFrame to an external resource */
-trait DataAwareSink[Config <: DataSinkConfiguration] {
+trait DataAwareSink[Config <: DataSinkConfiguration, WriteOut] {
   def data: DataFrame
-  def sink: DataSink[Config]
-  def write: DataFrame = sink.write(data)
+  def sink: DataSink[Config, WriteOut]
+  def write: WriteOut = sink.write(data)
 }
 
 /** Factory trait for DataAwareSinkFactory */
 trait DataAwareSinkFactory {
-  def apply[Config <: DataSinkConfiguration](configuration: Config, data: DataFrame): DataAwareSink[Config]
+  def apply[Config <: DataSinkConfiguration, WriteOut](configuration: Config, data: DataFrame): DataAwareSink[Config, WriteOut]
 }
 
 /** Common marker trait for `DataSink` configuration that also knows the data format */

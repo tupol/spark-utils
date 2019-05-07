@@ -123,13 +123,10 @@ class JsonSourceConfigurationSpec extends FunSuite with Matchers {
                       """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[JsonSourceConfiguration]
-
     converterConfig.get.schema shouldBe a[Some[_]]
 
   }
@@ -143,13 +140,10 @@ class JsonSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[JsonSourceConfiguration]
-
     converterConfig.get.schema.isDefined shouldBe false
 
   }
@@ -166,15 +160,11 @@ class JsonSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[JsonSourceConfiguration]
-
     converterConfig.get.options.isEmpty shouldBe false
-
     converterConfig.get.options should contain
     theSameElementsAs(Map("mode" -> "PERMISSIVE", "columnNameOfCorruptRecord" -> "_arbitrary_name"))
 

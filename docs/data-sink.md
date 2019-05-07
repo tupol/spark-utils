@@ -20,6 +20,9 @@ The framework provides the following predefined `DataSink` implementations:
 
 - [FileDataSink](file-data-sink.md)
 - [JdbcDataSink](jdbc-data-sink.md)
+- [FileStreamDataSink](streaming-file-data-sink.md)
+- [KafkaStreamDataSink](streaming-kafka-data-sink.md)
+- [GenericStreamDataSink](streaming-generic-data-sink.md)
 
 For convenience the `DataAwareSinkFactory` trait and the default implementation are provided.
 To create a `DataSink` out of a given TypeSafe `Config` instance, one can call
@@ -59,5 +62,8 @@ val dataSink: DataSink = dataFrame.sink(dataSinkConfiguration)
 
 ## Configuration Parameters
 
-- [FileDataSink Configuration Parameters](file-data-sink.md#configuration-parameters)
-- [JdbcDataSink Configuration Parameters](jdbc-data-sink.md#configuration-parameters)
+- [`FileDataSink` Configuration Parameters](file-data-sink.md#configuration-parameters)
+- [`JdbcDataSink` Configuration Parameters](jdbc-data-sink.md#configuration-parameters)
+- [`FileStreamDataSink` Configuration Parameters](streaming-file-data-sink.md#configuration-parameters)
+- [`KafkaStreamDataSink` Configuration Parameters](streaming-kafka-data-sink.md#configuration-parameters)
+- [`GenericStreamDataSink` Configuration Parameters](streaming-generic-data-sink.md#configuration-parameters)

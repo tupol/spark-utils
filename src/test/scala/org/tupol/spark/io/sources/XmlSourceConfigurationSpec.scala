@@ -511,13 +511,10 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val parserConfig = SourceConfiguration(config)
 
     parserConfig shouldBe a[Success[_]]
-
     parserConfig.get shouldBe an[XmlSourceConfiguration]
-
     parserConfig.get.schema shouldBe a[Some[_]]
 
   }
@@ -531,15 +528,11 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val parserConfig = SourceConfiguration(config)
 
     parserConfig shouldBe a[Success[_]]
-
     parserConfig.get shouldBe an[XmlSourceConfiguration]
-
     parserConfig.get.schema.isDefined shouldBe false
-
     parserConfig.get.options shouldBe Map("rowTag" -> "ROW_TAG")
 
   }
@@ -558,15 +551,11 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val parserConfig = SourceConfiguration(config)
 
     parserConfig shouldBe a[Success[_]]
-
     parserConfig.get shouldBe an[XmlSourceConfiguration]
-
     parserConfig.get.options.isEmpty shouldBe false
-
     parserConfig.get.options should contain
     theSameElementsAs(Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8"))
 
@@ -587,15 +576,11 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val parserConfig = SourceConfiguration(config)
 
     parserConfig shouldBe a[Success[_]]
-
     parserConfig.get shouldBe an[XmlSourceConfiguration]
-
     parserConfig.get.options.isEmpty shouldBe false
-
     parserConfig.get.options should be
     Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8", "rowTag" -> "ROW_TAG")
 

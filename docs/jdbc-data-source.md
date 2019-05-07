@@ -9,7 +9,9 @@ This framework provides for reading from a `jdbc` connection.
 
 The framework is composed of two classes:
 - `JdbcDataSource`, which is created based on a `JdbcDataSourceConfig` class and provides one main function:
-    `def read(implicit spark: SparkSession): DataFrame`
+  ```scala 
+  def read(implicit spark: SparkSession): DataFrame
+  ```
 - `JdbcDataSourceConfig`: the necessary configuration parameters
 
 **Sample code**
@@ -18,7 +20,7 @@ The framework is composed of two classes:
     ...
     implicit val sparkSession = ...
     val sourceConfiguration = JdbcDataSourceConfig(inputPath, parserConfig)
-    val dataframe = JdbcDataSource(inputConfig).read
+    val dataframe = JdbcDataSource(sourceConfiguration).read
 ```
 
 Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
@@ -26,6 +28,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 **Sample code**
 ```scala
     import org.tupol.spark.io._
+    import org.tupol.spark.implicits._
     ...
     val sourceConfiguration = JdbcDataSourceConfig(inputPath, parserConfig)
     val dataframe = spark.source(sourceConfiguration).read
@@ -45,18 +48,20 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - `driver` *Optional*
   - the JDBc driver class
 - `schema.path` *Optional*
-  - this is an optional parameter that represents local path or the class path to the json Apache Spark schema that
-    should be enforced on the input data
+  - this is an optional parameter that represents local path or the class path to the json 
+    Apache Spark schema that should be enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - if this parameter is found the schema will be loaded from the given file, otherwise, the `schema` parameter is tried
+  - if this parameter is found the schema will be loaded from the given file, otherwise, 
+    the `schema` parameter is tried
 - `schema` *Optional*
-  - this is an optional parameter that represents the json Apache Spark schema that should be enforced on the input data
+  - this is an optional parameter that represents the json Apache Spark schema that should be
+    enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-    passed through the `application.conf` file
+  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+    but it can only be passed through the `application.conf` file
 - `options` *Optional*
-  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-    passed through the `application.conf` file
+  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+    but it can only be passed through the `application.conf` file
   - for more details about the available options please check the [References](#references) section.
 
 

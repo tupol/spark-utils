@@ -13,7 +13,9 @@ columns and number of partition files.
 
 The framework is composed of two classes:
 - `FileDataSink`, which is created based on a `FileSinkConfiguration` class and provides one main function:
-    `def write(data: DataFrame): DataFrame`
+    ```scala
+    def write(data: DataFrame): DataFrame
+    ```
 - `FileSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
@@ -50,8 +52,8 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
   - if empty no partitioning will be performed.
 - `partition.files` *Optional*
   - the number of partition files that will end up in each partition folder;
-  - one can always look at the average size of the data inside partition folders and come up with a number that is
-    appropriate for the application;
+  - one can always look at the average size of the data inside partition folders and come up 
+    with a number that is appropriate for the application;
   - for example, one might target a partition number so that the partition file size inside a
     partition folder are around 100 MB
 - `buckets` *Optional*

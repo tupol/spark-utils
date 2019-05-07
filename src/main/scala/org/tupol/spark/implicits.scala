@@ -25,6 +25,7 @@ package org.tupol.spark
 
 import com.typesafe.config.{ Config, ConfigRenderOptions }
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
+import org.apache.spark.sql.streaming.StreamingQuery
 import org.apache.spark.sql.types.{ StructField, StructType }
 import org.apache.spark.sql.{ DataFrame, Row, SparkSession }
 import org.tupol.spark.io._
@@ -105,8 +106,12 @@ package object implicits {
     def flattenFields: DataFrame = sql.flattenFields(dataFrame)
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC] =
-      sinkFactory(configuration, dataFrame)
+    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrame] =
+      sinkFactory.apply[SC, DataFrame](configuration, dataFrame)
+
+    /** See [[org.tupol.spark.io.DataSink]] */
+    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, StreamingQuery] =
+      sinkFactory.apply[SC, StreamingQuery](configuration, dataFrame)
 
     /** Not all column names are compliant to the Avro format. This function renames to columns to be Avro compliant */
     def makeAvroCompliant(implicit spark: SparkSession): DataFrame =

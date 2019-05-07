@@ -5,12 +5,14 @@
 
 The `FileDataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
 
-This framework provides for reading from a given path with the specified format like `avro`, `parquet`, `orc`, `json`,
-`csv`...
+This framework provides for reading from a given path with the specified format like 
+`avro`, `parquet`, `orc`, `json`, `csv`...
 
 The framework is composed of two classes:
 - `FileDataSource`, which is created based on a `FileSourceConfiguration` class and provides one main function:
-    `def read(implicit spark: SparkSession): DataFrame`
+  ```scala 
+  def read(implicit spark: SparkSession): DataFrame
+  ```
 - `FileSourceConfiguration`: the necessary configuration parameters
 
 **Sample code**
@@ -19,7 +21,7 @@ The framework is composed of two classes:
     ...
     implicit val sparkSession = ...
     val sourceConfiguration = FileSourceConfiguration(inputPath, parserConfig)
-    val dataframe = FileDataSource(inputConfig).read
+    val dataframe = FileDataSource(sourceConfiguration).read
 ```
 
 Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
@@ -27,6 +29,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 **Sample code**
 ```scala
     import org.tupol.spark.io._
+    import org.tupol.spark.implicits._
     ...
     val sourceConfiguration = FileSourceConfiguration(inputPath, parserConfig)
     val dataframe = spark.source(sourceConfiguration).read
@@ -45,15 +48,16 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
   - it can be a local file or an hdfs file or an hdfs compatible file (like s3 or wasb)
   - it accepts patterns like `hdfs://some/path/2018-01-*/hours=0*/*`
 - `schema.path` *Optional*
-  - this is an optional parameter that represents local path or the class path to the json Apache Spark schema that
-    should be enforced on the input data
+  - this is an optional parameter that represents local path or the class path to the json Apache 
+    Spark schema that should be enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
   - if this parameter is found the schema will be loaded from the given file, otherwise, the `schema` parameter is tried
 - `schema` *Optional*
-  - this is an optional parameter that represents the json Apache Spark schema that should be enforced on the input data
+  - this is an optional parameter that represents the json Apache Spark schema that should be 
+    enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-    passed through the `application.conf` file
+  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+    but it can only be passed through the `application.conf` file
 
 ### CSV Parameters
 
@@ -72,36 +76,40 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
   - the csv parser options are defined [here](https://spark.apache.org/docs/2.1.1/api/java/org/apache/spark/sql/DataFrameReader.html#csv(java.lang.String...)).
     - `sep` (default `,`): sets the single character as a separator for each field and value.
     - `encoding` (default `UTF-8`): decodes the CSV files by the given encoding type.
-    - `quote` (default `"`): sets the single character used for escaping quoted values where the separator can be part
-      of the value. If you would like to turn off quotations, you need to set not null but an empty string.
+    - `quote` (default `"`): sets the single character used for escaping quoted values where the 
+      separator can be part of the value. 
+      If you would like to turn off quotations, you need to set not null but an empty string.
       This behaviour is different from com.databricks.spark.csv.
-    - `escape` (default `\`): sets the single character used for escaping quotes inside an already quoted value.
-    - `comment` (default _empty string_): sets the single character used for skipping lines beginning with this character.
-      By default, it is disabled.
+    - `escape` (default `\`): sets the single character used for escaping quotes inside an 
+      already quoted value.
+    - `comment` (default _empty string_): sets the single character used for skipping lines
+      beginning with this character. By default, it is disabled.
     - `header` (default `false`): uses the first line as names of columns.
-    - `inferSchema` (default `false`): infers the input schema automatically from data. It requires one extra pass over
-      the data.
-    - `ignoreLeadingWhiteSpace` (default `false`): defines whether or not leading whitespaces from values being read
-      should be skipped.
-    - `ignoreTrailingWhiteSpace` (default `false`): defines whether or not trailing whitespaces from values being read
-      should be skipped.
-    - `nullValue` (default _empty string_): sets the string representation of a null value. Since 2.0.1, this applies
-      to all supported types including the string type.
+    - `inferSchema` (default `false`): infers the input schema automatically from data. 
+      It requires one extra pass over the data.
+    - `ignoreLeadingWhiteSpace` (default `false`): defines whether or not leading whitespaces 
+      from values being read should be skipped.
+    - `ignoreTrailingWhiteSpace` (default `false`): defines whether or not trailing whitespaces 
+      from values being read should be skipped.
+    - `nullValue` (default _empty string_): sets the string representation of a null value. 
+      Since 2.0.1, this applies to all supported types including the string type.
     - `nanValue` (default `NaN`): sets the string representation of a non-number" value.
     - `positiveInf` (default `Inf`): sets the string representation of a positive infinity value.
     - `negativeInf` (default `-Inf`): sets the string representation of a negative infinity value.
-    - `dateFormat` (default `yyyy-MM-dd`): sets the string that indicates a date code. Custom date formats follow the
-      formats at `java.text.SimpleDateFormat`. This applies to date type.
-    - `timestampFormat` (default `yyyy-MM-dd'T'HH:mm:ss.SSSZZ`): sets the string that indicates a timestamp code.
-      Custom date formats follow the formats at java.text.SimpleDateFormat. This applies to timestamp type.
+    - `dateFormat` (default `yyyy-MM-dd`): sets the string that indicates a date code. 
+      Custom date formats follow the formats at `java.text.SimpleDateFormat`. 
+      This applies to date type.
+    - `timestampFormat` (default `yyyy-MM-dd'T'HH:mm:ss.SSSZZ`): sets the string that indicates 
+      a timestamp code. Custom date formats follow the formats at java.text.SimpleDateFormat. 
+      This applies to timestamp type.
     - `maxColumns` (default `20480`): defines a hard limit of how many columns a record can have.
-    - `maxCharsPerColumn` (default `-1`): defines the maximum number of characters allowed for any given value being read.
-      By default, it is -1 meaning unlimited length
-    - `maxMalformedLogPerPartition` (default `10`): sets the maximum number of malformed rows Spark will log for each
-       partition. Malformed records beyond this number will be ignored.
+    - `maxCharsPerColumn` (default `-1`): defines the maximum number of characters allowed for 
+      any given value being read. By default, it is -1 meaning unlimited length.
+    - `maxMalformedLogPerPartition` (default `10`): sets the maximum number of malformed rows 
+      Spark will log for each partition. Malformed records beyond this number will be ignored.
     - `mode` (default `PERMISSIVE`): allows a mode for dealing with corrupt records during parsing.
-      - `PERMISSIVE` : sets other fields to null when it meets a corrupted record. When a schema is set by user, it
-         sets null for extra fields.
+      - `PERMISSIVE` : sets other fields to null when it meets a corrupted record. When a schema 
+        is set by user, it sets null for extra fields.
       - `DROPMALFORMED` : ignores the whole corrupted records.
       - `FAILFAST` : throws an exception when it meets corrupted records.
   
@@ -158,13 +166,15 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
       quoting mechanism.
     - `dateFormat` (default `yyyy-MM-dd`): sets the string that indicates a date code. Custom date formats follow the
       formats at java.text.SimpleDateFormat. This applies to date type.
-    - `timestampFormat` (default `yyyy-MM-dd'T'HH:mm:ss.SSSZZ`): sets the string that indicates a timestamp code.
-      Custom date formats follow the formats at `java.text.SimpleDateFormat`. This applies to timestamp type.
-    - `columnNameOfCorruptRecord` (default _none_): If defined a column with this name will be attached to the input
-      data set schema and it will only be filled with corrupt records.
+    - `timestampFormat` (default `yyyy-MM-dd'T'HH:mm:ss.SSSZZ`): sets the string that indicates 
+      a timestamp code. Custom date formats follow the formats at `java.text.SimpleDateFormat`. 
+      This applies to timestamp type.
+    - `columnNameOfCorruptRecord` (default _none_): If defined a column with this name will be
+      attached to the input data set schema and it will only be filled with corrupt records.
     - `mode` (default `PERMISSIVE`): allows a mode for dealing with corrupt records during parsing.
-      - `PERMISSIVE` : sets other fields to null when it meets a corrupted record, and puts the malformed string into
-        a new field configured by `columnNameOfCorruptRecord`. When a schema is set by user, it sets null for extra fields.
+      - `PERMISSIVE` : sets other fields to null when it meets a corrupted record, and puts 
+        the malformed string into a new field configured by `columnNameOfCorruptRecord`. 
+        When a schema is set by user, it sets null for extra fields.
       - `DROPMALFORMED` : ignores the whole corrupted records.
       - `FAILFAST` : throws an exception when it meets corrupted records.
 

@@ -161,13 +161,10 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                       """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[CsvSourceConfiguration]
-
     converterConfig.get.schema shouldBe a[Some[_]]
 
   }
@@ -182,13 +179,10 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[CsvSourceConfiguration]
-
     converterConfig.get.schema.isDefined shouldBe false
 
   }
@@ -208,13 +202,10 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[CsvSourceConfiguration]
-
     converterConfig.get.options.isEmpty shouldBe false
 
     converterConfig.get.options shouldBe
@@ -240,13 +231,10 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-
     val converterConfig = SourceConfiguration(config)
 
     converterConfig shouldBe a[Success[_]]
-
     converterConfig.get shouldBe a[CsvSourceConfiguration]
-
     converterConfig.get.options.isEmpty shouldBe false
 
     converterConfig.get.options shouldBe

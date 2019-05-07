@@ -18,26 +18,31 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-
 lazy val providedDependencies = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion force(),
   "org.apache.spark" %% "spark-sql" % sparkVersion force(),
   "org.apache.spark" %% "spark-mllib" % sparkVersion force(),
   "org.apache.spark" %% "spark-streaming" % sparkVersion force(),
   "com.databricks" %% "spark-xml" % sparkXmlVersion,
-  "com.databricks" %% "spark-avro" % sparkAvroVersion
+  "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion
 )
 
 libraryDependencies ++= providedDependencies.map(_ % "provided")
+
+lazy val excludeJars = ExclusionRule(organization = "net.jpountz.lz4", name = "lz4")
 
 libraryDependencies ++= Seq(
   "org.tupol" %% "scala-utils" % scalaUtilsVersion,
   "com.h2database" % "h2" % "1.4.197" % "test",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
+  "com.h2database" % "h2" % "1.4.197" % "test",
   "com.databricks" %% "spark-xml" % sparkXmlVersion % "test",
-  "com.databricks" %% "spark-avro" % sparkAvroVersion % "test"
+  "com.databricks" %% "spark-avro" % sparkAvroVersion % "test",
+  "net.manub" %% "scalatest-embedded-kafka" % "0.14.0" % "test" excludeAll(excludeJars),
+  "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion % "test" excludeAll(excludeJars)
 )
+
 // ------------------------------
 // TESTING
 parallelExecution in Test := false

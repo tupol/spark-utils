@@ -78,7 +78,7 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
 }
 
 /**
- * Basic configuration for the `FileDataSource``
+ * Basic configuration for the `FileDataSource`
  * @param path
  * @param sourceConfiguration
  */
@@ -104,6 +104,5 @@ object FileSourceConfiguration extends Configurator[FileSourceConfiguration] {
       case scalaz.Failure(e) =>
         scalaz.Failure[NonEmptyList[Throwable]](e)
     }
-
   }
 }
