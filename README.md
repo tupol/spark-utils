@@ -33,10 +33,10 @@ type, with any acceptable parsing configuration options to any acceptable format
 
 ```scala
 object FormatConverterExample extends SparkApp[FormatConverterContext, DataFrame] {
-  override def createContext(config: Config): FormatConverterContext = 
-    FormatConverterContext(config).get
+  override def createContext(config: Config) = FormatConverterContext(config).get
   override def run(implicit spark: SparkSession, context: FormatConverterContext): DataFrame = {
-    val inputData = spark.source(context.input).read.sink(context.output).write
+    val inputData = spark.source(context.input).read
+    inputData.sink(context.output).write
   }
 }
 ```
@@ -45,12 +45,40 @@ Creating the configuration can be as simple as defining a case class to hold the
 a factory, that helps extract simple and complex data types like input sources and output sinks.
 
 ```scala
-case class FormatConverterContext(input: FormatAwareDataSourceConfiguration, output: FormatAwareDataSinkConfiguration)
+case class FormatConverterContext(input: FormatAwareDataSourceConfiguration,
+                                  output: FormatAwareDataSinkConfiguration)
 
 object FormatConverterContext extends Configurator[FormatConverterContext] {
     config.extract[FormatAwareDataSourceConfiguration]("input") |@|
       config.extract[FormatAwareDataSinkConfiguration]("output") apply
       FormatConverterContext.apply
+  }
+}
+```
+
+For structured streaming applications the format converter might look like this:
+
+```scala
+object StreamingFormatConverterExample extends SparkApp[StreamingFormatConverterContext, DataFrame] {
+  override def createContext(config: Config) = StreamingFormatConverterContext(config).get
+  override def run(implicit spark: SparkSession, context: StreamingFormatConverterContext): DataFrame = {
+    val inputData = spark.source(context.input).read
+    inputData.streamingSink(context.output).write.awaitTermination()
+  }
+}
+```
+
+The streaming configuration the configuration can be as simple as following:
+
+```scala
+case class StreamingFormatConverterContext(input: FormatAwareStreamingSourceConfiguration, 
+                                           output: FormatAwareStreamingSinkConfiguration)
+
+object StreamingFormatConverterContext extends Configurator[StreamingFormatConverterContext] {
+  def validationNel(config: Config): ValidationNel[Throwable, StreamingFormatConverterContext] = {
+    config.extract[FormatAwareStreamingSourceConfiguration]("input") |@|
+      config.extract[FormatAwareStreamingSinkConfiguration]("output") apply
+      StreamingFormatConverterContext.apply
   }
 }
 ```
