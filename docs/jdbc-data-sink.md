@@ -12,7 +12,9 @@ columns and number of partition files.
 
 The framework is composed of two classes:
 - `JdbcDataSink`, which is created based on a `JdbcSinkConfiguration` class and provides one main function:
-    `def write(data: DataFrame): DataFrame`
+    ```scala
+    def write(data: DataFrame): DataFrame
+    ```
 - `JdbcSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
@@ -47,21 +49,22 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
 - `driver` *Optional*
   - the JDBc driver class
 - `schema` *Optional*
-  - this is an optional parameter that represents the json Apache Spark schema that should be enforced on the input data
+  - this is an optional parameter that represents the json Apache Spark schema that should 
+    be enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-    passed through the `application.conf` file
+  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+    but it can only be passed through the `application.conf` file
 - `options` *Optional*
-  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-    passed through the `application.conf` file
+  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+    but it can only be passed through the `application.conf` file
   - for more details about the available options please check the [References](#references) section.
 - `mode` *Optional*
     - the save mode can be `overwrite`, `append`, `ignore` and `error`;
     - more details available [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter)
 - `options` *Optional*
   - additional options that can be passed to the Apache Spark `DataFrameWriter`;
-  - due to it's complex structure, this parameter can not be passed as a command line argument, but it can only be
-      passed through the `application.conf` file
+  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+    but it can only be passed through the `application.conf` file
   - more details available [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter)
 
 

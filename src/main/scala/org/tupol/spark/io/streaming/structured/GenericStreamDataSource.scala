@@ -37,7 +37,7 @@ import scala.util.{ Failure, Success, Try }
 case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfiguration)
   extends DataSource[GenericStreamDataSourceConfiguration] with Logging {
 
-  /** Create and configure a `DataFrameReader` based on the given `GenericStreamDataSourceConfiguration` */
+  /** Create and configure a `DataStreamReader` based on the given `GenericStreamDataSourceConfiguration` */
   private def createReader(sourceConfiguration: GenericStreamDataSourceConfiguration)(implicit spark: SparkSession): DataStreamReader = {
 
     val dataFormat = sourceConfiguration.format.toString
@@ -63,7 +63,7 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
 }
 
 case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
-  schema: Option[StructType] = None) extends StreamingSourceConfiguration {
+  schema: Option[StructType] = None) extends FormatAwareStreamingSourceConfiguration {
   override def toString: String = {
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
@@ -77,7 +77,7 @@ object GenericStreamDataSourceConfiguration extends Configurator[GenericStreamDa
 
   def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSourceConfiguration] = {
     config.extract[FormatType]("format") |@|
-      config.extract[Map[String, String]]("options") |@|
+      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) |@|
       config.extract[Option[StructType]]("schema") apply
       GenericStreamDataSourceConfiguration.apply
   }

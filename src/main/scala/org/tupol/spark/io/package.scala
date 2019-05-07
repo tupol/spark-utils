@@ -27,7 +27,7 @@ import com.typesafe.config.{ Config, ConfigRenderOptions }
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
 import org.tupol.spark.io.sources.{ JdbcSourceConfiguration, SourceConfiguration }
-import org.tupol.spark.io.streaming.structured.{ FileStreamDataAwareSink, FileStreamDataSinkConfiguration, FileStreamDataSource, FileStreamDataSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataAwareSink, KafkaStreamDataSinkConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration }
+import org.tupol.spark.io.streaming.structured.{ FileStreamDataAwareSink, FileStreamDataSinkConfiguration, FileStreamDataSource, FileStreamDataSourceConfiguration, FormatAwareStreamingSinkConfiguration, FormatAwareStreamingSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataAwareSink, KafkaStreamDataSinkConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 import org.tupol.utils.config.Extractor
@@ -68,6 +68,9 @@ package object io {
   implicit val JdbcSourceConfigExtractor = JdbcSourceConfiguration
   implicit val JdbcSinkConfigExtractor = JdbcSinkConfiguration
   implicit val SourceConfigExtractor = SourceConfiguration
+
+  implicit val FormatAwareStreamingSourceConfigExtractor = FormatAwareStreamingSourceConfiguration
+  implicit val FormatAwareStreamingSinkConfigExtractor = FormatAwareStreamingSinkConfiguration
   implicit val GenericStreamDataSourceConfigurationExtractor = GenericStreamDataSourceConfiguration
   implicit val FileStreamDataSourceConfigurationExtractor = FileStreamDataSourceConfiguration
   implicit val KafkaStreamDataSourceConfigurationExtractor = KafkaStreamDataSourceConfiguration

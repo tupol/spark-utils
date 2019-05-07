@@ -5,10 +5,12 @@
 
 The `KafkaStreamDataSource` framework is a utility framework that helps configuring and reading `DataFrame`s from Kafka streams.
 
-
 The framework is composed of two classes:
-- `KafkaStreamDataSource`, which is created based on a `KafkaStreamDataSourceConfiguration` class and provides one main function:
-    `def read(implicit spark: SparkSession): DataFrame`
+- `KafkaStreamDataSource`, which is created based on a `KafkaStreamDataSourceConfiguration` 
+  class and provides one main function:
+  ```scala 
+  def read(implicit spark: SparkSession): DataFrame
+  ```
 - `KafkaStreamDataSourceConfiguration`: the necessary configuration parameters
 
 **Sample code**
@@ -55,16 +57,20 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - `maxOffsetsPerTrigger` *Optional*
   - for more details please check [Structured Streaming + Kafka Integration Guide][SSKIG]
 
-- `schema.path` *Optional*
-  - this is an optional parameter that represents local path or the class path to the json Apache Spark schema that should be enforced on the input data
-  - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - if this parameter is found the schema will be loaded from the given file, otherwise, the `schema` parameter is tried
 - `schema` *Optional*
-  - this is an optional parameter that represents the json Apache Spark schema that should be enforced on the input data
+  - this is an optional parameter that represents the json Apache Spark schema that should be 
+    enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - due to it's complex structure, this parameter can not be passed as a command line argument, 
-  but it can only be passed through the `application.conf` file
-  - the schema is applied on read only on file streams; for other streams the developer has to find a way to apply it.
+  - due to it's complex structure, this parameter can not be passed as a command line argument,
+    but it can only be passed through the `application.conf` file
+  - the schema is applied on read only on file streams; for other streams the developer has to 
+    find a way to apply it. 
+  - `schema.path` *Optional*
+    - this is an optional parameter that represents local path or the class path to the json 
+      Apache Spark schema that should be enforced on the input data
+    - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
+    - if this parameter is found the schema will be loaded from the given file, otherwise, 
+      the `schema` parameter is tried
 
 
 

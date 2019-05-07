@@ -7,7 +7,9 @@ The `KafkaStreamDataSink` framework is a utility framework that helps configurin
 
 The framework is composed of two classes:
 - `KafkaStreamDataSink`, which is created based on a `KafkaStreamDataSinkConfiguration` class and provides one main function:
-    `def write(implicit spark: SparkSession): StreamingQuery`
+    ```scala
+    def write(implicit spark: SparkSession): StreamingQuery
+    ```
 - `KafkaStreamDataSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**

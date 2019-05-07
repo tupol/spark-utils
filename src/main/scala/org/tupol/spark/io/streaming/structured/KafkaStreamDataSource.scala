@@ -62,7 +62,7 @@ case class KafkaStreamDataSourceConfiguration(
   fetchOffsetRetryIntervalMs: Option[Long] = None,
   maxOffsetsPerTrigger: Option[Long] = None,
   schema: Option[StructType] = None)
-  extends FormatAwareDataSourceConfiguration with StreamingConfiguration {
+  extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = Kafka
   private val internalOptions =

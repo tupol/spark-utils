@@ -26,7 +26,7 @@ package org.tupol.spark.io.streaming.structured
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.streaming.StreamingQuery
 import org.tupol.spark.Logging
-import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatAwareDataSinkConfiguration, FormatType }
+import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
 import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
@@ -49,15 +49,14 @@ case class FileStreamDataSinkConfiguration private (
   private val path: String,
   private val genericConfig: GenericStreamDataSinkConfiguration,
   private val checkpointLocation: Option[String] = None)
-  extends FormatAwareDataSinkConfiguration with StreamingConfiguration {
-  override def toString: String = generic.toString
+  extends FormatAwareStreamingSinkConfiguration {
   private val options = genericConfig.options ++
     Map(
       "path" -> Some(path),
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
-
   val generic = genericConfig.copy(options = options)
+  override def toString: String = generic.toString
 }
 object FileStreamDataSinkConfiguration extends Configurator[FileStreamDataSinkConfiguration] {
   import com.typesafe.config.Config

@@ -60,17 +60,21 @@ an actual Spark application. The following steps will be performed:
 The `SparkApp` configuration is done through the `config: Config` parameter of the `run()` function.
 
 The `SparkApp` also has a `main()` function, which can be used to pass application parameters.
-Using the `main()` function, configuration is passed in the following ways, in the order specified bellow:
+Using the `main()` function, configuration is passed in the following ways, in the order 
+specified bellow:
+
 1. Application parameters; they are passed in a properties style, separated by whitespaces, like
-    `app.name.param1=param1value app.name.param2=param2value`.
+   `app.name.param1=param1value app.name.param2=param2value`.
 2. Configuration file; passed as an argument to `spark-submit --files=..../application.conf`
 3. Configuration file `application.conf`, if available in the classpath.
 4. Reference configuration file; sometimes available in the application jar itself as `reference.conf`.
-The order is important because the a parameter defined in the application parameters overwrites the parameter
-    with the same name defined in the application.conf, which in turn overwrites the parameter with the same name
-    from the `reference.conf`.
 
-The `application.conf` and the `reference.conf` are acceptable in Java properties, Json or HOCON formats.
+The order is important because the a parameter defined in the application parameters overwrites 
+the parameter with the same name defined in the application.conf, which in turn overwrites the
+parameter with the same name from the `reference.conf`.
+
+The `application.conf` and the `reference.conf` are acceptable in Java properties, Json or HOCON
+formats.
 See also the [Typesafe Config](https://github.com/typesafehub/config) project for more details.
 
 
@@ -78,6 +82,6 @@ See also the [Typesafe Config](https://github.com/typesafehub/config) project fo
 
 `SparkApp` extends Logging, so any implementation will have logging available out of the box.
 
-However, one should be careful while setting the logging level in order not to pollute the logs with debugging
-information for example.
+However, one should be careful while setting the logging level in order not to pollute the logs 
+with debugging information for example.
 

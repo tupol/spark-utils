@@ -5,12 +5,14 @@
 
 The `DataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
 
-This framework provides for reading from a given path with the specified format like `avro`, `parquet`, `orc`, `json`,
-`csv`, `jdbc`...
+This framework provides for reading from a given path with the specified format like 
+`avro`, `parquet`, `orc`, `json`, `csv`, `jdbc`...
 
 The framework is composed of two main traits:
 - `DataSource`, which is created based on a `DataSourceConfiguration` class and provides one main function:
-    `def read(implicit spark: SparkSession): DataFrame`
+  ```scala 
+  def read(implicit spark: SparkSession): DataFrame
+  ```
 - `DataSourceConfiguration`: a marker trait to define `DataSource` configuration classes
 
 

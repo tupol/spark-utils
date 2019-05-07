@@ -36,12 +36,9 @@ class GenericStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
     config.extract[GenericStreamDataSourceConfiguration].get shouldBe expected
   }
 
-  test("Failed to extract GenericStreamDataSourceConfiguration out of a configuration string if options are missing") {
+  test("Failed to extract GenericStreamDataSourceConfiguration out of an empty string") {
 
-    val configStr =
-      """
-        |format=kafka
-      """.stripMargin
+    val configStr = ""
     val config = ConfigFactory.parseString(configStr)
 
     a[ConfigurationException] shouldBe thrownBy(config.extract[GenericStreamDataSourceConfiguration].get)

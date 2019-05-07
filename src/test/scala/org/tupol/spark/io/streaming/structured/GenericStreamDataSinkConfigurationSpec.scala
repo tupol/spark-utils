@@ -62,12 +62,9 @@ class GenericStreamDataSinkConfigurationSpec extends FunSuite with Matchers {
     config.extract[GenericStreamDataSinkConfiguration].get shouldBe expected
   }
 
-  test("Failed to extract GenericStreamDataSinkConfiguration out of a configuration string if options are missing") {
+  test("Failed to extract GenericStreamDataSinkConfiguration out of an empty string") {
 
-    val configStr =
-      """
-        |format=kafka
-      """.stripMargin
+    val configStr = ""
     val config = ConfigFactory.parseString(configStr)
 
     a[ConfigurationException] shouldBe thrownBy(config.extract[GenericStreamDataSinkConfiguration].get)

@@ -7,7 +7,9 @@ The `GenericStreamDataSink` framework is a utility framework that helps configur
 
 The framework is composed of two classes:
 - `GenericStreamDataSink`, which is created based on a `GenericStreamDataSinkConfiguration` class and provides one main function:
-    `def write(implicit spark: SparkSession): StreamingQuery`
+    ```scala
+    def write(implicit spark: SparkSession): StreamingQuery
+    ```
 - `GenericStreamDataSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**

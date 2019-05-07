@@ -30,7 +30,7 @@ import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
 import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, SourceConfiguration }
-import org.tupol.spark.io.{ DataSource, DataSourceException, FormatAwareDataSourceConfiguration, FormatType }
+import org.tupol.spark.io.{ DataSource, DataSourceException, FormatType }
 import org.tupol.utils._
 import org.tupol.utils.config.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
@@ -39,17 +39,17 @@ import scala.util.{ Failure, Success, Try }
 
 case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration) extends DataSource[FileStreamDataSourceConfiguration] with Logging {
 
-  /** Create and configure a `DataFrameReader` based on the given `SourceConfiguration` */
+  /** Create and configure a `DataStreamReader` based on the given `SourceConfiguration` */
   private def createReader(sourceConfiguration: SourceConfiguration)(implicit spark: SparkSession): DataStreamReader = {
 
     val dataFormat = sourceConfiguration.format.toString
-    val basicReader = spark.readStream
+    val basicReader: DataStreamReader = spark.readStream
       .format(dataFormat)
       .options(sourceConfiguration.options)
 
     sourceConfiguration.schema match {
       case Some(inputSchema) =>
-        logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
+        logDebug(s"Initializing the '$dataFormat' DataStreamReader using the specified schema.")
         val schema = sourceConfiguration.columnNameOfCorruptRecord
           .map { columnNameOfCorruptRecord =>
             logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; adding column '$columnNameOfCorruptRecord' to the input schema.")
@@ -67,7 +67,8 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
   def read(implicit spark: SparkSession): DataFrame = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
     Try(createReader(configuration.sourceConfiguration).load(configuration.path))
-      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'")) match {
+      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
+        s"from '${configuration.path}'")) match {
         case Failure(t) =>
           val message = s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'"
           logError(message, t)
@@ -83,7 +84,7 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
  * @param sourceConfiguration
  */
 case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration)
-  extends FormatAwareDataSourceConfiguration with StreamingConfiguration {
+  extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
   override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"

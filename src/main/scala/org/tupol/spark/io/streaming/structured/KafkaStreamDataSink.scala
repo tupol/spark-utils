@@ -27,7 +27,7 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.streaming.StreamingQuery
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType.Kafka
-import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatAwareDataSinkConfiguration }
+import org.tupol.spark.io.{ DataAwareSink, DataSink }
 import org.tupol.utils.config.Configurator
 import scalaz.ValidationNel
 
@@ -50,9 +50,8 @@ case class KafkaStreamDataSinkConfiguration private (
   private val genericConfig: GenericStreamDataSinkConfiguration,
   private val topic: Option[String] = None,
   private val checkpointLocation: Option[String] = None)
-  extends FormatAwareDataSinkConfiguration with StreamingConfiguration {
+  extends FormatAwareStreamingSinkConfiguration {
   val format = Kafka
-  override def toString: String = generic.toString
   private val options = genericConfig.options ++
     Map(
       "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),
@@ -60,6 +59,7 @@ case class KafkaStreamDataSinkConfiguration private (
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
   val generic = genericConfig.copy(options = options)
+  override def toString: String = generic.toString
 }
 object KafkaStreamDataSinkConfiguration extends Configurator[KafkaStreamDataSinkConfiguration] {
   import com.typesafe.config.Config

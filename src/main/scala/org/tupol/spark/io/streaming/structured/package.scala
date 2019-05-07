@@ -25,13 +25,31 @@ package org.tupol.spark.io.streaming
 
 import com.typesafe.config.Config
 import org.apache.spark.sql.streaming.Trigger
-import org.tupol.spark.io.sources.SourceConfiguration
+import org.tupol.spark.io.{ DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration }
 import org.tupol.utils.config._
+import scalaz.ValidationNel
 
 package object structured {
 
   trait StreamingConfiguration
-  trait StreamingSourceConfiguration extends SourceConfiguration with StreamingConfiguration
+  trait StreamingSourceConfiguration extends DataSourceConfiguration with StreamingConfiguration
+
+  trait FormatAwareStreamingSourceConfiguration extends StreamingSourceConfiguration with FormatAware
+  object FormatAwareStreamingSourceConfiguration extends Configurator[FormatAwareStreamingSourceConfiguration] {
+    override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareStreamingSourceConfiguration] =
+      config.extract[FileStreamDataSourceConfiguration] orElse
+        config.extract[KafkaStreamDataSourceConfiguration] orElse
+        config.extract[GenericStreamDataSourceConfiguration]
+  }
+
+  /** Common marker trait for `DataSink` configuration that also knows the data format */
+  trait FormatAwareStreamingSinkConfiguration extends FormatAwareDataSinkConfiguration with StreamingConfiguration
+  object FormatAwareStreamingSinkConfiguration extends Configurator[FormatAwareStreamingSinkConfiguration] {
+    override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareStreamingSinkConfiguration] =
+      config.extract[FileStreamDataSinkConfiguration] orElse
+        config.extract[KafkaStreamDataSinkConfiguration] orElse
+        config.extract[GenericStreamDataSinkConfiguration]
+  }
 
   implicit val TriggerExtractor = new Extractor[Trigger] {
     val AcceptableValues = Seq("Continuous", "Once", "ProcessingTime")
