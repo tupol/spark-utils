@@ -29,7 +29,7 @@ class SparkAppSpec extends FunSuite with Matchers with LocalSparkSession {
       conf.getString("param") shouldBe "param"
       conf.getString("whoami") shouldBe "app.param"
       conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-      conf.getString("reference") shouldBe "reference"
+      conf.getString("reference") shouldBe "reference_mock_app"
       conf.getBoolean("file.application.conf") shouldBe true
     }
 
@@ -39,7 +39,7 @@ class SparkAppSpec extends FunSuite with Matchers with LocalSparkSession {
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference"
+    conf.getString("reference") shouldBe "reference_mock_app"
     conf.getBoolean("file.application.conf") shouldBe true
   }
 
@@ -49,7 +49,7 @@ class SparkAppSpec extends FunSuite with Matchers with LocalSparkSession {
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference"
+    conf.getString("reference") shouldBe "reference_mock_app"
     conf.getString("substitute.my-var") shouldBe "MYVAR"
     conf.getString("substitute.my-other-var") shouldBe "MYVAR"
     conf.getBoolean("file.application.conf") shouldBe true
