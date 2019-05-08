@@ -56,6 +56,17 @@ object FormatConverterContext extends Configurator[FormatConverterContext] {
 }
 ```
 
+Optionally, the `SparkFun` can be used instead of  `SparkApp` to make hte code even more concise.
+
+```scala
+object FormatConverterExample extends 
+          SparkFun[FormatConverterContext, DataFrame](FormatConverterContext(_).get) {
+  override def run(implicit spark: SparkSession, context: FormatConverterContext): DataFrame = 
+    spark.source(context.input).read.sink(context.output).write
+}
+```
+
+
 For structured streaming applications the format converter might look like this:
 
 ```scala
@@ -138,6 +149,11 @@ libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.0"
 
 
 ## What's new? ##
+
+**0.4.1-SNAPSHOT**
+
+- Added `SparkFun`, a convenience wrapper around `SparkApp` that makes 
+  the code even more concise
 
 **0.4.0**
 
