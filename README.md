@@ -148,6 +148,38 @@ libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.0"
 ```
 
 
+## Starting a New **`spark-utils`** Project ##
+
+The simplest way to start a new `spark-utils` is to make use of the 
+[`spark-apps.seed.g8`][spark-utils-g8] template project.
+
+
+To fill in manually the project options run
+```
+g8 tupol/spark-apps.seed.g8
+```
+
+The default options look like the following:
+```
+name [My Project]:
+appname [My First App]:
+organization [my.org]:
+version [0.0.1-SNAPSHOT]:
+package [my.org.my_project]:
+classname [MyFirstApp]:
+scriptname [my-first-app]:
+scalaVersion [2.11.12]:
+sparkVersion [2.4.0]:
+sparkUtilsVersion [0.4.0]:
+```
+
+
+To fill in the options in advance
+```
+g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organization="my.org" --force
+```
+
+
 ## What's new? ##
 
 **0.4.1-SNAPSHOT**
@@ -174,3 +206,4 @@ This code is open source software licensed under the [MIT License](LICENSE).
 
 [scala]: https://scala-lang.org/
 [spark]: https://spark.apache.org/
+[spark-utils-g8]: https://github.com/tupol/spark-apps.seed.g8

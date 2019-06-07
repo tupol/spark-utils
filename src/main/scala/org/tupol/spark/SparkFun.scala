@@ -1,6 +1,7 @@
 package org.tupol.spark
 
 import com.typesafe.config.Config
+import org.apache.spark.annotation.Experimental
 
 /**
  * `SparkFun` is a light wrapper around `SparkApp` that allows for a more concise writing of Spark applications.
@@ -13,6 +14,7 @@ import com.typesafe.config.Config
  * @tparam Result The output type of the run function.
  *
  */
+@Experimental
 abstract class SparkFun[Context, Result](contextFactory: Config => Context)
   extends SparkApp[Context, Result] {
   final override def createContext(config: Config): Context = contextFactory(config)
