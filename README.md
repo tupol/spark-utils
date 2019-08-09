@@ -1,12 +1,12 @@
 # Spark Utils #
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.tupol/spark-utils_2.11.svg)](https://mvnrepository.com/artifact/org.tupol/spark-utils) &nbsp;
-[![GitHub](https://img.shields.io/github/license/tupol/spark-utils.svg)](https://github.com/tupol/spark-utils/blob/master/LICENSE) &nbsp; 
-[![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)](https://travis-ci.com/tupol/spark-utils) &nbsp; 
-[![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg)](https://codecov.io/gh/tupol/spark-utils) &nbsp;
-[![Javadocs](https://www.javadoc.io/badge/org.tupol/spark-utils_2.11.svg)](https://www.javadoc.io/doc/org.tupol/spark-utils_2.11)
-[![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)](https://gitter.im/spark-utils/spark-utils?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) &nbsp; 
-[![Twitter](https://img.shields.io/twitter/url/https/_tupol.svg?color=%2317A2F2)](https://twitter.com/_tupol) &nbsp; 
+[![Maven Central](https://img.shields.io/maven-central/v/org.tupol/spark-utils_2.11.svg)][maven-central] &nbsp;
+[![GitHub](https://img.shields.io/github/license/tupol/spark-utils.svg)][license] &nbsp; 
+[![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)][travis.org] &nbsp; 
+[![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg)][codecov] &nbsp;
+[![Javadocs](https://www.javadoc.io/badge/org.tupol/spark-utils_2.11.svg)][javadocs] &nbsp; 
+[![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)][gitter] &nbsp; 
+[![Twitter](https://img.shields.io/twitter/url/https/_tupol.svg?color=%2317A2F2)][twitter] &nbsp; 
 
 
 ## Motivation ##
@@ -19,6 +19,10 @@ An application of any kind needs to be easy to run and easy to configure.
 This project is trying to help developers write Spark applications focusing mainly on the 
 application logic rather than the details of configuring the application and setting up the 
 Spark context.
+
+This project is also trying to create and encourage a friendly yet professional environment 
+for developers to help each other, so please do no be shy and join through [gitter], [twitter], 
+[issue reports](https://github.com/tupol/spark-utils/issues/new/choose) or pull requests.
 
 
 ## Description ##
@@ -56,7 +60,7 @@ object FormatConverterContext extends Configurator[FormatConverterContext] {
 }
 ```
 
-Optionally, the `SparkFun` can be used instead of  `SparkApp` to make hte code even more concise.
+Optionally, the `SparkFun` can be used instead of  `SparkApp` to make the code even more concise.
 
 ```scala
 object FormatConverterExample extends 
@@ -94,7 +98,8 @@ object StreamingFormatConverterContext extends Configurator[StreamingFormatConve
 }
 ```
 
-The [`SparkRunnable`](docs/spark-runnable.md) and [`SparkApp`](docs/spark-app.md) together with the
+The [`SparkRunnable`](docs/spark-runnable.md) and [`SparkApp`](docs/spark-app.md) or 
+[`SparkFun`](docs/spark-fun.md) together with the 
 [configuration framework](https://github.com/tupol/scala-utils/blob/master/docs/configuration-framework.md)
 provide for easy Spark application creation with configuration that can be managed through 
 configuration files or application parameters.
@@ -113,11 +118,11 @@ the `org.tupol.spark.implicits._` package.
 
 ## Documentation ##
 The documentation for the main utilities and frameworks available:
-- [SparkApp](docs/spark-app.md) & [SparkRunnable](docs/spark-runnable.md)
+- [SparkApp](docs/spark-app.md), [SparkFun](docs/spark-fun.md) and [SparkRunnable](docs/spark-runnable.md)
 - [DataSource Framework](docs/data-source.md) for both batch and structured streaming applications
 - [DataSink Framework](docs/data-sink.md) for both batch and structured streaming applications
 
-Latest stable API documentation is available [here](https://www.javadoc.io/doc/org.tupol/spark-utils_2.11/0.3.2).
+Latest stable API documentation is available [here](https://www.javadoc.io/doc/org.tupol/spark-utils_2.11/0.4.0).
 
 An extensive tutorial and walk-through can be found [here](https://github.com/tupol/spark-utils-demos/wiki).
 Extensive samples and demos can be found [here](https://github.com/tupol/spark-utils-demos).
@@ -126,25 +131,31 @@ A nice example on how this library can be used can be found in the
 [`spark-tools`](https://github.com/tupol/spark-tools) project, through the implementation
 of a generic format converter and a SQL processor for both batch and structured streams.
 
+
 ## Prerequisites ##
 
 * Java 6 or higher
 * Scala 2.11 or 2.12
-* Apache Spark 2.3.X
+* Apache Spark 2.3.X or higher
 
 
 ## Getting Spark Utils ##
 
-Spark Utils is published to Sonatype OSS and Maven Central:
+Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][spark-packages]:
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest version is `0.4.0`
+- Latest stable version is `0.4.0`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
 libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.0"
+```
+
+Include this package in your Spark Applications using `spark-shell` or `spark-submit`
+```bash
+$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.11:0.4.0
 ```
 
 
@@ -184,8 +195,8 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 **0.4.1-SNAPSHOT**
 
-- Added `SparkFun`, a convenience wrapper around `SparkApp` that makes 
-  the code even more concise
+- Added [`SparkFun`](docs/spark-fun.md), a convenience wrapper around 
+  [`SparkApp`](docs/spark-app.md) that makes the code even more concise
 
 **0.4.0**
 
@@ -207,3 +218,11 @@ This code is open source software licensed under the [MIT License](LICENSE).
 [scala]: https://scala-lang.org/
 [spark]: https://spark.apache.org/
 [spark-utils-g8]: https://github.com/tupol/spark-apps.seed.g8
+[maven-central]: https://mvnrepository.com/artifact/org.tupol/spark-utils
+[spark-packages]: https://spark-packages.org/package/tupol/spark-utils
+[license]: https://github.com/tupol/spark-utils/blob/master/LICENSE
+[travis.org]: https://travis-ci.com/tupol/spark-utils 
+[codecov]: https://codecov.io/gh/tupol/spark-utils
+[javadocs]: https://www.javadoc.io/doc/org.tupol/spark-utils_2.11
+[gitter]: https://gitter.im/spark-utils/spark-utils
+[twitter]: https://twitter.com/_tupol
