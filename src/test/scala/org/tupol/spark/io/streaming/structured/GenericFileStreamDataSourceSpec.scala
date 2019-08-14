@@ -1,4 +1,4 @@
-package org.tupol.spark.io.structured
+package org.tupol.spark.io.streaming.structured
 
 import java.io.File
 
@@ -11,7 +11,6 @@ import org.scalatest.time.{ Millis, Span }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io._
-import org.tupol.spark.io.streaming.structured.GenericStreamDataSourceConfiguration
 import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.Random

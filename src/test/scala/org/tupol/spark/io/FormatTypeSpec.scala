@@ -3,15 +3,12 @@ package org.tupol.spark.io
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{ FunSuite, Matchers }
 
-import scala.util.Failure
-
 class FormatTypeSpec extends FunSuite with Matchers {
 
   import FormatType._
 
   test("fromString works on known types") {
     fromString("com.databricks.spark.avro").get shouldBe Avro
-    fromString("avro").get shouldBe Avro
     fromString("com.databricks.spark.xml").get shouldBe Xml
     fromString("xml").get shouldBe Xml
     fromString("parquet").get shouldBe Parquet
@@ -20,29 +17,21 @@ class FormatTypeSpec extends FunSuite with Matchers {
     fromString("orc").get shouldBe Orc
   }
 
-  test("fromString returns a failure for unknown types") {
-    fromString("unknown_format_type") shouldBe a[Failure[_]]
+  test("fromString returns a Custom format type") {
+    fromString("unknown_format_type").get shouldBe FormatType.Custom("unknown_format_type")
   }
 
-  test("FormatTypeExtractor - unknown") {
+  test("FormatTypeExtractor - custom") {
     import org.tupol.utils.config._
     val configStr = """ format=" unknown " """
     val config = ConfigFactory.parseString(configStr)
-    val result = config.extract[FormatType]("format")
-    result shouldBe a[scalaz.Failure[_]]
+    val result = config.extract[FormatType]("format").get
+    result shouldBe FormatType.Custom("unknown")
   }
 
   test("FormatTypeExtractor - avro") {
     import org.tupol.utils.config._
     val configStr = """ format=" com.databricks.spark.avro " """
-    val config = ConfigFactory.parseString(configStr)
-    val result = config.extract[FormatType]("format").get
-    result shouldBe FormatType.Avro
-  }
-
-  test("FormatTypeExtractor - avro compact") {
-    import org.tupol.utils.config._
-    val configStr = """ format="avro " """
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[FormatType]("format").get
     result shouldBe FormatType.Avro

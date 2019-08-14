@@ -1,4 +1,4 @@
-package org.tupol.spark.io.structured
+package org.tupol.spark.io.streaming.structured
 
 import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
 import org.apache.spark.sql.execution.streaming.MemoryStream
@@ -7,14 +7,13 @@ import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
-import org.tupol.spark.io.streaming.structured.GenericStreamDataSinkConfiguration
 import org.tupol.spark.io.{ DataSinkException, FormatType }
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.{ Success, Try }
 
-class GenericKafkaStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
+class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
   with TestTempFilePath1 with EmbeddedKafka {
 
   import spark.implicits._

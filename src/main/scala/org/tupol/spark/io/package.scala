@@ -26,8 +26,8 @@ package org.tupol.spark
 import com.typesafe.config.{ Config, ConfigRenderOptions }
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
-import org.tupol.spark.io.sources.{ JdbcSourceConfiguration, SourceConfiguration }
-import org.tupol.spark.io.streaming.structured.{ FileStreamDataAwareSink, FileStreamDataSinkConfiguration, FileStreamDataSource, FileStreamDataSourceConfiguration, FormatAwareStreamingSinkConfiguration, FormatAwareStreamingSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataAwareSink, KafkaStreamDataSinkConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration }
+import org.tupol.spark.io.sources._
+import org.tupol.spark.io.streaming.structured._
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 import org.tupol.utils.config.Extractor
@@ -67,15 +67,17 @@ package object io {
   implicit val FileSinkConfigExtractor = FileSinkConfiguration
   implicit val JdbcSourceConfigExtractor = JdbcSourceConfiguration
   implicit val JdbcSinkConfigExtractor = JdbcSinkConfiguration
+  implicit val GenericSourceConfigExtractor = GenericSourceConfiguration
+  implicit val GenericDataSinkConfigExtractor = GenericSinkConfiguration
   implicit val SourceConfigExtractor = SourceConfiguration
 
   implicit val FormatAwareStreamingSourceConfigExtractor = FormatAwareStreamingSourceConfiguration
   implicit val FormatAwareStreamingSinkConfigExtractor = FormatAwareStreamingSinkConfiguration
   implicit val GenericStreamDataSourceConfigurationExtractor = GenericStreamDataSourceConfiguration
-  implicit val FileStreamDataSourceConfigurationExtractor = FileStreamDataSourceConfiguration
-  implicit val KafkaStreamDataSourceConfigurationExtractor = KafkaStreamDataSourceConfiguration
   implicit val GenericStreamDataSinkConfigurationExtractor = GenericStreamDataSinkConfiguration
+  implicit val FileStreamDataSourceConfigurationExtractor = FileStreamDataSourceConfiguration
   implicit val FileStreamDataSinkConfigurationExtractor = FileStreamDataSinkConfiguration
+  implicit val KafkaStreamDataSourceConfigurationExtractor = KafkaStreamDataSourceConfiguration
   implicit val KafkaStreamDataSinkConfigurationExtractor = KafkaStreamDataSinkConfiguration
 
   implicit val DataSourceFactory =
@@ -85,6 +87,7 @@ package object io {
           //TODO There must be a better way to use the type system without the type cast
           case c: FileSourceConfiguration => FileDataSource(c).asInstanceOf[DataSource[C]]
           case c: JdbcSourceConfiguration => JdbcDataSource(c).asInstanceOf[DataSource[C]]
+          case c: GenericSourceConfiguration => GenericDataSource(c).asInstanceOf[DataSource[C]]
           case c: FileStreamDataSourceConfiguration => FileStreamDataSource(c).asInstanceOf[DataSource[C]]
           case c: KafkaStreamDataSourceConfiguration => KafkaStreamDataSource(c).asInstanceOf[DataSource[C]]
           case c: GenericStreamDataSourceConfiguration => GenericStreamDataSource(c).asInstanceOf[DataSource[C]]
@@ -101,6 +104,7 @@ package object io {
               //TODO There must be a better way to use the type system without the type cast
               case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
               case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case c: GenericSinkConfiguration => GenericDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
               case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
             }
           case true =>

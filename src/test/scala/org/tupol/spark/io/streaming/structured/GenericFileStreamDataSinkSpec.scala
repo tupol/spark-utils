@@ -1,4 +1,4 @@
-package org.tupol.spark.io.structured
+package org.tupol.spark.io.streaming.structured
 
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.execution.streaming.MemoryStream
@@ -7,9 +7,8 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.FormatType
-import org.tupol.spark.io.streaming.structured.GenericStreamDataSinkConfiguration
 import org.tupol.spark.implicits._
+import org.tupol.spark.io.FormatType
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.{ TestTempFilePath1, TestTempFilePath2 }
 
@@ -71,5 +70,3 @@ class GenericFileStreamDataSinkSpec extends FunSuite with Matchers with Eventual
   }
 
 }
-
-case class TestRecord(colString: String, colInt: Int, colDouble: Double, colBoolean: Boolean)

@@ -61,7 +61,7 @@ package object sources {
             case FormatType.Orc => OrcSourceConfiguration.validationNel(config)
             case FormatType.Text => TextSourceConfiguration.validationNel(config)
             case FormatType.Jdbc => JdbcSourceConfiguration.validationNel(config)
-            case unsupportedFormat => scalaz.Failure[NonEmptyList[Throwable]](new IllegalArgumentException(s"Unsupported format '$unsupportedFormat'").toNel)
+            case _ => GenericSourceConfiguration.validationNel(config)
           }
         case scalaz.Failure(e) =>
           scalaz.Failure[NonEmptyList[Throwable]](e)
@@ -118,10 +118,10 @@ package object sources {
     val format = FormatType.Json
   }
   object JsonSourceConfiguration extends Configurator[JsonSourceConfiguration] {
-    def apply(basicConfig: BasicConfiguration) =
+    def apply(basicConfig: GenericSourceConfiguration) =
       new JsonSourceConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, JsonSourceConfiguration] =
-      BasicConfiguration.validationNel(config) map JsonSourceConfiguration.apply
+      GenericSourceConfiguration.validationNel(config) map JsonSourceConfiguration.apply
   }
 
   case class ParquetSourceConfiguration(
@@ -130,10 +130,10 @@ package object sources {
     val format = FormatType.Parquet
   }
   object ParquetSourceConfiguration extends Configurator[ParquetSourceConfiguration] {
-    def apply(basicConfig: BasicConfiguration) =
+    def apply(basicConfig: GenericSourceConfiguration) =
       new ParquetSourceConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, ParquetSourceConfiguration] =
-      BasicConfiguration.validationNel(config) map ParquetSourceConfiguration.apply
+      GenericSourceConfiguration.validationNel(config) map ParquetSourceConfiguration.apply
   }
 
   case class OrcSourceConfiguration(
@@ -142,10 +142,10 @@ package object sources {
     val format = FormatType.Orc
   }
   object OrcSourceConfiguration extends Configurator[OrcSourceConfiguration] {
-    def apply(basicConfig: BasicConfiguration) =
+    def apply(basicConfig: GenericSourceConfiguration) =
       new OrcSourceConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, OrcSourceConfiguration] =
-      BasicConfiguration.validationNel(config) map OrcSourceConfiguration.apply
+      GenericSourceConfiguration.validationNel(config) map OrcSourceConfiguration.apply
   }
 
   case class AvroSourceConfiguration(
@@ -154,10 +154,10 @@ package object sources {
     val format = FormatType.Avro
   }
   object AvroSourceConfiguration extends Configurator[AvroSourceConfiguration] {
-    def apply(basicConfig: BasicConfiguration) =
+    def apply(basicConfig: GenericSourceConfiguration) =
       new AvroSourceConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, AvroSourceConfiguration] =
-      BasicConfiguration.validationNel(config) map AvroSourceConfiguration.apply
+      GenericSourceConfiguration.validationNel(config) map AvroSourceConfiguration.apply
   }
 
   case class TextSourceConfiguration(
@@ -166,10 +166,10 @@ package object sources {
     val format = FormatType.Text
   }
   object TextSourceConfiguration extends Configurator[TextSourceConfiguration] {
-    def apply(basicConfig: BasicConfiguration) =
+    def apply(basicConfig: GenericSourceConfiguration) =
       new TextSourceConfiguration(basicConfig.options, basicConfig.schema)
     override def validationNel(config: Config): ValidationNel[Throwable, TextSourceConfiguration] =
-      BasicConfiguration.validationNel(config) map TextSourceConfiguration.apply
+      GenericSourceConfiguration.validationNel(config) map TextSourceConfiguration.apply
   }
 
   /**
@@ -179,7 +179,6 @@ package object sources {
    * @param user
    * @param password
    * @param driver
-   * @param properties
    */
   case class JdbcSourceConfiguration(url: String, table: String, user: Option[String], password: Option[String],
     driver: Option[String], options: Map[String, String], schema: Option[StructType]) extends SourceConfiguration {
@@ -211,21 +210,30 @@ package object sources {
         config.extract[Option[String]]("user") |@|
         config.extract[Option[String]]("password") |@|
         config.extract[Option[String]]("driver") |@|
-        config.extract[Option[Map[String, String]]]("options")
-        .map(_.getOrElse(Map[String, String]())) |@|
+        config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) |@|
         config.extract[Option[StructType]]("schema") apply
         JdbcSourceConfiguration.apply
     }
   }
 
-  private case class BasicConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None)
-  private object BasicConfiguration extends Configurator[BasicConfiguration] {
-    override def validationNel(config: Config): ValidationNel[Throwable, BasicConfiguration] = {
+  case class GenericSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),
+    schema: Option[StructType] = None) extends SourceConfiguration {
+    override def toString: String = {
+      val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
+      s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
+    }
+  }
+
+  object GenericSourceConfiguration extends Configurator[GenericSourceConfiguration] {
+    override def validationNel(config: Config): ValidationNel[Throwable, GenericSourceConfiguration] = {
       import org.tupol.utils.config._
       import scalaz.syntax.applicative._
       val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
       val inputSchema = config.extract[Option[StructType]]("schema")
-      options |@| inputSchema apply BasicConfiguration.apply
+      val format = config.extract[FormatType]("format")
+
+      format |@| options |@| inputSchema apply GenericSourceConfiguration.apply
     }
   }
 }

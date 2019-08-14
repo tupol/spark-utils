@@ -142,18 +142,20 @@ object FileSinkConfiguration extends Configurator[FileSinkConfiguration] with Lo
 
   def validationNel(config: Config): ValidationNel[Throwable, FileSinkConfiguration] = {
     config.extract[String]("path") |@|
-      config.extract[FormatType]("format") |@|
-      config.extract[Option[String]]("mode") |@|
-      config.extract[Option[Int]]("partition.files").
-      ensure(new IllegalArgumentException(
-        "If specified, the partition.files should be a positive integer > 0.").toNel)(_.map(_ > 0).getOrElse(true)) |@|
-      config.extract[Option[Seq[String]]]("partition.columns").map {
-        case (Some(partition_columns)) => partition_columns
-        case None => Seq[String]()
-      } |@|
-      config.extract[Option[BucketsConfiguration]]("buckets") |@|
-      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
-      FileSinkConfiguration.apply
+      config.extract[FormatType]("format").ensure(
+        new IllegalArgumentException(s"The provided format is unsupported for a file data sink. " +
+          s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f => FormatType.AcceptableFileFormats.contains(f)) |@|
+        config.extract[Option[String]]("mode") |@|
+        config.extract[Option[Int]]("partition.files").
+        ensure(new IllegalArgumentException(
+          "If specified, the partition.files should be a positive integer > 0.").toNel)(_.map(_ > 0).getOrElse(true)) |@|
+        config.extract[Option[Seq[String]]]("partition.columns").map {
+          case (Some(partition_columns)) => partition_columns
+          case None => Seq[String]()
+        } |@|
+        config.extract[Option[BucketsConfiguration]]("buckets") |@|
+        config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
+        FileSinkConfiguration.apply
   }
 }
 

@@ -22,6 +22,7 @@ The framework provides the following predefined `DataSource` implementations:
 
 - [FileDataSource](file-data-source.md)
 - [JdbcDataSource](jdbc-data-source.md)
+- [GenericDataSource](generic-data-source.md)
 - [FileStreamDataSource](streaming-file-data-source.md)
 - [KafkaStreamDataSource](streaming-kafka-data-source.md)
 - [GenericStreamDataSource](streaming-generic-data-source.md)

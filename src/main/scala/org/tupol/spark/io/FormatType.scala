@@ -23,7 +23,7 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Success, Try }
 
 sealed trait FormatType
 
@@ -33,7 +33,7 @@ object FormatType {
   private val CsvFormat = "csv"
   private val JsonFormat = "json"
   private val ParquetFormat = "parquet"
-  private val AvroFormat = "com.databricks.spark.avro"
+  private val AvroFormat = "com.databricks.spark.avro" // Starting Spark 4.x "avro" is part of org.apache.spark
   private val OrcFormat = "orc"
   private val TextFormat = "text"
   private val JdbcFormat = "jdbc"
@@ -45,15 +45,13 @@ object FormatType {
     case CsvFormat => Success(Csv)
     case JsonFormat => Success(Json)
     case ParquetFormat => Success(Parquet)
-    case AvroFormat | "avro" => Success(Avro)
+    case AvroFormat => Success(Avro)
     case OrcFormat => Success(Orc)
     case TextFormat => Success(Text)
     case JdbcFormat => Success(Jdbc)
     case SocketFormat => Success(Socket)
     case KafkaFormat => Success(Kafka)
-    case _ => Failure(new IllegalArgumentException(
-      s"""Unknown format type '$formatString'. Available format types are:
-         |${(FormatType.AvailableFormats.map(_.toString) :+ "avro" :+ "xml").mkString("'", "', '", "'")}. """.stripMargin))
+    case customFormat => Success(Custom(customFormat))
   }
 
   val AvailableFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text, Jdbc)
@@ -68,4 +66,5 @@ object FormatType {
   case object Jdbc extends FormatType { override def toString: String = JdbcFormat }
   case object Socket extends FormatType { override def toString: String = SocketFormat }
   case object Kafka extends FormatType { override def toString: String = KafkaFormat }
+  case class Custom(format: String) extends FormatType { override def toString: String = format }
 }

@@ -6,7 +6,7 @@ import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.{ Failure, Success, Try }
 
-class makeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
+class MakeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
 
   val acceptableChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') :+ '_'
   val acceptableString = acceptableChars.mkString

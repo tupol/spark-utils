@@ -55,6 +55,19 @@ class BucketsConfigurationSpec extends FunSuite with Matchers {
     a[ConfigurationException] shouldBe thrownBy(config.extract[BucketsConfiguration].get)
   }
 
+  test("Failed BucketsConfiguration, empty bucketColumns") {
+
+    val configStr =
+      """
+        |number=1
+        |sortByColumns=["a", "b", "c"]
+        |bucketColumns=[]
+      """.stripMargin
+    val config = ConfigFactory.parseString(configStr)
+
+    a[ConfigurationException] shouldBe thrownBy(config.extract[BucketsConfiguration].get)
+  }
+
   test("Failed BucketsConfiguration, number = 0") {
 
     val configStr =

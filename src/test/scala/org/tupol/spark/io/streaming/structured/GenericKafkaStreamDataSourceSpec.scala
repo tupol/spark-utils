@@ -1,4 +1,4 @@
-package org.tupol.spark.io.structured
+package org.tupol.spark.io.streaming.structured
 
 import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
 import org.apache.spark.sql.streaming.Trigger
@@ -8,7 +8,6 @@ import org.scalatest.time.{ Millis, Span }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.FormatType
-import org.tupol.spark.io.streaming.structured.GenericStreamDataSourceConfiguration
 
 class GenericKafkaStreamDataSourceSpec extends FunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
