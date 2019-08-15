@@ -106,7 +106,7 @@ class FileSinkConfigurationSpec extends FunSuite with Matchers {
     val configStr =
       """
         |output.path="OUTPUT_PATH"
-        |output.format="UNKNOWN_FORMAT"
+        |output.format="custom.format"
         |output.mode="overwrite"
         |output.partition.columns=["OUTPUT_PATH"]
         |output.partition.files=2

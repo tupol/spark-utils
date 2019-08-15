@@ -20,6 +20,7 @@ The framework provides the following predefined `DataSink` implementations:
 
 - [FileDataSink](file-data-sink.md)
 - [JdbcDataSink](jdbc-data-sink.md)
+- [GenericDataSink](generic-data-sink.md)
 - [FileStreamDataSink](streaming-file-data-sink.md)
 - [KafkaStreamDataSink](streaming-kafka-data-sink.md)
 - [GenericStreamDataSink](streaming-generic-data-sink.md)

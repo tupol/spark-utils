@@ -72,7 +72,6 @@ case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFra
  * @param user
  * @param password
  * @param driver
- * @param properties
  */
 case class JdbcSinkConfiguration(url: String, table: String, user: Option[String], password: Option[String],
   driver: Option[String], optionalSaveMode: Option[String], options: Map[String, String]) extends FormatAwareDataSinkConfiguration {

@@ -23,7 +23,6 @@ lazy val providedDependencies = Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion force(),
   "org.apache.spark" %% "spark-mllib" % sparkVersion force(),
   "org.apache.spark" %% "spark-streaming" % sparkVersion force(),
-  "com.databricks" %% "spark-xml" % sparkXmlVersion,
   "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion
 )
 
@@ -37,10 +36,11 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
   "com.h2database" % "h2" % "1.4.197" % "test",
-  "com.databricks" %% "spark-xml" % sparkXmlVersion % "test",
-  "com.databricks" %% "spark-avro" % sparkAvroVersion % "test",
   "net.manub" %% "scalatest-embedded-kafka" % "0.14.0" % "test" excludeAll(excludeJars),
-  "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion % "test" excludeAll(excludeJars)
+  "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion % "test" excludeAll(excludeJars),
+  "org.apache.spark" %% "spark-avro" % "2.4.0" % "test",
+  "com.databricks" %% "spark-xml" % sparkXmlVersion % "test",
+  "com.databricks" %% "spark-avro" % sparkAvroVersion % "test"
 )
 
 // ------------------------------

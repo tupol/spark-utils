@@ -99,7 +99,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends FunSuite with Matchers w
 
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
 
-    an[Exception] shouldBe thrownBy(result.get)
+    noException shouldBe thrownBy(result.get)
   }
 
 }
