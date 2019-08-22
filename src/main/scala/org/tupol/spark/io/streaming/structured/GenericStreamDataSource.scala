@@ -62,7 +62,7 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
   }
 }
 
-case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
+case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),
   schema: Option[StructType] = None) extends FormatAwareStreamingSourceConfiguration {
   override def toString: String = {
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")

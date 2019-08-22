@@ -22,7 +22,6 @@ class FormatAwareStreamingSinkConfigurationSpec extends FunSuite with Matchers w
     val config = ConfigFactory.parseString(configStr)
 
     val expected = FileStreamDataSinkConfiguration(
-      Text,
       path = "INPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Text, Map()))
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
@@ -41,7 +40,6 @@ class FormatAwareStreamingSinkConfigurationSpec extends FunSuite with Matchers w
     val config = ConfigFactory.parseString(configStr)
 
     val expected = FileStreamDataSinkConfiguration(
-      Json,
       path = "INPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Json, Map()))
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")

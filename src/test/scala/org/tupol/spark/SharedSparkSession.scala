@@ -1,5 +1,9 @@
 package org.tupol.spark
 
+import java.io.File
+import java.util.UUID
+
+import org.apache.commons.io.FileUtils
 import org.apache.spark.sql.{ SQLContext, SparkSession }
 import org.apache.spark.{ SparkConf, SparkContext }
 import org.scalatest.{ BeforeAndAfterAll, Suite }
@@ -15,6 +19,8 @@ trait SharedSparkSession extends BeforeAndAfterAll {
   def master = "local[2]"
   def appName = this.getClass.getSimpleName
 
+  val TempDir = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
+
   @transient private var _spark: SparkSession = _
 
   implicit lazy val spark: SparkSession = _spark
@@ -23,7 +29,11 @@ trait SharedSparkSession extends BeforeAndAfterAll {
 
   implicit lazy val sqlContext: SQLContext = spark.sqlContext
 
-  def sparkConfig: Map[String, String] = Map("spark.driver.host" -> "localhost") //See https://issues.apache.org/jira/browse/SPARK-19394
+  private var _sparkConfig: Map[String, String] = _
+
+  def sparkConfig: Map[String, String] = Map(
+    "spark.driver.host" -> "localhost" //See https://issues.apache.org/jira/browse/SPARK-19394
+  )
 
   def createSparkSession(conf: SparkConf): SparkSession =
     SparkSession.builder.config(conf).getOrCreate()
@@ -39,6 +49,9 @@ trait SharedSparkSession extends BeforeAndAfterAll {
       .setAppName(appName)
 
     sparkConfig.foreach { case (k, v) => conf.setIfMissing(k, v) }
+    def warehouseDirName = s"$TempDir/spark-warehouse-${UUID.randomUUID().toString}.test.temp"
+    def warehouseDirPath = new java.io.File(warehouseDirName).getAbsolutePath
+    conf.set("spark.sql.warehouse.dir", warehouseDirPath)
 
     _spark = createSparkSession(conf)
 
@@ -50,6 +63,8 @@ trait SharedSparkSession extends BeforeAndAfterAll {
         Try(_spark.close())
         _spark = null
       }
+      sparkConfig.get("spark.sql.warehouse.dir")
+        .map(name => FileUtils.deleteQuietly(new File(name)))
     } finally {
       super.afterAll()
       System.clearProperty("spark.driver.port")

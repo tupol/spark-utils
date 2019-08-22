@@ -70,6 +70,12 @@ package object structured {
     }
   }
 
+  /**
+   * A Kafka subscription is defined by it's type (e.g. subscribe or subscribe patterns) and the
+   * subscription itself (e.g. the actual topic name that this subscription is defining).
+   * @param subscriptionType the type of the subscription (e.g. assign, subscribe or subscribe patterns)
+   * @param subscription the topic name to subscribe to
+   */
   case class KafkaSubscription(subscriptionType: String, subscription: String)
   implicit val KafkaSubscriptionExtractor = new Extractor[KafkaSubscription] {
     val AcceptableValues = Seq("assign", "subscribe", "subscribePattern")

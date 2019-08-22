@@ -78,11 +78,6 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
   }
 }
 
-/**
- * Basic configuration for the `FileDataSource`
- * @param path
- * @param sourceConfiguration
- */
 case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration)
   extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */

@@ -57,9 +57,9 @@ class GenericKafkaStreamDataSourceSpec extends FunSuite
 
   test("Fail gracefully") {
     val TestOptions = Map(
-      "kafka.bootstrap.servers" -> s"unknown_host:0000000",
-      "subscribe" -> topic,
-      "startingOffsets" -> "earliest")
+      "kafka.bootstrap.servers" -> s"unknown_host_garbage_string:0000000",
+      "NO-LEGAL-SUBSCRIPTION-TYPE" -> topic,
+      "NO-STARTING-OFFSETS" -> "garbage")
     val inputConfig = GenericStreamDataSourceConfiguration(FormatType.Kafka, TestOptions, None)
     an[Exception] shouldBe thrownBy(spark.source(inputConfig).read)
   }
