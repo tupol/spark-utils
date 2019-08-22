@@ -39,8 +39,8 @@ class FileStreamDataSinkSpec extends FunSuite with Matchers with Eventually with
     val steamingQuery = Try(data.streamingSink(sinkConfig).write)
     steamingQuery shouldBe a[Success[_]]
 
+    val sourceData = spark.createDataFrame(TestData)
     eventually {
-      val sourceData = spark.createDataFrame(TestData)
       val writtenData: DataFrame = spark.read.json(testPath1)
       writtenData.comapreWith(sourceData).areEqual(false) shouldBe true
     }

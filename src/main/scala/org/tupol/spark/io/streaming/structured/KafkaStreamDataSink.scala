@@ -45,7 +45,7 @@ case class KafkaStreamDataAwareSink(configuration: KafkaStreamDataSinkConfigurat
   override def sink: DataSink[KafkaStreamDataSinkConfiguration, StreamingQuery] = KafkaStreamDataSink(configuration)
 }
 
-case class KafkaStreamDataSinkConfiguration private (
+case class KafkaStreamDataSinkConfiguration(
   private val kafkaBootstrapServers: String,
   private val genericConfig: GenericStreamDataSinkConfiguration,
   private val topic: Option[String] = None,

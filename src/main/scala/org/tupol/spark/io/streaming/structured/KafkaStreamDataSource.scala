@@ -24,20 +24,13 @@ SOFTWARE.
 package org.tupol.spark.io.streaming.structured
 
 import com.typesafe.config.Config
-import org.apache.spark.sql.streaming.DataStreamReader
-import org.apache.spark.sql.types.{ StringType, StructType }
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
-import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, SourceConfiguration }
-import org.tupol.spark.io.{ DataSource, DataSourceException, FormatAwareDataSourceConfiguration, FormatType }
-import org.tupol.utils._
-import org.tupol.spark.io._
+import org.tupol.spark.io.{ DataSource, FormatType, _ }
 import org.tupol.utils.config.Configurator
-import scalaz.Alpha.S
 import scalaz.{ NonEmptyList, ValidationNel }
-
-import scala.util.{ Failure, Success, Try }
 
 case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfiguration) extends DataSource[KafkaStreamDataSourceConfiguration] with Logging {
 
@@ -48,8 +41,6 @@ case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfigurati
 
 /**
  * Basic configuration for the `KafkaDataSource`
- * @param path
- * @param sourceConfiguration
  */
 case class KafkaStreamDataSourceConfiguration(
   kafkaBootstrapServers: String,

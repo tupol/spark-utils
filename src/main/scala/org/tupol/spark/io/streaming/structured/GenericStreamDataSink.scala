@@ -64,22 +64,27 @@ case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfigurati
   }
 }
 
-/** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
+/** GenericStreamDataAwareSink is "data aware", so it can perform a write call with no arguments */
 case class GenericStreamDataAwareSink(configuration: GenericStreamDataSinkConfiguration, data: DataFrame)
   extends DataAwareSink[GenericStreamDataSinkConfiguration, StreamingQuery] {
   override def sink: DataSink[GenericStreamDataSinkConfiguration, StreamingQuery] = GenericStreamDataSink(configuration)
 }
 
-case class GenericStreamDataSinkConfiguration(format: FormatType, options: Map[String, String],
+case class GenericStreamDataSinkConfiguration(format: FormatType, options: Map[String, String] = Map(),
   queryName: Option[String] = None, trigger: Option[Trigger] = None,
   partitionColumns: Seq[String] = Seq(), outputMode: Option[String] = None)
   extends FormatAwareStreamingSinkConfiguration {
   override def toString: String = {
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
-    s"format: '$format', options: {$optionsStr}, query name: ${queryName.getOrElse("not specified")}, " +
+    s"format: '$format', " +
+      s"partition columns: [${partitionColumns.mkString(", ")}], " +
+      s"options: {$optionsStr}, " +
+      s"query name: ${queryName.getOrElse("not specified")}, " +
+      s"output mode: ${outputMode.getOrElse("not specified")}, " +
       s"trigger: ${trigger.getOrElse("not specified")}"
   }
 }
+
 object GenericStreamDataSinkConfiguration extends Configurator[GenericStreamDataSinkConfiguration] {
   import com.typesafe.config.Config
   import org.tupol.utils.config._

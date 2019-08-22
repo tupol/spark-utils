@@ -48,7 +48,7 @@ case class FileStreamDataSinkConfiguration private (
   format: FormatType,
   private val path: String,
   private val genericConfig: GenericStreamDataSinkConfiguration,
-  private val checkpointLocation: Option[String] = None)
+  private val checkpointLocation: Option[String])
   extends FormatAwareStreamingSinkConfiguration {
   private val options = genericConfig.options ++
     Map(
@@ -62,6 +62,12 @@ object FileStreamDataSinkConfiguration extends Configurator[FileStreamDataSinkCo
   import com.typesafe.config.Config
   import org.tupol.utils.config._
   import scalaz.syntax.applicative._
+
+  def apply(
+    path: String,
+    genericConfig: GenericStreamDataSinkConfiguration,
+    checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
+    new FileStreamDataSinkConfiguration(genericConfig.format, path, genericConfig, checkpointLocation)
 
   def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSinkConfiguration] = {
 
