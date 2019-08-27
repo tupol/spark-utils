@@ -6,7 +6,7 @@
 The `FileDataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
 
 This framework provides for reading from a given path with the specified format like 
-`avro`, `parquet`, `orc`, `json`, `csv`...
+`com.databricks.spark.avro` (before Spark 2.4.x), `avro` (starting with Spark 2.4.x), `parquet`, `orc`, `json`, `csv`, `xml`...
 
 The framework is composed of two classes:
 - `FileDataSource`, which is created based on a `FileSourceConfiguration` class and provides one main function:

@@ -5,8 +5,9 @@
 
 The `FileDataSink` framework is a utility framework that helps configuring and writing `DataFrames`.
 
-This framework provides for writing to a given path into the specified format like `avro`, `parquet`, `orc`,
-`json`, `csv`...
+This framework provides for writing to a given path into the specified format like 
+`com.databricks.spark.avro` (before Spark 2.4.x), `avro` (starting with Spark 2.4.x), 
+`parquet`, `orc`, `json`, `csv`...
 
 This framework supports different save modes like `overwrite` or `append`, as well as partitioning parameters like
 columns and number of partition files.

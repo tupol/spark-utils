@@ -28,18 +28,25 @@ class FormatAwareDataSourceConfigurationSpec extends FunSuite with Matchers with
     result.get shouldBe expected
   }
 
-  test("Failed to extract FileSourceConfiguration if the format is not supported") {
+  test("Successfully extract GenericSourceConfiguration out of a configuration string") {
 
     val configStr =
       """
-        |input.path="INPUT_PATH"
-        |input.format="jdbc"
+        |input.format="delta"
+        |input.options={
+        |  path: "INPUT_PATH"
+        |}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
+    val expected = sources.GenericSourceConfiguration(
+      FormatType.Custom("delta"),
+      options = Map("path" -> "INPUT_PATH"),
+      schema = None)
+
     val result = config.extract[FormatAwareDataSourceConfiguration]("input")
 
-    result.isSuccess shouldBe false
+    result.get shouldBe expected
   }
 
   test("Failed to extract FileSourceConfiguration if the path is not defined") {

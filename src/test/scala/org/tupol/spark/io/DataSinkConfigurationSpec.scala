@@ -13,7 +13,7 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
         |output.path="OUTPUT_PATH"
         |output.format="text"
         |output.mode="MODE"
-        |output.partition.columns=["OUTPUT_PATH"]
+        |output.partition.columns=["COL1"]
         |output.partition.files=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
@@ -22,7 +22,7 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
       path = "OUTPUT_PATH",
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
-      partitionColumns = Seq("OUTPUT_PATH"),
+      partitionColumns = Seq("COL1"),
       partitionFilesNumber = Some(2))
 
     val result = config.extract[DataSinkConfiguration]("output")
@@ -37,7 +37,7 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
         |output.path="OUTPUT_PATH"
         |output.format="text"
         |output.mode="MODE"
-        |output.partition.columns=["OUTPUT_PATH"]
+        |output.partition.columns=["COL1", "COL2"]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -45,26 +45,11 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
       path = "OUTPUT_PATH",
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
-      partitionColumns = Seq("OUTPUT_PATH"),
+      partitionColumns = Seq("COL1", "COL2"),
       partitionFilesNumber = None)
     val result = config.extract[DataSinkConfiguration]("output")
 
     result.get shouldBe expected
-  }
-
-  test("Failed to extract FileSinkConfiguration if the path is not defined") {
-
-    val configStr =
-      """
-        |output.format="avro"
-        |output.mode="MODE"
-        |output.partition.columns=["OUTPUT_PATH"]
-        |output.partition.files=2
-      """.stripMargin
-    val config = ConfigFactory.parseString(configStr)
-    val result = config.extract[DataSinkConfiguration]("output")
-
-    result.isSuccess shouldBe false
   }
 
   test("Failed to extract FileSinkConfiguration if the format is not defined") {
@@ -73,7 +58,7 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
       """
         |output.path="OUTPUT_PATH"
         |output.mode="MODE"
-        |output.partition.columns=["OUTPUT_PATH"]
+        |output.partition.columns=["COL1", "COL2"]
         |output.partition.files=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
@@ -82,20 +67,45 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
     result.isSuccess shouldBe false
   }
 
-  test("Failed to extract FileSinkConfiguration if the format is not acceptable") {
+  test("Successfully extract GenericSinkConfiguration out of a file configuration with a missing path") {
+
+    val configStr =
+      """
+        |output.format="avro"
+        |output.mode="MODE"
+        |output.partition.columns=["COL1", "COL2"]
+        |output.partition.files=2
+      """.stripMargin
+    val config = ConfigFactory.parseString(configStr)
+
+    val expected = GenericSinkConfiguration(
+      FormatType.Custom("avro"),
+      optionalSaveMode = Some("MODE"),
+      partitionColumns = Seq("COL1", "COL2"))
+    val result = config.extract[DataSinkConfiguration]("output")
+
+    result.get shouldBe expected
+  }
+
+  test("Successfully extract GenericSinkConfiguration out of a configuration with an unknown format") {
 
     val configStr =
       """
         |output.path="OUTPUT_PATH"
         |output.format="UNKNOWN_FORMAT"
-        |output.mode="overwrite"
-        |output.partition.columns=["OUTPUT_PATH"]
+        |output.mode="MODE"
+        |output.partition.columns=["COL1"]
         |output.partition.files=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
+
+    val expected = GenericSinkConfiguration(
+      FormatType.Custom("UNKNOWN_FORMAT"),
+      optionalSaveMode = Some("MODE"),
+      partitionColumns = Seq("COL1"))
     val result = config.extract[DataSinkConfiguration]("output")
 
-    result.isSuccess shouldBe false
+    result.get shouldBe expected
   }
 
   test("Failed to extract FileSinkConfiguration if the partition.files is a number smaller than 0") {
@@ -105,7 +115,7 @@ class DataSinkConfigurationSpec extends FunSuite with Matchers {
         |output.path="OUTPUT_PATH"
         |output.format="parquet"
         |output.mode="append"
-        |output.partition.columns=["OUTPUT_PATH"]
+        |output.partition.columns=["COL1"]
         |output.partition.files=-2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)

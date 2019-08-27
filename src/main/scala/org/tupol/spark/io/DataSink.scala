@@ -58,8 +58,9 @@ object FormatAwareDataSinkConfiguration extends Configurator[FormatAwareDataSink
       case scalaz.Success(formatString) =>
         formatString match {
           case FormatType.Jdbc => JdbcSinkConfiguration.validationNel(config)
-          case f if (FormatType.AcceptableFileFormats.contains(f)) => FileSinkConfiguration.validationNel(config)
-          case unsupportedFormat => scalaz.Failure[NonEmptyList[Throwable]](new IllegalArgumentException(s"Unsupported format '$unsupportedFormat'").toNel)
+          case f if (FormatType.AcceptableFileFormats.contains(f)) =>
+            FileSinkConfiguration.validationNel(config)
+          case _ => GenericSinkConfiguration.validationNel(config)
         }
       case scalaz.Failure(e) =>
         scalaz.Failure[NonEmptyList[Throwable]](e)
