@@ -3,6 +3,20 @@
 
 ## 0.4
 
+**0.4.1**
+
+- Added [`SparkFun`](docs/spark-fun.md), a convenience wrapper around 
+  [`SparkApp`](docs/spark-app.md) that makes the code even more concise
+- Added ` FormatType.Custom` so any format types are accepted, but of course, not any 
+  random format type will work, but now other formats like 
+  [`delta`](https://github.com/delta-io/delta) can be configured and used
+- Added `GenericSourceConfiguration` (replacing the old private `BasicConfiguration`) 
+  and `GenericDataSource` 
+- Added `GenericSinkConfiguration`, `GenericDataSink` and  `GenericDataAwareSink`
+- Removed the short `”avro”` format as it will be included in Spark 2.4
+- Added format validation to `FileSinkConfiguration`
+- Added [generic-data-source.md](docs/generic-data-source.md) and [generic-data-sink.md](docs/generic-data-sink.md) docs
+
 **0.4.0**
 
 - Added the `StreamingConfiguration` marker trait
