@@ -54,9 +54,10 @@ publishArtifact in Test := true
 
 // ------------------------------
 // TEST COVERAGE
-
-scoverage.ScoverageKeys.coverageExcludedPackages := "org.apache.spark.ml.param.shared.*"
-scoverage.ScoverageKeys.coverageExcludedFiles := ".*BuildInfo.*"
+import scoverage.ScoverageKeys._
+coverageExcludedPackages := "org.apache.spark.ml.param.shared.*;.*BuildInfo.*;org.tupol.spark.Logging.*"
+coverageMinimum := 90
+coverageFailOnMinimum := true
 
 // ------------------------------
 // PUBLISHING

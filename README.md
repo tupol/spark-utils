@@ -134,9 +134,9 @@ of a generic format converter and a SQL processor for both batch and structured 
 
 ## Prerequisites ##
 
-* Java 6 or higher
+* Java 8 or higher
 * Scala 2.11 or 2.12
-* Apache Spark 2.3.X or higher
+* Apache Spark 2.4.X
 
 
 ## Getting Spark Utils ##
@@ -145,12 +145,12 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest stable version is `0.4.1`
+- Latest stable version is `0.4.2`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.1"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.2"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
@@ -193,19 +193,14 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**0.4.1**
+**0.4.2**
 
-- Added [`SparkFun`](docs/spark-fun.md), a convenience wrapper around 
-  [`SparkApp`](docs/spark-app.md) that makes the code even more concise
-- Added ` FormatType.Custom` so any format types are accepted, but of course, not any 
-  random format type will work, but now other formats like 
-  [`delta`](https://github.com/delta-io/delta) can be configured and used
-- Added `GenericSourceConfiguration` (replacing the old private `BasicConfiguration`) 
-  and `GenericDataSource` 
-- Added `GenericSinkConfiguration`, `GenericDataSink` and  `GenericDataAwareSink`
-- Removed the short `”avro”` format as it will be included in Spark 2.4
-- Added format validation to `FileSinkConfiguration`
-- Added [generic-data-source.md](docs/generic-data-source.md) and [generic-data-sink.md](docs/generic-data-sink.md) docs
+- The project compiles with both Scala `2.11.12` and `2.12.12`
+- Updated Apache Spark to `2.4.6`
+- Updated the `spark-xml` library to `0.10.0`
+- Removed the `com.databricks:spark-avro` dependency, as avro support is now built into Apache Spark
+- Removed the shadow `org.apache.spark.Loggin` class, which is replaced by the `org.tupol.spark.Loggign` knock-off
+
 
 For previous versions please consult the [release notes](RELEASE-NOTES.md).
 
