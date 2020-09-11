@@ -56,7 +56,6 @@ class MakeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkS
 
   test("makeNameAvroCompliant successfully cleans the schema") {
 
-    import com.databricks.spark.avro._
     import org.tupol.spark.implicits._
 
     val inputData = spark.createDataFrame(Seq(
@@ -67,7 +66,7 @@ class MakeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkS
       GoodAvroTest0(2, 3, 4, 5, Some(GoodAvroTest1(1, 2, 3, 4, 5)))))
 
     // Writing the original DataFrame to Avro should fail due to the non-compliant names
-    Try(inputData.write.avro(testPath1)) shouldBe a[Failure[_]]
+    Try(inputData.write.format("avro").save(testPath1)) shouldBe a[Failure[_]]
 
     val result = inputData.makeAvroCompliant
 
@@ -75,7 +74,7 @@ class MakeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkS
     result.collect should contain theSameElementsAs expectedData.collect
 
     // Writing the "friendly" DataFrame to Avro should be successful
-    Try(result.write.avro(testPath1)) shouldBe a[Success[_]]
+    Try(result.write.format("avro").save(testPath1)) shouldBe a[Success[_]]
   }
 
 }

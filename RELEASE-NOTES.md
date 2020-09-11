@@ -3,6 +3,14 @@
 
 ## 0.4
 
+**0.4.2**
+
+- The project compiles with both Scala `2.11.12` and `2.12.12`
+- Updated Apache Spark to `2.4.6`
+- Updated the `spark-xml` library to `0.10.0`
+- Removed the `com.databricks:spark-avro` dependency, as avro support is now built into Apache Spark
+- Removed the shadow `org.apache.spark.Loggin` class, which is replaced by the `org.tupol.spark.Loggign` knock-off
+
 **0.4.1**
 
 - Added [`SparkFun`](docs/spark-fun.md), a convenience wrapper around 
