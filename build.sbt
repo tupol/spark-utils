@@ -4,11 +4,11 @@ name := "spark-utils"
 organization := "org.tupol"
 
 scalaVersion := "2.12.12"
-crossScalaVersions := Seq("2.11.12", "2.12.12")
+crossScalaVersions := Seq("2.12.12")
 
-val scalaUtilsVersion = "0.2.0"
+val scalaUtilsVersion = "1.0.0-RC02"
 
-val sparkVersion = "2.4.6"
+val sparkVersion = "3.0.1"
 val sparkXmlVersion = "0.10.0"
 
 // ------------------------------

@@ -23,7 +23,7 @@ SOFTWARE.
 */
 package org.tupol
 
-import org.tupol.utils._
+import org.tupol.utils.implicits._
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.spark.SparkFiles
 import org.apache.spark.sql.SparkSession

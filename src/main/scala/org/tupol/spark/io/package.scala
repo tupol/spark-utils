@@ -30,7 +30,7 @@ import org.tupol.spark.io.sources._
 import org.tupol.spark.io.streaming.structured._
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
-import org.tupol.utils.config.Extractor
+import org.tupol.utils.configz.Extractor
 
 /** Common IO utilities */
 package object io {

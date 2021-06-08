@@ -3,7 +3,7 @@ package org.tupol.spark.io
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.types.StructType
 import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 import org.tupol.spark.sql.loadSchemaFromFile
 
 class ExtendedSchemaExtractorSpec extends FunSuite with Matchers {

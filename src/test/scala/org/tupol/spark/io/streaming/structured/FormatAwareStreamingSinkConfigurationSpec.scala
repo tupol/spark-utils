@@ -5,7 +5,7 @@ import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType.{ Json, Kafka, Socket, Text }
 import org.tupol.spark.sql.loadSchemaFromFile
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 
 class FormatAwareStreamingSinkConfigurationSpec extends FunSuite with Matchers with SharedSparkSession {
 

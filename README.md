@@ -135,8 +135,8 @@ of a generic format converter and a SQL processor for both batch and structured 
 ## Prerequisites ##
 
 * Java 8 or higher
-* Scala 2.11 or 2.12
-* Apache Spark 2.4.X
+* Scala 2.12
+* Apache Spark 3.0.x
 
 
 ## Getting Spark Utils ##
@@ -155,7 +155,7 @@ libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.2"
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
 ```bash
-$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.11:0.4.1
+$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.11:0.4.2
 ```
 
 
@@ -179,9 +179,9 @@ version [0.0.1-SNAPSHOT]:
 package [my.org.my_project]:
 classname [MyFirstApp]:
 scriptname [my-first-app]:
-scalaVersion [2.11.12]:
-sparkVersion [2.4.0]:
-sparkUtilsVersion [0.4.0]:
+scalaVersion [2.12.12]:
+sparkVersion [2.4.6]:
+sparkUtilsVersion [0.4.2]:
 ```
 
 

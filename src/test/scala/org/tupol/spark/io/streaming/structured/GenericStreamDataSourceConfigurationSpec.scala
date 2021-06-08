@@ -3,7 +3,7 @@ package org.tupol.spark.io.streaming.structured
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.io.FormatType.Kafka
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 
 class GenericStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
 

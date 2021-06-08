@@ -26,7 +26,7 @@ package org.tupol.spark.io.streaming
 import com.typesafe.config.Config
 import org.apache.spark.sql.streaming.Trigger
 import org.tupol.spark.io.{ DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration }
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 import scalaz.ValidationNel
 
 package object structured {

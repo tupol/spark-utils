@@ -24,14 +24,18 @@ SOFTWARE.
 package org.tupol.spark
 
 import com.typesafe.config.{ Config, ConfigRenderOptions }
+import org.apache.spark.sql.catalyst.encoders.{ ExpressionEncoder, encoderFor }
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
+import org.apache.spark.sql.functions.{ col, struct }
 import org.apache.spark.sql.streaming.StreamingQuery
 import org.apache.spark.sql.types.{ StructField, StructType }
-import org.apache.spark.sql.{ DataFrame, Row, SparkSession }
+import org.apache.spark.sql.{ Column, DataFrame, Dataset, Encoder, Row, SparkSession }
 import org.tupol.spark.io._
 import org.tupol.spark.sql.{ loadSchemaFromString, row2map }
 import org.tupol.spark.utils._
-import org.tupol.utils.config.Extractor
+import org.tupol.utils.configz.Extractor
+
+import java.util.UUID
 
 package object implicits {
 
@@ -116,6 +120,65 @@ package object implicits {
     /** Not all column names are compliant to the Avro format. This function renames to columns to be Avro compliant */
     def makeAvroCompliant(implicit spark: SparkSession): DataFrame =
       sql.makeDataFrameAvroCompliant(dataFrame)
+  }
+
+  object encoders {
+
+    /**
+     * Returns an internal encoder object that can be used to serialize / deserialize JVM objects
+     * into Spark SQL rows.  The implicit encoder should always be unresolved (i.e. have no attribute
+     * references from a specific schema.)  This requirement allows us to preserve whether a given
+     * object type is being bound by name or by ordinal when doing resolution.
+     */
+    def encoderFor[A: Encoder]: ExpressionEncoder[A] =
+      implicitly[Encoder[A]] match {
+        case e: ExpressionEncoder[A] =>
+          e.assertUnresolved()
+          e
+        case _ => sys.error(s"Only expression encoders are supported today")
+      }
+
+    def tuple2[A: Encoder, B: Encoder]: Encoder[(A, B)] =
+      org.apache.spark.sql.Encoders.tuple(encoderFor[A], encoderFor[B])
+
+  }
+
+  implicit class DatasetOps[T: Encoder](val dataset: Dataset[T]) extends Serializable {
+
+    /**
+     * Add a column to a dataset resulting in a dataset of a tuple of the type contained in the input dataset and the new column
+     * @param column the column to be added
+     * @tparam U The type of the added column; this can not be inferred, so it MUST be specified
+     * @return a Dataset containing a tuple of the input data and the given column
+     */
+    def withColumnDataset[U: Encoder](column: Column): Dataset[(T, U)] = {
+      implicit val tuple2Encoder: Encoder[(T, U)] = ExpressionEncoder.tuple(encoderFor[T], encoderFor[U])
+      val tempColName = s"udf_temp_${UUID.randomUUID()}"
+
+      val tuple1 =
+        if (dataset.encoder.clsTag.runtimeClass.isPrimitive) dataset.columns.map(col).head
+        else struct(dataset.columns.map(col): _*)
+
+      dataset
+        .withColumn(tempColName, column)
+        .select(tuple1 as "_1", col(tempColName) as "_2")
+        .as[(T, U)]
+    }
+  }
+
+  implicit class KeyValueDatasetOps[K: Encoder, V: Encoder](val dataset: Dataset[(K, V)]) extends Serializable {
+
+    /** Map values of a Dataset containing a Tuple2 */
+    def mapValues[U: Encoder](f: V => U): Dataset[(K, U)] = {
+      implicit val tuple2Encoder: Encoder[(K, U)] = ExpressionEncoder.tuple(encoderFor[K], encoderFor[U])
+      dataset.map { case (k, v) => (k, f(v)) }
+    }
+
+    /** FlatMap values of a Dataset containing a Tuple2 */
+    def flatMapValues[U: Encoder](f: V => TraversableOnce[U]): Dataset[(K, U)] = {
+      implicit val tuple2Encoder: Encoder[(K, U)] = ExpressionEncoder.tuple(encoderFor[K], encoderFor[U])
+      dataset.flatMap { case (k, v) => f(v).map((k, _)) }
+    }
   }
 
 }

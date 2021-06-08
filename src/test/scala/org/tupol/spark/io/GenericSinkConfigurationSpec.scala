@@ -2,7 +2,7 @@ package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 
 class GenericSinkConfigurationSpec extends FunSuite with Matchers {
 
