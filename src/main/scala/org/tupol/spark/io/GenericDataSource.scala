@@ -27,7 +27,7 @@ import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, GenericSourceConfiguration }
-import org.tupol.utils._
+import org.tupol.utils.implicits._
 
 import scala.util.{ Failure, Success, Try }
 

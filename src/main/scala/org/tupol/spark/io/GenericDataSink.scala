@@ -25,7 +25,7 @@ package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
 
 import scala.util.{ Failure, Success, Try }
 
@@ -88,7 +88,7 @@ case class GenericSinkConfiguration(format: FormatType, optionalSaveMode: Option
 
 object GenericSinkConfiguration extends Configurator[GenericSinkConfiguration] with Logging {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.ValidationNel
   import scalaz.syntax.applicative._
 

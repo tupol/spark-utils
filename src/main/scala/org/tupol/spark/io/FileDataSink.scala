@@ -25,7 +25,7 @@ package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
 
 import scala.util.{ Failure, Success, Try }
 
@@ -132,7 +132,7 @@ case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveM
 
 object FileSinkConfiguration extends Configurator[FileSinkConfiguration] with Logging {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.ValidationNel
   import scalaz.syntax.applicative._
 
@@ -175,7 +175,7 @@ case class BucketsConfiguration(number: Int, bucketColumns: Seq[String], sortByC
 
 object BucketsConfiguration extends Configurator[BucketsConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.ValidationNel
   import scalaz.syntax.applicative._
 

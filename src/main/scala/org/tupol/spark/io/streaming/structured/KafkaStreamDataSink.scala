@@ -28,7 +28,7 @@ import org.apache.spark.sql.streaming.StreamingQuery
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.{ DataAwareSink, DataSink }
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
 import scalaz.ValidationNel
 
 case class KafkaStreamDataSink(configuration: KafkaStreamDataSinkConfiguration)
@@ -63,7 +63,7 @@ case class KafkaStreamDataSinkConfiguration(
 }
 object KafkaStreamDataSinkConfiguration extends Configurator[KafkaStreamDataSinkConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.syntax.applicative._
 
   def validationNel(config: Config): ValidationNel[Throwable, KafkaStreamDataSinkConfiguration] = {

@@ -22,7 +22,7 @@ class FormatTypeSpec extends FunSuite with Matchers {
   }
 
   test("FormatTypeExtractor - custom") {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     val configStr = """ format=" unknown " """
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[FormatType]("format").get
@@ -30,7 +30,7 @@ class FormatTypeSpec extends FunSuite with Matchers {
   }
 
   test("FormatTypeExtractor - avro") {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     val configStr = """ format=" com.databricks.spark.avro " """
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[FormatType]("format").get
@@ -38,7 +38,7 @@ class FormatTypeSpec extends FunSuite with Matchers {
   }
 
   test("FormatTypeExtractor - xml") {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     val configStr = """ format=" com.databricks.spark.xml " """
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[FormatType]("format").get
@@ -46,7 +46,7 @@ class FormatTypeSpec extends FunSuite with Matchers {
   }
 
   test("FormatTypeExtractor - xml compact") {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     val configStr = """ format=" xml " """
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[FormatType]("format").get

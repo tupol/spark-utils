@@ -28,8 +28,8 @@ import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources._
-import org.tupol.utils._
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.implicits._
+import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.{ Failure, Success, Try }
@@ -89,7 +89,7 @@ case class FileSourceConfiguration(path: String, sourceConfiguration: SourceConf
 }
 object FileSourceConfiguration extends Configurator[FileSourceConfiguration] {
   override def validationNel(config: Config): ValidationNel[Throwable, FileSourceConfiguration] = {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     import scalaz.syntax.applicative._
 
     val format = config.extract[FormatType]("format").ensure(

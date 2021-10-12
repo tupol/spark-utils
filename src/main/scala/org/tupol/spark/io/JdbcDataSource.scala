@@ -26,7 +26,7 @@ package org.tupol.spark.io
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources.JdbcSourceConfiguration
-import org.tupol.utils._
+import org.tupol.utils.implicits._
 
 import scala.util.{ Failure, Success, Try }
 

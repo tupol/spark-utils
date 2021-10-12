@@ -26,7 +26,7 @@ package org.tupol.spark
 import com.typesafe.config.Config
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import org.tupol.utils._
+import org.tupol.utils.implicits._
 
 import scala.util.Try
 

@@ -28,8 +28,8 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io._
-import org.tupol.utils._
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.implicits._
+import org.tupol.utils.configz.Configurator
 import scalaz.ValidationNel
 
 import scala.util.{ Failure, Success, Try }
@@ -72,7 +72,7 @@ case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map
 }
 object GenericStreamDataSourceConfiguration extends Configurator[GenericStreamDataSourceConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.syntax.applicative._
 
   def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSourceConfiguration] = {

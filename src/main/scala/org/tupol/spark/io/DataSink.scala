@@ -25,7 +25,7 @@ package org.tupol.spark.io
 
 import com.typesafe.config.Config
 import org.apache.spark.sql.DataFrame
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 /** Common trait for writing a DataFrame to an external resource */
@@ -52,7 +52,7 @@ trait FormatAwareDataSinkConfiguration extends DataSinkConfiguration with Format
 /** Factory for DataSourceConfiguration */
 object FormatAwareDataSinkConfiguration extends Configurator[FormatAwareDataSinkConfiguration] {
   override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareDataSinkConfiguration] = {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     val format = config.extract[FormatType]("format")
     format match {
       case scalaz.Success(formatString) =>

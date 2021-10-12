@@ -31,8 +31,8 @@ import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
 import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, SourceConfiguration }
 import org.tupol.spark.io.{ DataSource, DataSourceException, FormatType }
-import org.tupol.utils._
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.implicits._
+import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.{ Failure, Success, Try }
@@ -87,7 +87,7 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
 object FileStreamDataSourceConfiguration extends Configurator[FileStreamDataSourceConfiguration] {
   val AcceptableFileFormats = Seq(Csv, Json, Parquet, Orc, Text)
   override def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSourceConfiguration] = {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     import scalaz.syntax.applicative._
 
     val format = config.extract[FormatType]("format").ensure(

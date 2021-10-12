@@ -31,7 +31,7 @@ import org.apache.spark.sql.{ DataFrame, Row, SparkSession }
 import org.tupol.spark.io._
 import org.tupol.spark.sql.{ loadSchemaFromString, row2map }
 import org.tupol.spark.utils._
-import org.tupol.utils.config.Extractor
+import org.tupol.utils.configz.Extractor
 
 package object implicits {
 

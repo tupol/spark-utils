@@ -2,7 +2,7 @@ package org.tupol.spark.io.streaming.structured
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 
 class KafkaStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
 

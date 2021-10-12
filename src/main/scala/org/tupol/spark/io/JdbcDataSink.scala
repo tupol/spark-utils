@@ -27,10 +27,11 @@ import com.typesafe.config.Config
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 import scalaz.ValidationNel
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 /**  JdbcDataSink trait */
 case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[JdbcSinkConfiguration, DataFrame] with Logging {
@@ -44,19 +45,18 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
   def write(data: DataFrame): DataFrame = {
     logInfo(s"Writing data as '${configuration.format}' " +
       s"to the '${configuration.table}' table of '${configuration.url}'.")
-    Try(configureWriter(data, configuration).save()) match {
-      case Success(_) =>
-        logInfo(s"Successfully saved the data as '${configuration.format}' " +
+    val result = for {
+      writer <- Try(configureWriter(data, configuration))
+        .mapFailure(DataSinkException(s"Failed to create a '${configuration.format}' data writer " +
+          s"(Full configuration: ${configuration}).", _))
+        .logFailure(t => logError(t.getMessage, t))
+      _ <- Try(writer.save())
+        .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' " +
           s"to the '${configuration.table}' table of '${configuration.url}' " +
-          s"(Full configuration: ${configuration}).")
-        data
-      case Failure(ex) =>
-        val message = s"Failed to save the data as '${configuration.format}' " +
-          s"to the '${configuration.table}' table of '${configuration.url}' " +
-          s"(Full configuration: ${configuration})."
-        logError(message)
-        throw new DataSinkException(message, ex)
-    }
+          s"(Full configuration: ${configuration}).", _))
+        .logFailure(t => logError(t.getMessage, t))
+    } yield data
+    result.get
   }
 }
 
@@ -100,7 +100,7 @@ object JdbcSinkConfiguration extends Configurator[JdbcSinkConfiguration] {
     new JdbcSinkConfiguration(url, table, Some(user), Some(password), Some(driver), saveMode, options)
 
   override def validationNel(config: Config): ValidationNel[Throwable, JdbcSinkConfiguration] = {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     import scalaz.syntax.applicative._
     config.extract[String]("url") |@|
       config.extract[String]("table") |@|

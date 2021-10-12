@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.io.FormatType.Kafka
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 
 class GenericStreamDataSinkConfigurationSpec extends FunSuite with Matchers {
 
