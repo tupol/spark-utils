@@ -21,12 +21,12 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
 
     resultDF.count shouldBe 1
 
-    val resultDF2 = spark.source(inputConfig).read
-    resultDF2.comapreWith(resultDF).areEqual(true) shouldBe true
+    val resultDF2 = spark.source(inputConfig).read.get
+    resultDF2.compareWith(resultDF).areEqual(true) shouldBe true
   }
 
   test("Extract the root element of multiple files should yield as many results as the number of files") {
@@ -38,7 +38,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 2
   }
 
@@ -51,7 +51,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 0
   }
 
@@ -64,7 +64,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     // Test that the field was inferred and the correct metadata was added
     resultDF.schema.fields should contain(new StructField("test_node", StringType, true))
 
@@ -79,7 +79,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record")
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 13
   }
 
@@ -93,7 +93,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 13
     resultDF.schema.fieldNames should contain(columnNameOfCorruptRecord)
   }
@@ -107,7 +107,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.collect.size shouldBe 10
   }
 
@@ -120,7 +120,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = XmlSourceConfiguration(options, schema, rowTag)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     Try(resultDF.collect) shouldBe a[Failure[_]]
   }
 

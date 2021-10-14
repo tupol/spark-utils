@@ -26,7 +26,7 @@ package org.tupol.spark.io
 import com.typesafe.config.Config
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.types.StructType
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 package object sources {
@@ -48,7 +48,7 @@ package object sources {
   }
   object SourceConfiguration extends Configurator[SourceConfiguration] {
     override def validationNel(config: Config): ValidationNel[Throwable, SourceConfiguration] = {
-      import org.tupol.utils.config._
+      import org.tupol.utils.configz._
       val format = config.extract[FormatType]("format")
       format match {
         case scalaz.Success(formatString) =>
@@ -81,7 +81,7 @@ package object sources {
       CsvSourceConfiguration(
         options + ("delimiter" -> delimiter) + ("header" -> header.toString), inputSchema)
     override def validationNel(config: Config): ValidationNel[Throwable, CsvSourceConfiguration] = {
-      import org.tupol.utils.config._
+      import org.tupol.utils.configz._
       import scalaz.syntax.applicative._
 
       val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
@@ -101,7 +101,7 @@ package object sources {
     def apply(options: Map[String, String], inputSchema: Option[StructType], rowTag: String): XmlSourceConfiguration =
       XmlSourceConfiguration(options + ("rowTag" -> rowTag), inputSchema)
     override def validationNel(config: Config): ValidationNel[Throwable, XmlSourceConfiguration] = {
-      import org.tupol.utils.config._
+      import org.tupol.utils.configz._
       import scalaz.syntax.applicative._
 
       val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
@@ -203,7 +203,7 @@ package object sources {
       new JdbcSourceConfiguration(url, table, Some(user), Some(password), Some(driver), options, schema)
 
     override def validationNel(config: Config): ValidationNel[Throwable, JdbcSourceConfiguration] = {
-      import org.tupol.utils.config._
+      import org.tupol.utils.configz._
       import scalaz.syntax.applicative._
       config.extract[String]("url") |@|
         config.extract[String]("table") |@|
@@ -227,7 +227,7 @@ package object sources {
 
   object GenericSourceConfiguration extends Configurator[GenericSourceConfiguration] {
     override def validationNel(config: Config): ValidationNel[Throwable, GenericSourceConfiguration] = {
-      import org.tupol.utils.config._
+      import org.tupol.utils.configz._
       import scalaz.syntax.applicative._
       val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
       val inputSchema = config.extract[Option[StructType]]("schema")

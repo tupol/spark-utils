@@ -25,9 +25,10 @@ package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 /**  FileDataSink trait */
 case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[FileSinkConfiguration, DataFrame] with Logging {
@@ -69,7 +70,7 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  def write(data: DataFrame): DataFrame = {
+  def write(data: DataFrame): Try[DataFrame] = {
 
     Try {
       configuration.buckets match {
@@ -81,17 +82,13 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
           logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
           configureWriter(data, configuration).save(configuration.path)
       }
-    } match {
-      case Success(_) =>
-        logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration.path}' " +
-          s"(Full configuration: ${configuration}).")
-        data
-      case Failure(ex) =>
-        val message = s"Failed to save the data as '${configuration.format}' to '${configuration.path}' " +
-          s"(Full configuration: ${configuration})."
-        logError(message)
-        throw new DataSinkException(message, ex)
     }
+      .map(_ => data)
+      .logSuccess(_ => logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration.path}' " +
+        s"(Full configuration: ${configuration})."))
+      .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' to '${configuration.path}' " +
+        s"(Full configuration: ${configuration}).", _))
+      .logFailure(logError)
   }
 }
 
@@ -132,7 +129,7 @@ case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveM
 
 object FileSinkConfiguration extends Configurator[FileSinkConfiguration] with Logging {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.ValidationNel
   import scalaz.syntax.applicative._
 
@@ -175,7 +172,7 @@ case class BucketsConfiguration(number: Int, bucketColumns: Seq[String], sortByC
 
 object BucketsConfiguration extends Configurator[BucketsConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.ValidationNel
   import scalaz.syntax.applicative._
 

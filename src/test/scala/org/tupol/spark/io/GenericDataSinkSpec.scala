@@ -7,6 +7,8 @@ import org.tupol.spark.implicits._
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
+import scala.util.Success
+
 class GenericDataSinkSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
 
   val CustomFormat = FormatType.Custom("com.databricks.spark.avro")
@@ -20,10 +22,10 @@ class GenericDataSinkSpec extends FunSuite with Matchers with SharedSparkSession
 
     val options = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(), None, options)
-    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
+    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
     val writtenData: DataFrame = spark.read.format(CustomFormat.format).load(testPath1)
-    writtenData.comapreWith(inputData).areEqual(true) shouldBe true
+    writtenData.compareWith(inputData).areEqual(true) shouldBe true
   }
 
   test("Saving the input data can fail if the mode is default and the target file already exists") {
@@ -33,9 +35,9 @@ class GenericDataSinkSpec extends FunSuite with Matchers with SharedSparkSession
 
     val options = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(), None, options)
-    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
+    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
-    a[DataSinkException] should be thrownBy (inputData.sink(sinkConfig).write)
+    inputData.sink(sinkConfig).write.failed.get shouldBe a[DataSinkException]
   }
 
   test("Saving the input partitioned results in the same data") {
@@ -47,10 +49,10 @@ class GenericDataSinkSpec extends FunSuite with Matchers with SharedSparkSession
 
     val options = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(rootPartition, "string"), None, options)
-    noException shouldBe thrownBy(inputData.sink(sinkConfig).write)
+    inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
     val writtenData: DataFrame = spark.read.format(CustomFormat.format).load(testPath1)
-    writtenData.comapreWith(inputData).areEqual(true) shouldBe true
+    writtenData.compareWith(inputData).areEqual(true) shouldBe true
 
     val intPartitions = testFile1.listFiles().filter(_.getPath.contains(s"/$rootPartition="))
     intPartitions.size should be > 0
@@ -71,7 +73,7 @@ class GenericDataSinkSpec extends FunSuite with Matchers with SharedSparkSession
     inputData.sink(sinkConfig).write
 
     val writtenData: DataFrame = spark.read.format(CustomFormat.format).load(testPath1)
-    writtenData.comapreWith(inputData).areEqual(true) shouldBe true
+    writtenData.compareWith(inputData).areEqual(true) shouldBe true
 
     val intPartitions = testFile1.listFiles().filter(_.getPath.contains(s"/$rootPartition="))
     intPartitions.size should be > 0
@@ -91,7 +93,7 @@ class GenericDataSinkSpec extends FunSuite with Matchers with SharedSparkSession
     inputData.sink(sinkConfig).write
 
     val writtenData: DataFrame = spark.read.format(CustomFormat.format).load(testPath1)
-    writtenData.comapreWith(inputData).areEqual(true) shouldBe true
+    writtenData.compareWith(inputData).areEqual(true) shouldBe true
   }
 
 }

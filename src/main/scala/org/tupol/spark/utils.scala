@@ -30,7 +30,7 @@ import java.time.LocalDateTime
 import org.json4s.JsonAST.JString
 import org.json4s.{ CustomSerializer, Serializer }
 
-import org.tupol.utils._
+import org.tupol.utils.implicits._
 
 import scala.io.Source
 import scala.util.{ Failure, Try }

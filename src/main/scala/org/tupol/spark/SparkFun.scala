@@ -3,6 +3,8 @@ package org.tupol.spark
 import com.typesafe.config.Config
 import org.apache.spark.annotation.Experimental
 
+import scala.util.Try
+
 /**
  * `SparkFun` is a light wrapper around `SparkApp` that allows for a more concise writing of Spark applications.
  *
@@ -15,7 +17,7 @@ import org.apache.spark.annotation.Experimental
  *
  */
 @Experimental
-abstract class SparkFun[Context, Result](contextFactory: Config => Context)
+abstract class SparkFun[Context, Result](contextFactory: Config => Try[Context])
   extends SparkApp[Context, Result] {
-  final override def createContext(config: Config): Context = contextFactory(config)
+  final override def createContext(config: Config): Try[Context] = contextFactory(config)
 }

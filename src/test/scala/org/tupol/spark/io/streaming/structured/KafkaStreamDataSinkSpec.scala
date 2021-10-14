@@ -13,7 +13,7 @@ import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
-import scala.util.{ Success, Try }
+import scala.util.Success
 
 class KafkaStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
   with TestTempFilePath1 with EmbeddedKafka {
@@ -42,13 +42,13 @@ class KafkaStreamDataSinkSpec extends FunSuite with Matchers with Eventually wit
     val sinkConfig = KafkaStreamDataSinkConfiguration(s":${config.kafkaPort}", genericConfig, Some(topic), Some(testPath1))
 
     withRunningKafka {
-      val steamingQuery = Try(data.streamingSink(sinkConfig).write)
+      val steamingQuery = data.streamingSink(sinkConfig).write
 
       steamingQuery shouldBe a[Success[_]]
       eventually {
         val writtenData = consumeNumberStringMessagesFrom(topic, 2)
         val writtenDataFrame = spark.read.json(spark.createDataFrame(writtenData.map(x => (x, x))).as[(String, String)].map(_._1))
-        writtenDataFrame.comapreWith(TestDataFrame).areEqual(false) shouldBe true
+        writtenDataFrame.compareWith(TestDataFrame).areEqual(false) shouldBe true
       }
       steamingQuery.get.stop
     }

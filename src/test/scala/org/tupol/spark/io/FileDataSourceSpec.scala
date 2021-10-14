@@ -28,7 +28,7 @@ class FileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF1 = FileDataSource(inputConfig).read
+    val resultDF1 = FileDataSource(inputConfig).read.get
 
     resultDF1.schema.fields.map(_.name) should contain allElementsOf (schema.fields.map(_.name))
   }

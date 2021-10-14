@@ -28,11 +28,11 @@ import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources._
-import org.tupol.utils._
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 import scalaz.{ NonEmptyList, ValidationNel }
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 case class FileDataSource(configuration: FileSourceConfiguration) extends DataSource[FileSourceConfiguration] with Logging {
 
@@ -62,17 +62,13 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
-  def read(implicit spark: SparkSession): DataFrame = {
+  override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
     Try(createReader(configuration.sourceConfiguration).load(configuration.path))
+      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'", _))
+      .logFailure(logError)
       .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
-        s"from '${configuration.path}'")) match {
-        case Failure(t) =>
-          val message = s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'"
-          logError(message, t)
-          throw new DataSourceException(message, t)
-        case Success(s) => s
-      }
+        s"from '${configuration.path}'"))
   }
 
 }
@@ -89,7 +85,7 @@ case class FileSourceConfiguration(path: String, sourceConfiguration: SourceConf
 }
 object FileSourceConfiguration extends Configurator[FileSourceConfiguration] {
   override def validationNel(config: Config): ValidationNel[Throwable, FileSourceConfiguration] = {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     import scalaz.syntax.applicative._
 
     val format = config.extract[FormatType]("format").ensure(

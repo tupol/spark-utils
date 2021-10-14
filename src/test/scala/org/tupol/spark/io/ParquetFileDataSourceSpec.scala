@@ -15,15 +15,15 @@ class ParquetFileDataSourceSpec extends FunSuite with Matchers with SharedSparkS
     val options = Map[String, String]()
     val parserConfig = ParquetSourceConfiguration(options, None)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
 
     resultDF.count shouldBe 3
 
     val expectedSchema = loadSchemaFromFile("src/test/resources/sources/parquet/sample_schema.json")
     resultDF.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
-    val resultDF2 = spark.source(inputConfig).read
-    resultDF2.comapreWith(resultDF).areEqual(true) shouldBe true
+    val resultDF2 = spark.source(inputConfig).read.get
+    resultDF2.compareWith(resultDF).areEqual(true) shouldBe true
   }
 
 }

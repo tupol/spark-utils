@@ -4,12 +4,14 @@ name := "spark-utils"
 organization := "org.tupol"
 
 scalaVersion := "2.12.12"
-crossScalaVersions := Seq("2.11.12", "2.12.12")
+crossScalaVersions := Seq("2.12.12")
 
-val scalaUtilsVersion = "0.2.0"
+val scalaUtilsVersion = "1.0.0"
 
-val sparkVersion = "2.4.6"
-val sparkXmlVersion = "0.10.0"
+val sparkVersion = "3.0.1"
+val sparkXmlVersion = "0.13.0"
+val fasterxmlVersion = "2.10.0"
+val json4sVersion = "3.6.6"
 
 // ------------------------------
 // DEPENDENCIES AND RESOLVERS
@@ -29,19 +31,22 @@ lazy val providedDependencies = Seq(
 
 libraryDependencies ++= providedDependencies.map(_ % "provided")
 
-// Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 2.4.x we need this override
-dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.7"
+// Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
+dependencyOverrides += "com.fasterxml.jackson.core" %% "jackson-databind" % fasterxmlVersion
+dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % fasterxmlVersion
+dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-paranamer" % fasterxmlVersion
+
 
 libraryDependencies ++= Seq(
   "org.tupol" %% "scala-utils" % scalaUtilsVersion,
-  "org.json4s" %% "json4s-core" % "3.5.5" % "test",
+  "org.json4s" %% "json4s-core" % json4sVersion % "test",
+  "org.json4s" %% "json4s-jackson" % json4sVersion % "test",
   "com.h2database" % "h2" % "1.4.197" % "test",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
   "com.h2database" % "h2" % "1.4.197" % "test",
   "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "test",
-  "org.apache.spark" %% "spark-avro" % sparkVersion % "test",
-  "com.databricks" %% "spark-xml" % sparkXmlVersion % "test"
+  "org.apache.spark" %% "spark-avro" % sparkVersion % "test"
 )
 
 // ------------------------------

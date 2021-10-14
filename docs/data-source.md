@@ -11,7 +11,7 @@ This framework provides for reading from a given path with the specified format 
 The framework is composed of two main traits:
 - `DataSource`, which is created based on a `DataSourceConfiguration` class and provides one main function:
   ```scala 
-  def read(implicit spark: SparkSession): DataFrame
+  override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `DataSourceConfiguration`: a marker trait to define `DataSource` configuration classes
 

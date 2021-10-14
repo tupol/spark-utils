@@ -26,7 +26,7 @@ class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
 
     noException shouldBe thrownBy(spark.source(sourceConfig).read)
 
-    spark.source(sourceConfig).read.as[JdbcTestRecord].collect should contain theSameElementsAs (TestData)
+    spark.source(sourceConfig).read.get.as[JdbcTestRecord].collect should contain theSameElementsAs (TestData)
   }
 
   test("Reading the input data fails if table can not be found") {

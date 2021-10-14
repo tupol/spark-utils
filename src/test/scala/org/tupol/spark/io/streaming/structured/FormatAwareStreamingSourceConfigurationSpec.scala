@@ -6,7 +6,7 @@ import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.sources.{ JsonSourceConfiguration, TextSourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromFile
-import org.tupol.utils.config._
+import org.tupol.utils.configz._
 
 class FormatAwareStreamingSourceConfigurationSpec extends FunSuite with Matchers with SharedSparkSession {
 

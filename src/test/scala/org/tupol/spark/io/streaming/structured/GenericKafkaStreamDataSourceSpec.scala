@@ -31,7 +31,7 @@ class GenericKafkaStreamDataSourceSpec extends FunSuite
 
     withRunningKafka {
 
-      val data = spark.source(TestConfig).read
+      val data = spark.source(TestConfig).read.get
 
       val streamingQuery = data.writeStream
         .format("memory")

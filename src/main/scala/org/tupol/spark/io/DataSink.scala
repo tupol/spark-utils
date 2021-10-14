@@ -25,20 +25,22 @@ package org.tupol.spark.io
 
 import com.typesafe.config.Config
 import org.apache.spark.sql.DataFrame
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
+
+import scala.util.Try
 
 /** Common trait for writing a DataFrame to an external resource */
 trait DataSink[Config <: DataSinkConfiguration, WriteOut] {
   def configuration: Config
-  def write(data: DataFrame): WriteOut
+  def write(data: DataFrame): Try[WriteOut]
 }
 
 /** Common trait for writing an already defined data DataFrame to an external resource */
 trait DataAwareSink[Config <: DataSinkConfiguration, WriteOut] {
   def data: DataFrame
   def sink: DataSink[Config, WriteOut]
-  def write: WriteOut = sink.write(data)
+  def write: Try[WriteOut] = sink.write(data)
 }
 
 /** Factory trait for DataAwareSinkFactory */
@@ -52,7 +54,7 @@ trait FormatAwareDataSinkConfiguration extends DataSinkConfiguration with Format
 /** Factory for DataSourceConfiguration */
 object FormatAwareDataSinkConfiguration extends Configurator[FormatAwareDataSinkConfiguration] {
   override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareDataSinkConfiguration] = {
-    import org.tupol.utils.config._
+    import org.tupol.utils.configz._
     val format = config.extract[FormatType]("format")
     format match {
       case scalaz.Success(formatString) =>

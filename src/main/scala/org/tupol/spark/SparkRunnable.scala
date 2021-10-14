@@ -25,6 +25,8 @@ package org.tupol.spark
 
 import org.apache.spark.sql.SparkSession
 
+import scala.util.Try
+
 /**
  * Trivial trait for creating basic runnable Spark applications.
  * These runnable still needs a runner or an app to run.
@@ -42,6 +44,6 @@ trait SparkRunnable[Context, Result] {
    * @param spark active spark session
    * @return
    */
-  def run(implicit spark: SparkSession, context: Context): Result
+  def run(implicit spark: SparkSession, context: Context): Try[Result]
 
 }

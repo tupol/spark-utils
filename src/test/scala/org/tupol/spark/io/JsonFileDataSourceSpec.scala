@@ -19,12 +19,12 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
 
     resultDF.count shouldBe 1
 
-    val resultDF2 = spark.source(inputConfig).read
-    resultDF2.comapreWith(resultDF).areEqual(true) shouldBe true
+    val resultDF2 = spark.source(inputConfig).read.get
+    resultDF2.compareWith(resultDF).areEqual(true) shouldBe true
   }
 
   test("Extract from multiple files should yield as many results as the total number of records in the files") {
@@ -35,7 +35,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 2
   }
 
@@ -47,7 +47,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     // Test that the field was inferred and the correct metadata was added
 
     val expectedSchema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json")
@@ -64,7 +64,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, Some(schema))
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 4
   }
 
@@ -78,7 +78,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count shouldBe 4
     resultDF.schema.fieldNames should contain(columnNameOfCorruptRecord)
   }
@@ -91,7 +91,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.collect.size shouldBe 2
     // TODO Investigate why the count does not match the expected result; e.g. in our case the collect.size != count
     // resultDF.count shouldBe 2
@@ -105,7 +105,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
     val parserConfig = JsonSourceConfiguration(options, schema)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     Try(resultDF.collect) shouldBe a[Failure[_]]
   }
 

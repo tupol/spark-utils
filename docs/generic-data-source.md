@@ -14,7 +14,7 @@ custom packages dependencies.
 The framework is composed of two classes:
 - `GenericDataSource`, which is created based on a `GenericSourceConfiguration` class and provides one main function:
   ```scala 
-  def read(implicit spark: SparkSession): DataFrame
+  override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `GenericSourceConfiguration`: the necessary configuration parameters
 

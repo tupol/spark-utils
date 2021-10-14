@@ -37,8 +37,8 @@ type, with any acceptable parsing configuration options to any acceptable format
 
 ```scala
 object FormatConverterExample extends SparkApp[FormatConverterContext, DataFrame] {
-  override def createContext(config: Config) = FormatConverterContext(config).get
-  override def run(implicit spark: SparkSession, context: FormatConverterContext): DataFrame = {
+  override def createContext(config: Config) = FormatConverterContext(config)
+  override def run(implicit spark: SparkSession, context: FormatConverterContext): Try[DataFrame] = {
     val inputData = spark.source(context.input).read
     inputData.sink(context.output).write
   }
@@ -53,6 +53,11 @@ case class FormatConverterContext(input: FormatAwareDataSourceConfiguration,
                                   output: FormatAwareDataSinkConfiguration)
 
 object FormatConverterContext extends Configurator[FormatConverterContext] {
+  import com.typesafe.config.Config
+  import scalaz.ValidationNel
+
+  def validationNel(config: Config): ValidationNel[Throwable, FormatConverterContext] = {
+    import scalaz.syntax.applicative._
     config.extract[FormatAwareDataSourceConfiguration]("input") |@|
       config.extract[FormatAwareDataSinkConfiguration]("output") apply
       FormatConverterContext.apply
@@ -65,7 +70,7 @@ Optionally, the `SparkFun` can be used instead of  `SparkApp` to make the code e
 ```scala
 object FormatConverterExample extends 
           SparkFun[FormatConverterContext, DataFrame](FormatConverterContext(_).get) {
-  override def run(implicit spark: SparkSession, context: FormatConverterContext): DataFrame = 
+  override def run(implicit spark: SparkSession, context: FormatConverterContext): Try[DataFrame] = 
     spark.source(context.input).read.sink(context.output).write
 }
 ```
@@ -76,7 +81,7 @@ For structured streaming applications the format converter might look like this:
 ```scala
 object StreamingFormatConverterExample extends SparkApp[StreamingFormatConverterContext, DataFrame] {
   override def createContext(config: Config) = StreamingFormatConverterContext(config).get
-  override def run(implicit spark: SparkSession, context: StreamingFormatConverterContext): DataFrame = {
+  override def run(implicit spark: SparkSession, context: StreamingFormatConverterContext): Try[DataFrame] = {
     val inputData = spark.source(context.input).read
     inputData.streamingSink(context.output).write.awaitTermination()
   }
@@ -192,6 +197,14 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 
 ## What's new? ##
+
+**0.5.0-SNAPSHOT**
+
+- The project moved to Apache Spark 3.0.1, which is a popular choice for the Databricks Cluster users
+- The project is only compiled on Scala 2.12
+- There is a major redesign of core components, mainly returning `Try[_]` for better exception handling
+- Dependencies updates
+
 
 **0.4.2**
 

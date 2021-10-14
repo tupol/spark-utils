@@ -26,7 +26,7 @@ package org.tupol.spark
 import com.typesafe.config.Config
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import org.tupol.utils._
+import org.tupol.utils.implicits._
 
 import scala.util.Try
 
@@ -51,7 +51,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
    * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
    */
-  def createContext(config: Config): Context
+  def createContext(config: Config): Try[Context]
 
   /**
    * Any object extending this trait becomes a runnable application.
@@ -64,8 +64,8 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
     implicit val conf = applicationConfiguration
 
     val outcome = for {
-      context <- Try(createContext(conf))
-      result <- Try(run(spark, context))
+      context <- createContext(conf)
+      result <- run(spark, context)
     } yield result
 
     outcome

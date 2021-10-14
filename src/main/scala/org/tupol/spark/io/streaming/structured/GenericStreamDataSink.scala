@@ -27,10 +27,11 @@ import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery, Trigge
 import org.apache.spark.sql.{ DataFrame, Row }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.{ DataAwareSink, DataSink, DataSinkException, FormatType }
-import org.tupol.utils.config.Configurator
+import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 import scalaz.ValidationNel
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfiguration)
   extends DataSink[GenericStreamDataSinkConfiguration, StreamingQuery] with Logging {
@@ -50,17 +51,12 @@ case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfigurati
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  override def write(data: DataFrame): StreamingQuery = {
+  override def write(data: DataFrame): Try[StreamingQuery] = {
     logInfo(s"Writing data to { $configuration }.")
-    Try(configureWriter(data, configuration).start()) match {
-      case Success(streamingQuery) =>
-        logInfo(s"Successfully writing the data to { $configuration }.")
-        streamingQuery
-      case Failure(ex) =>
-        val message = s"Failed writing the data to { $configuration }."
-        logError(message)
-        throw new DataSinkException(message, ex)
-    }
+    Try(configureWriter(data, configuration).start())
+      .mapFailure(DataSinkException(s"Failed writing the data to { $configuration }.", _))
+      .logSuccess(_ => logInfo(s"Successfully writing the data to { $configuration }."))
+      .logFailure(logError)
   }
 }
 
@@ -87,7 +83,7 @@ case class GenericStreamDataSinkConfiguration(format: FormatType, options: Map[S
 
 object GenericStreamDataSinkConfiguration extends Configurator[GenericStreamDataSinkConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.config._
+  import org.tupol.utils.configz._
   import scalaz.syntax.applicative._
 
   def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSinkConfiguration] = {

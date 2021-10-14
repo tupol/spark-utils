@@ -27,15 +27,15 @@ class GenericDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val inputPath = "src/test/resources/sources/avro/sample.avro"
     val options = Map[String, String]("path" -> inputPath)
     val inputConfig = GenericSourceConfiguration(CustomFormat, options)
-    val resultDF1 = spark.source(inputConfig).read
+    val resultDF1 = spark.source(inputConfig).read.get
 
     resultDF1.count shouldBe 3
 
     val expectedSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
     resultDF1.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
-    val resultDF2 = spark.source(inputConfig).read
-    resultDF2.comapreWith(resultDF1).areEqual(true) shouldBe true
+    val resultDF2 = spark.source(inputConfig).read.get
+    resultDF2.compareWith(resultDF1).areEqual(true) shouldBe true
   }
 
   test("The number of records in the file provided and the other schema must match") {
@@ -44,14 +44,14 @@ class GenericDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val inputPath = "src/test/resources/sources/avro/sample.avro"
     val options = Map[String, String]("path" -> inputPath)
     val inputConfig = GenericSourceConfiguration(CustomFormat, options, Some(expectedSchema))
-    val resultDF1 = GenericDataSource(inputConfig).read
+    val resultDF1 = GenericDataSource(inputConfig).read.get
 
     resultDF1.count shouldBe 3
 
     resultDF1.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
-    val resultDF2 = spark.source(inputConfig).read
-    resultDF2.comapreWith(resultDF1).areEqual(true) shouldBe true
+    val resultDF2 = spark.source(inputConfig).read.get
+    resultDF2.compareWith(resultDF1).areEqual(true) shouldBe true
   }
 
 }

@@ -11,7 +11,7 @@ This framework provides for reading from a given stream with the specified forma
 The framework is composed of two classes:
 - `FileStreamDataSource`, which is created based on a `FileStreamDataSourceConfiguration` class and provides one main function:
   ```scala 
-  def read(implicit spark: SparkSession): DataFrame
+  override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `FileStreamDataSourceConfiguration`: the necessary configuration parameters
 

@@ -8,7 +8,7 @@ The `FileStreamDataSink` framework is a utility framework that helps configuring
 The framework is composed of two classes:
 - `FileStreamDataSink`, which is created based on a `FileStreamDataSinkConfiguration` class and provides one main function:
     ```scala
-    def write(implicit spark: SparkSession): StreamingQuery
+    def write(implicit spark: SparkSession): Try[StreamingQuery]
     ```
 - `FileStreamDataSinkConfiguration`: the necessary configuration parameters
 
