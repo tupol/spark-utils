@@ -42,7 +42,7 @@ FormatAwareDataSinkConfiguration( someTypesafeConfigurationInstance )
 There is a convenience implicit decorator for DataFrames, available through the
 ```scala
 import org.tupol.spark.io._
-import org.tupol.spark.implicits._
+import org.tupol.spark.io.implicits._
 ```
 import statements.
 The `org.tupol.spark.io` package contains the implicit factories for data sinks and the `org.tupol.spark.implicits`
@@ -53,7 +53,7 @@ passing a `DataSinkConfiguration`  configuration instance.
 
 ```scala
 import org.tupol.spark.io._
-import org.tupol.spark.implicits._
+import org.tupol.spark.io.implicits._
 
 def dataFrame: DataFrame = ???
 def dataSinkConfiguration: DataSinkConfiguration = ???

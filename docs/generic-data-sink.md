@@ -49,7 +49,7 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
   - any value is acceptable, but it needs to be supported by Spark
 - `mode` *Optional*
   - the save mode can be `overwrite`, `append`, `ignore` and `error`; more details available
-  [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter);
+  [here](https://spark.apache.org/docs/3.0.1/api/scala/#org.apache.spark.sql.DataFrameWriter);
 - `partition.columns` *Optional*
   - a sequence of columns that should be used for partitioning data on disk;
   - they should exist in the result of the given sql;
@@ -73,11 +73,11 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
     - `compression`:  possible values like `none`, `bzip2`, `gzip`, `lz4`, `snappy`
     - `dateFormat`: default `yyyy-MM-dd`
     - `timestampFormat`: default `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`
-  - more details available [here](https://spark.apache.org/docs/2.3.1/api/scala/#org.apache.spark.sql.DataFrameWriter);
+  - more details available [here](https://spark.apache.org/docs/3.0.1/api/scala/#org.apache.spark.sql.DataFrameWriter);
 
 
 ## References
 
 For the more details about the optional parameters consult the
-[DataFrameWriter](https://spark.apache.org/docs/2.3.2/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameWriter)
+[DataFrameWriter](https://spark.apache.org/docs/3.0.1/api/scala/index.html?org/apache/spark/sql/package-tree.html#org.apache.spark.sql.DataFrameWriter)
 API and sources.

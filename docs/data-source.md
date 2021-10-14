@@ -44,7 +44,7 @@ FormatAwareDataSourceConfiguration( someTypesafeConfigurationInstance )
 There is a convenience implicit decorator for the Spark session, available through the
 ```scala
 import org.tupol.spark.io._
-import org.tupol.spark.implicits._
+import org.tupol.spark.io.implicits._
 ```
 import statements.
 The `org.tupol.spark.io` package contains the implicit factories for data sources and the `org.tupol.spark.implicits`
@@ -55,7 +55,7 @@ passing a `DataSourceConfiguration`  configuration instance.
 
 ```scala
 import org.tupol.spark.io._
-import org.tupol.spark.implicits._
+import org.tupol.spark.io.implicits._
 
 def spark: SparkSession = ???
 def dataSourceConfiguration: DataSourceConfiguration = ???
