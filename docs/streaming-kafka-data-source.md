@@ -27,7 +27,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 **Sample code**
 ```scala
     import org.tupol.spark.io._
-    import org.tupol.spark.implicits._
+    import org.tupol.spark.io.implicits._
     ...
     val sourceConfiguration = KafkaStreamDataSourceConfiguration(...)
     val dataframe = spark.source(sourceConfiguration).read

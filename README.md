@@ -198,6 +198,10 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
+**0.6.0-SNAPSHOT**
+
+- The project is split into two modules: `spark-utils-core` and `spark-utils-io` 
+
 **0.5.0-SNAPSHOT**
 
 - The project moved to Apache Spark 3.0.1, which is a popular choice for the Databricks Cluster users
