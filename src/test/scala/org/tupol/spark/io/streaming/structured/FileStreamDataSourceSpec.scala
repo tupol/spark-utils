@@ -31,7 +31,7 @@ class FileStreamDataSourceSpec extends FunSuite
     val parserConfig = TextSourceConfiguration(options, None)
     val inputConfig = FileStreamDataSourceConfiguration(testPath1, parserConfig)
 
-    val data = spark.source(inputConfig).read
+    val data = spark.source(inputConfig).read.get
       .withColumn("timestamp", current_timestamp())
 
     val streamingQuery = data.writeStream

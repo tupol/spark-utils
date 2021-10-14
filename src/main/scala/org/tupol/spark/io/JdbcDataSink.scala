@@ -42,21 +42,20 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  def write(data: DataFrame): DataFrame = {
+  override def write(data: DataFrame): Try[DataFrame] = {
     logInfo(s"Writing data as '${configuration.format}' " +
       s"to the '${configuration.table}' table of '${configuration.url}'.")
-    val result = for {
+    for {
       writer <- Try(configureWriter(data, configuration))
         .mapFailure(DataSinkException(s"Failed to create a '${configuration.format}' data writer " +
           s"(Full configuration: ${configuration}).", _))
-        .logFailure(t => logError(t.getMessage, t))
+        .logFailure(logError)
       _ <- Try(writer.save())
         .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' " +
           s"to the '${configuration.table}' table of '${configuration.url}' " +
           s"(Full configuration: ${configuration}).", _))
-        .logFailure(t => logError(t.getMessage, t))
+        .logFailure(logError)
     } yield data
-    result.get
   }
 }
 

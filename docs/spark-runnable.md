@@ -24,7 +24,7 @@ trait SparkRunnable[Context, Result] {
    * @param spark active spark session
    * @return
    */
-  def run(implicit spark: SparkSession, context: Context): Result
+  def run(implicit spark: SparkSession, context: Context): Try[Result]
 
 }
 ```

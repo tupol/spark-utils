@@ -75,20 +75,40 @@ trait Logging {
     if (log.isInfoEnabled) log.info(msg, throwable)
   }
 
+  protected def logInfo(throwable: Throwable) {
+    logInfo(throwable.getMessage, throwable)
+  }
+
   protected def logDebug(msg: => String, throwable: Throwable) {
     if (log.isDebugEnabled) log.debug(msg, throwable)
+  }
+
+  protected def logDebug(throwable: Throwable) {
+    logDebug(throwable.getMessage, throwable)
   }
 
   protected def logTrace(msg: => String, throwable: Throwable) {
     if (log.isTraceEnabled) log.trace(msg, throwable)
   }
 
+  protected def logTrace(throwable: Throwable) {
+    logTrace(throwable.getMessage, throwable)
+  }
+
   protected def logWarning(msg: => String, throwable: Throwable) {
     if (log.isWarnEnabled) log.warn(msg, throwable)
   }
 
+  protected def logWarning(throwable: Throwable) {
+    logWarning(throwable.getMessage, throwable)
+  }
+
   protected def logError(msg: => String, throwable: Throwable) {
     if (log.isErrorEnabled) log.error(msg, throwable)
+  }
+
+  protected def logError(throwable: Throwable) {
+    logError(throwable.getMessage, throwable)
   }
 
   protected def isTraceEnabled(): Boolean = {

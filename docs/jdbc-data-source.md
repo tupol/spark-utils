@@ -10,7 +10,7 @@ This framework provides for reading from a `jdbc` connection.
 The framework is composed of two classes:
 - `JdbcDataSource`, which is created based on a `JdbcDataSourceConfig` class and provides one main function:
   ```scala 
-  def read(implicit spark: SparkSession): DataFrame
+  override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `JdbcDataSourceConfig`: the necessary configuration parameters
 

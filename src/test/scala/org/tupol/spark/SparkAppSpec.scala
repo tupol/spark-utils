@@ -1,10 +1,11 @@
 package org.tupol.spark
 
 import java.io.File
-
 import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{ FunSuite, Matchers }
+
+import scala.util.{ Failure, Success, Try }
 
 class SparkAppSpec extends FunSuite with Matchers with LocalSparkSession {
 
@@ -76,18 +77,18 @@ class SparkAppSpec extends FunSuite with Matchers with LocalSparkSession {
   }
 
   object MockApp$ extends SparkApp[String, Unit] {
-    def createContext(config: Config): String = "Hello"
-    override def run(implicit spark: SparkSession, config: String): Unit = Unit
+    def createContext(config: Config): Try[String] = Success("Hello")
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
   }
 
   object MockAppNoConfig extends SparkApp[String, Unit] {
-    def createContext(config: Config): String = "Hello"
-    override def run(implicit spark: SparkSession, config: String): Unit = Unit
+    def createContext(config: Config): Try[String] = Success("Hello")
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
   }
 
   object MockAppFailure extends SparkApp[String, Unit] {
-    def createContext(config: Config): String = "Hello"
-    override def run(implicit spark: SparkSession, config: String): Unit = throw new MockApException
+    def createContext(config: Config): Try[String] = Success("Hello")
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = Failure(new MockApException)
   }
 
   class MockApException extends Exception

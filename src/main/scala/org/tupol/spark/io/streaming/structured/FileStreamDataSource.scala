@@ -31,11 +31,11 @@ import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
 import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, SourceConfiguration }
 import org.tupol.spark.io.{ DataSource, DataSourceException, FormatType }
-import org.tupol.utils.implicits._
 import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 import scalaz.{ NonEmptyList, ValidationNel }
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration) extends DataSource[FileStreamDataSourceConfiguration] with Logging {
 
@@ -64,17 +64,13 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
-  def read(implicit spark: SparkSession): DataFrame = {
+  override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
     Try(createReader(configuration.sourceConfiguration).load(configuration.path))
+      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'", _))
       .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
-        s"from '${configuration.path}'")) match {
-        case Failure(t) =>
-          val message = s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'"
-          logError(message, t)
-          throw new DataSourceException(message, t)
-        case Success(x) => x
-      }
+        s"from '${configuration.path}'"))
+      .logFailure(logError)
   }
 }
 

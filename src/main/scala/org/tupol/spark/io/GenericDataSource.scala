@@ -29,7 +29,7 @@ import org.tupol.spark.Logging
 import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, GenericSourceConfiguration }
 import org.tupol.utils.implicits._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 case class GenericDataSource(configuration: GenericSourceConfiguration)
   extends DataSource[GenericSourceConfiguration] with Logging {
@@ -59,17 +59,13 @@ case class GenericDataSource(configuration: GenericSourceConfiguration)
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
-  def read(implicit spark: SparkSession): DataFrame = {
+  override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' from '${configuration}'.")
     Try(createReader(configuration).load())
-      .logSuccess(d => logInfo(s"Successfully read the data " +
-        s"as '${configuration.format}' from '${configuration}")) match {
-        case Failure(t) =>
-          val message = s"Failed to read the data as '${configuration.format}' from '${configuration}'."
-          logError(message, t)
-          throw new DataSourceException(message, t)
-        case Success(s) => s
-      }
+      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _))
+      .logFailure(logError)
+      .logSuccess(_ => logInfo(s"Successfully read the data " +
+        s"as '${configuration.format}' from '${configuration}"))
   }
 
 }

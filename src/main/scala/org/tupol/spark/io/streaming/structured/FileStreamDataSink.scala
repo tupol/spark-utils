@@ -30,11 +30,13 @@ import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
 import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
+import scala.util.Try
+
 case class FileStreamDataSink(configuration: FileStreamDataSinkConfiguration)
   extends DataSink[FileStreamDataSinkConfiguration, StreamingQuery] with Logging {
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  override def write(data: DataFrame): StreamingQuery =
+  override def write(data: DataFrame): Try[StreamingQuery] =
     GenericStreamDataSink(configuration.generic).write(data)
 }
 

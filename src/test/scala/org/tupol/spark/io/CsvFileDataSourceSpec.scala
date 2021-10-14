@@ -19,12 +19,12 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val delimiter = ","
     val parserConfig = CsvSourceConfiguration(options, None, delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
 
     resultDF.count shouldBe csvDataFrame.count
 
-    spark.source(inputConfig).read.comapreWith(resultDF).areEqual(true) shouldBe true
+    spark.source(inputConfig).read.get.compareWith(resultDF).areEqual(true) shouldBe true
   }
 
   test("The number of records in multiple csv files provided must be the same in the output result") {
@@ -35,7 +35,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]()
     val parserConfig = CsvSourceConfiguration(options, None, delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
 
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
     resultDF.count shouldBe csvDataFrame.count
@@ -55,7 +55,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]()
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.schema.fieldNames should contain("year")
     resultDF.schema.fieldNames should contain("make")
     resultDF.schema.fieldNames should contain("model")
@@ -78,7 +78,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count should be >= 0L
   }
 
@@ -97,7 +97,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").schema(customSchema)
       .option("header", header).option("mode", mode).option("delimiter", delimiter).load(inputPath)
 
@@ -117,7 +117,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count should be >= 0L
   }
 
@@ -134,7 +134,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
     resultDF.count should equal(csvDataFrame.count)
   }
@@ -154,7 +154,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
 
     val csvDataFrame = spark.read.format("com.databricks.spark.csv").option("header", header).option("delimiter", delimiter).load(inputPath)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     resultDF.count should be <= csvDataFrame.count
   }
 
@@ -171,7 +171,7 @@ class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
     val options = Map[String, String]("mode" -> mode)
     val parserConfig = CsvSourceConfiguration(options, Some(customSchema), delimiter, header)
     val inputConfig = FileSourceConfiguration(inputPath, parserConfig)
-    val resultDF = FileDataSource(inputConfig).read
+    val resultDF = FileDataSource(inputConfig).read.get
     Try(resultDF.collect) shouldBe a[Failure[_]]
   }
 }

@@ -12,7 +12,7 @@ import org.tupol.spark.io.FormatType
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.{ TestTempFilePath1, TestTempFilePath2 }
 
-import scala.util.{ Success, Try }
+import scala.util.Success
 
 class FileStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
   with TestTempFilePath1 with TestTempFilePath2 {
@@ -36,13 +36,13 @@ class FileStreamDataSinkSpec extends FunSuite with Matchers with Eventually with
       Some(Trigger.ProcessingTime("1 second")))
     val sinkConfig = FileStreamDataSinkConfiguration(FormatType.Json, testPath1, genericConfig, Some(testPath2))
 
-    val steamingQuery = Try(data.streamingSink(sinkConfig).write)
+    val steamingQuery = data.streamingSink(sinkConfig).write
     steamingQuery shouldBe a[Success[_]]
 
     val sourceData = spark.createDataFrame(TestData)
     eventually {
       val writtenData: DataFrame = spark.read.json(testPath1)
-      writtenData.comapreWith(sourceData).areEqual(false) shouldBe true
+      writtenData.compareWith(sourceData).areEqual(false) shouldBe true
     }
     steamingQuery.get.stop
   }
@@ -56,13 +56,13 @@ class FileStreamDataSinkSpec extends FunSuite with Matchers with Eventually with
       Some(Trigger.ProcessingTime("1 second")))
     val sinkConfig = FileStreamDataSinkConfiguration(FormatType.Parquet, testPath1, genericConfig, Some(testPath2))
 
-    val steamingQuery = Try(data.streamingSink(sinkConfig).write)
+    val steamingQuery = data.streamingSink(sinkConfig).write
     steamingQuery shouldBe a[Success[_]]
 
     eventually {
       val sourceData = spark.createDataFrame(TestData)
       val writtenData: DataFrame = spark.read.parquet(testPath1)
-      writtenData.comapreWith(sourceData).areEqual(false) shouldBe true
+      writtenData.compareWith(sourceData).areEqual(false) shouldBe true
     }
     steamingQuery.get.stop
   }

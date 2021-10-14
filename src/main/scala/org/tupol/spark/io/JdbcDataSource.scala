@@ -28,7 +28,7 @@ import org.tupol.spark.Logging
 import org.tupol.spark.io.sources.JdbcSourceConfiguration
 import org.tupol.utils.implicits._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSource[JdbcSourceConfiguration] with Logging {
 
@@ -38,19 +38,15 @@ case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSo
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
-  def read(implicit spark: SparkSession): DataFrame = {
+  override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' " +
       s"from the '${configuration.table}' table of '${configuration.url}'.")
     Try(createReader(configuration).load())
+      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from " +
+        s"the '${configuration.table}' table of '${configuration.url}' (Full configuration: ${configuration})", _))
+      .logFailure(logError)
       .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.format}' from " +
-        s"the '${configuration.table}' table of '${configuration.url}'")) match {
-        case Failure(t) =>
-          val message = s"Failed to read the data as '${configuration.format}' from " +
-          s"the '${configuration.table}' table of '${configuration.url}' (Full configuration: ${configuration})"
-          logError(message, t)
-          throw new DataSourceException(message, t)
-        case Success(s) => s
-      }
+        s"the '${configuration.table}' table of '${configuration.url}'"))
   }
 
 }

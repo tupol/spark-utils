@@ -17,9 +17,9 @@ Spark applications.
  *
  */
 @Experimental
-abstract class SparkFun[Context, Result](contextFactory: Config => Context)
+abstract class SparkFun[Context, Result](contextFactory: Config => Try[Context])
   extends SparkApp[Context, Result] {
-  final override def createContext(config: Config): Context = contextFactory(config)
+  final override def createContext(config: Config): Try[Context] = contextFactory(config)
 }
 ```
  

@@ -9,7 +9,7 @@ The framework is composed of two classes:
 - `KafkaStreamDataSource`, which is created based on a `KafkaStreamDataSourceConfiguration` 
   class and provides one main function:
   ```scala 
-  def read(implicit spark: SparkSession): DataFrame
+  override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `KafkaStreamDataSourceConfiguration`: the necessary configuration parameters
 

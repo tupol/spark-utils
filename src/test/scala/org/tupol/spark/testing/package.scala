@@ -87,7 +87,7 @@ package object testing {
   }
 
   implicit class DataFrameComparator(dataframe: DataFrame) {
-    def comapreWith(that: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
+    def compareWith(that: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
       compareDataFrames(dataframe, that, joinColumns)
     }
   }

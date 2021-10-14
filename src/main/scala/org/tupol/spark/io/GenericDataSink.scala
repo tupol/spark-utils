@@ -26,8 +26,9 @@ package org.tupol.spark.io
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
 import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 /**  GenericDataSink trait */
 case class GenericDataSink(configuration: GenericSinkConfiguration) extends DataSink[GenericSinkConfiguration, DataFrame] with Logging {
@@ -42,17 +43,13 @@ case class GenericDataSink(configuration: GenericSinkConfiguration) extends Data
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  def write(data: DataFrame): DataFrame = {
+  override def write(data: DataFrame): Try[DataFrame] = {
     logInfo(s"Writing data as '${configuration.format}' to '${configuration}'.")
-    Try(configureWriter(data, configuration).save()) match {
-      case Success(_) =>
-        logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration}'.")
-        data
-      case Failure(ex) =>
-        val message = s"Failed to save the data as '${configuration.format}' to '${configuration}')."
-        logError(message)
-        throw new DataSinkException(message, ex)
-    }
+    Try(configureWriter(data, configuration).save())
+      .map(_ => data)
+      .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' to '${configuration}').", _))
+      .logSuccess(_ => logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration}'."))
+      .logFailure(logError)
   }
 }
 

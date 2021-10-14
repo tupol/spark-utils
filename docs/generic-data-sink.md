@@ -17,7 +17,7 @@ partitioning parameters like columns.
 The framework is composed of two classes:
 - `GenericDataSink`, which is created based on a `GenericSinkConfiguration` class and provides one main function:
     ```scala
-    def write(data: DataFrame): DataFrame
+    def write(data: DataFrame): Try[DataFrame]
     ```
 - `GenericSinkConfiguration`: the necessary configuration parameters
 

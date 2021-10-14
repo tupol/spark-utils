@@ -41,13 +41,13 @@ class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually w
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Kafka, TestOptions, Some("TestQuery"))
 
     withRunningKafka {
-      val steamingQuery = Try(data.streamingSink(sinkConfig).write)
+      val steamingQuery = data.streamingSink(sinkConfig).write
 
       steamingQuery shouldBe a[Success[_]]
       eventually {
         val writtenData = consumeNumberStringMessagesFrom(topic, 2)
         val writtenDataFrame = spark.read.json(spark.createDataFrame(writtenData.map(x => (x, x))).as[(String, String)].map(_._1))
-        writtenDataFrame.comapreWith(TestDataFrame).areEqual(false) shouldBe true
+        writtenDataFrame.compareWith(TestDataFrame).areEqual(false) shouldBe true
       }
       steamingQuery.get.stop
     }

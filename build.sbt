@@ -6,10 +6,10 @@ organization := "org.tupol"
 scalaVersion := "2.12.12"
 crossScalaVersions := Seq("2.12.12")
 
-val scalaUtilsVersion = "1.0.0-RC02"
+val scalaUtilsVersion = "1.0.0"
 
 val sparkVersion = "3.0.1"
-val sparkXmlVersion = "0.10.0"
+val sparkXmlVersion = "0.13.0"
 val fasterxmlVersion = "2.10.0"
 val json4sVersion = "3.6.6"
 
@@ -31,7 +31,7 @@ lazy val providedDependencies = Seq(
 
 libraryDependencies ++= providedDependencies.map(_ % "provided")
 
-// Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 2.4.x we need this override
+// Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
 dependencyOverrides += "com.fasterxml.jackson.core" %% "jackson-databind" % fasterxmlVersion
 dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % fasterxmlVersion
 dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-paranamer" % fasterxmlVersion
@@ -53,7 +53,7 @@ libraryDependencies ++= Seq(
 // TESTING
 parallelExecution in Test := false
 
-fork in Test := false
+fork in Test := true
 
 publishArtifact in Test := true
 

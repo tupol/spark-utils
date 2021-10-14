@@ -29,12 +29,14 @@ import org.tupol.spark.io.sources.{ GenericSourceConfiguration, JdbcSourceConfig
 import org.tupol.utils.configz.Configurator
 import scalaz.ValidationNel
 
+import scala.util.Try
+
 /** Common trait for reading a DataFrame from an external resource */
 trait DataSource[Config <: DataSourceConfiguration] {
   /** `DataSource` configuration */
   def configuration: Config
   /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  def read(implicit spark: SparkSession): DataFrame
+  def read(implicit spark: SparkSession): Try[DataFrame]
 }
 
 /** Factory trait for DataSourceFactory */

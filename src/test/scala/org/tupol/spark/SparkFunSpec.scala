@@ -1,12 +1,11 @@
 package org.tupol.spark
 
 import java.io.File
-
 import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{ FunSuite, Matchers }
 
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 class SparkFunSpec extends FunSuite with Matchers with LocalSparkSession {
 
@@ -78,21 +77,21 @@ class SparkFunSpec extends FunSuite with Matchers with LocalSparkSession {
   }
 
   object MockFunConfig extends (Config => Try[String]) {
-    def apply(config: Config) = Try("Hello")
+    def apply(config: Config): Try[String] = Success("Hello")
   }
 
-  val contextFactory = (_: Config) => "Hello"
+  val contextFactory: Config => Try[String] = (_: Config) => Success("Hello")
 
-  object MockFun$ extends SparkFun[String, Unit](MockFunConfig(_).get) {
-    override def run(implicit spark: SparkSession, config: String): Unit = Unit
+  object MockFun$ extends SparkFun[String, Unit](MockFunConfig(_)) {
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
   }
 
   object MockFunNoConfig extends SparkFun[String, Unit](contextFactory) {
-    override def run(implicit spark: SparkSession, config: String): Unit = Unit
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
   }
 
-  object MockFunFailure extends SparkFun[String, Unit]((_: Config) => "Hello") {
-    override def run(implicit spark: SparkSession, config: String): Unit = throw new MockApException
+  object MockFunFailure extends SparkFun[String, Unit]((_: Config) => Try("Hello")) {
+    override def run(implicit spark: SparkSession, config: String): Try[Unit] = Failure(new MockApException)
   }
 
   class MockApException extends Exception

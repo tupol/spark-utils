@@ -28,11 +28,11 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io._
-import org.tupol.utils.implicits._
 import org.tupol.utils.configz.Configurator
+import org.tupol.utils.implicits._
 import scalaz.ValidationNel
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfiguration)
   extends DataSource[GenericStreamDataSourceConfiguration] with Logging {
@@ -49,16 +49,12 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
-  def read(implicit spark: SparkSession): DataFrame = {
+  override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' from '${configuration}'.")
     Try(createReader(configuration).load())
-      .logSuccess(_ => logInfo(s"Successfully read the data as '${configuration.format}' from '${configuration}'")) match {
-        case Failure(t) =>
-          val message = s"Failed to read the data as '${configuration.format}' from '${configuration}'"
-          logError(message, t)
-          throw new DataSourceException(message, t)
-        case Success(x) => x
-      }
+      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _))
+      .logSuccess(_ => logInfo(s"Successfully read the data as '${configuration.format}' from '${configuration}'"))
+      .logFailure(logError)
   }
 }
 

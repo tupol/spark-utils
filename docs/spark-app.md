@@ -28,7 +28,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logg
    * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
    */
-  def createContext(config: Config): Context
+  def createContext(config: Config): Try[Context]
 
   ....
 }

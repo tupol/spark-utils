@@ -32,11 +32,13 @@ import org.tupol.spark.io.{ DataSource, FormatType, _ }
 import org.tupol.utils.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
+import scala.util.Try
+
 case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfiguration) extends DataSource[KafkaStreamDataSourceConfiguration] with Logging {
 
   val genericConfiguration = GenericStreamDataSourceConfiguration(configuration.format, configuration.options, configuration.schema)
   /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  override def read(implicit spark: SparkSession): DataFrame = GenericStreamDataSource(genericConfiguration).read
+  override def read(implicit spark: SparkSession): Try[DataFrame] = GenericStreamDataSource(genericConfiguration).read
 }
 
 /**

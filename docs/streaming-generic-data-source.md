@@ -8,7 +8,7 @@ The `GenericStreamDataSource` framework is a utility framework that helps config
 The framework is composed of two classes:
 - `GenericStreamDataSource`, which is created based on a `GenericStreamDataSourceConfiguration` class and provides one main function:
   ```scala 
-  def read(implicit spark: SparkSession): DataFrame
+  override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `GenericStreamDataSourceConfiguration`: the necessary configuration parameters
 

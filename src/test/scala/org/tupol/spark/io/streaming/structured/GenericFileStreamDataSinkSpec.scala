@@ -36,13 +36,13 @@ class GenericFileStreamDataSinkSpec extends FunSuite with Matchers with Eventual
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Json, writeOptions, Some("testQuery"),
       Some(Trigger.ProcessingTime("1 second")))
 
-    val steamingQuery = Try(data.streamingSink(sinkConfig).write)
+    val steamingQuery = data.streamingSink(sinkConfig).write
     steamingQuery shouldBe a[Success[_]]
 
     eventually {
       val sourceData = spark.createDataFrame(TestData)
       val writtenData: DataFrame = spark.read.json(testPath1)
-      writtenData.comapreWith(sourceData).areEqual(false) shouldBe true
+      writtenData.compareWith(sourceData).areEqual(false) shouldBe true
     }
     steamingQuery.get.stop
   }
@@ -58,13 +58,13 @@ class GenericFileStreamDataSinkSpec extends FunSuite with Matchers with Eventual
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Parquet, writeOptions, Some("testQuery"),
       Some(Trigger.ProcessingTime("1 second")))
 
-    val steamingQuery = Try(data.streamingSink(sinkConfig).write)
+    val steamingQuery = data.streamingSink(sinkConfig).write
     steamingQuery shouldBe a[Success[_]]
 
     eventually {
       val sourceData = spark.createDataFrame(TestData)
       val writtenData: DataFrame = spark.read.parquet(testPath1)
-      writtenData.comapreWith(sourceData).areEqual(false) shouldBe true
+      writtenData.compareWith(sourceData).areEqual(false) shouldBe true
     }
     steamingQuery.get.stop
   }

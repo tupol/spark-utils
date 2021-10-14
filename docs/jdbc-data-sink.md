@@ -13,7 +13,7 @@ columns and number of partition files.
 The framework is composed of two classes:
 - `JdbcDataSink`, which is created based on a `JdbcSinkConfiguration` class and provides one main function:
     ```scala
-    def write(data: DataFrame): DataFrame
+    def write(data: DataFrame): Try[DataFrame]
     ```
 - `JdbcSinkConfiguration`: the necessary configuration parameters
 
