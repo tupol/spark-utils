@@ -27,7 +27,7 @@ import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery, Trigge
 import org.apache.spark.sql.{ DataFrame, Row }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.{ DataAwareSink, DataSink, DataSinkException, FormatType }
-import org.tupol.utils.configz.Configurator
+import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
 import scalaz.ValidationNel
 
@@ -83,7 +83,7 @@ case class GenericStreamDataSinkConfiguration(format: FormatType, options: Map[S
 
 object GenericStreamDataSinkConfiguration extends Configurator[GenericStreamDataSinkConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.configz._
+  import org.tupol.configz._
   import scalaz.syntax.applicative._
 
   def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSinkConfiguration] = {

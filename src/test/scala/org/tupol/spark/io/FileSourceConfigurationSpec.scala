@@ -1,10 +1,11 @@
 package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.sources.TextSourceConfiguration
 
-class FileSourceConfigurationSpec extends FunSuite with Matchers {
+class FileSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract FileSourceConfiguration out of a configuration string") {
 
@@ -18,7 +19,7 @@ class FileSourceConfigurationSpec extends FunSuite with Matchers {
     val expected = FileSourceConfiguration(
       path = "INPUT_PATH",
       sourceConfiguration = TextSourceConfiguration())
-    val result = FileSourceConfiguration(config.getConfig("input"))
+    val result = FileSourceConfiguration.extract(config.getConfig("input"))
 
     result.get shouldBe expected
   }
@@ -32,7 +33,7 @@ class FileSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSourceConfiguration(config.getConfig("input"))
+    val result = FileSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
 
@@ -46,7 +47,7 @@ class FileSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSourceConfiguration(config.getConfig("input"))
+    val result = FileSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
   }
@@ -59,7 +60,7 @@ class FileSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSourceConfiguration(config.getConfig("input"))
+    val result = FileSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
   }
@@ -69,7 +70,7 @@ class FileSourceConfigurationSpec extends FunSuite with Matchers {
     val configStr = ""
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSourceConfiguration(config)
+    val result = FileSourceConfiguration.extract(config)
 
     result.isSuccess shouldBe false
   }

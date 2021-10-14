@@ -1,14 +1,15 @@
 package org.tupol.spark.io.streaming.structured
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.sources.{ JsonSourceConfiguration, TextSourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromFile
-import org.tupol.utils.configz._
+import org.tupol.configz._
 
-class FormatAwareStreamingSourceConfigurationSpec extends FunSuite with Matchers with SharedSparkSession {
+class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   val ReferenceSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
 

@@ -1,12 +1,13 @@
 package org.tupol.spark.io.source
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.sources.{ CsvSourceConfiguration, SourceConfiguration }
 
 import scala.util.Success
 
-class CsvSourceConfigurationSpec extends FunSuite with Matchers {
+class CsvSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Parse configuration with schema") {
 
@@ -161,7 +162,7 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                       """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[CsvSourceConfiguration]
@@ -179,7 +180,7 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[CsvSourceConfiguration]
@@ -202,7 +203,7 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[CsvSourceConfiguration]
@@ -231,7 +232,7 @@ class CsvSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[CsvSourceConfiguration]

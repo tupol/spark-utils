@@ -27,7 +27,7 @@ import com.typesafe.config.Config
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.utils.configz.Configurator
+import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
 import scalaz.ValidationNel
 
@@ -99,7 +99,7 @@ object JdbcSinkConfiguration extends Configurator[JdbcSinkConfiguration] {
     new JdbcSinkConfiguration(url, table, Some(user), Some(password), Some(driver), saveMode, options)
 
   override def validationNel(config: Config): ValidationNel[Throwable, JdbcSinkConfiguration] = {
-    import org.tupol.utils.configz._
+    import org.tupol.configz._
     import scalaz.syntax.applicative._
     config.extract[String]("url") |@|
       config.extract[String]("table") |@|

@@ -26,8 +26,10 @@ package org.tupol.spark.io.streaming
 import com.typesafe.config.Config
 import org.apache.spark.sql.streaming.Trigger
 import org.tupol.spark.io.{ DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration }
-import org.tupol.utils.configz._
+import org.tupol.configz._
 import scalaz.ValidationNel
+
+import scala.util.{ Failure, Success, Try }
 
 package object structured {
 
@@ -53,21 +55,27 @@ package object structured {
 
   implicit val TriggerExtractor = new Extractor[Trigger] {
     val AcceptableValues = Seq("Continuous", "Once", "ProcessingTime")
-    override def extract(config: Config, path: String): Trigger = {
-      val triggerType = config.extract[String](s"$path.trigger.type").get
-      val interval = config.extract[Option[String]](s"$path.trigger.interval").get
-      triggerType.trim.toLowerCase() match {
-        case "once" => Trigger.Once()
-        case "continuous" =>
-          require(interval.isDefined, "The interval must be defined for Continuous triggers.")
-          Trigger.Continuous(interval.get)
-        case "processingtime" =>
-          require(interval.isDefined, "The interval must be defined for ProcessingTime triggers.")
-          Trigger.ProcessingTime(interval.get)
-        case tt => throw new IllegalArgumentException(s"The trigger.type '$tt' is not supported. " +
-          s"The supported values are ${AcceptableValues.mkString(",", "', '", ",")}.")
-      }
-    }
+
+    override def extract(config: Config, path: String): Try[Trigger] =
+      for {
+        triggerType <- config.extract[String](s"$path.trigger.type")
+        interval <- config.extract[Option[String]](s"$path.trigger.interval")
+        trigger <- triggerType.trim.toLowerCase() match {
+          case "once" => Success(Trigger.Once())
+          case "continuous" =>
+            Try {
+              require(interval.isDefined, "The interval must be defined for Continuous triggers.")
+              Trigger.Continuous(interval.get)
+            }
+          case "processingtime" =>
+            Try {
+              require(interval.isDefined, "The interval must be defined for ProcessingTime triggers.")
+              Trigger.ProcessingTime(interval.get)
+            }
+          case tt => Failure(new IllegalArgumentException(s"The trigger.type '$tt' is not supported. " +
+            s"The supported values are ${AcceptableValues.mkString(",", "', '", ",")}."))
+        }
+      } yield trigger
   }
 
   /**
@@ -79,13 +87,12 @@ package object structured {
   case class KafkaSubscription(subscriptionType: String, subscription: String)
   implicit val KafkaSubscriptionExtractor = new Extractor[KafkaSubscription] {
     val AcceptableValues = Seq("assign", "subscribe", "subscribePattern")
-    override def extract(config: Config, path: String): KafkaSubscription = {
-      val subscriptionType = config.extract[String](s"$path.subscription.type")
-        .ensure(new IllegalArgumentException(s"The subscription.type is not supported. " +
+    override def extract(config: Config, path: String): Try[KafkaSubscription] =
+      for {
+        subscriptionType <- config.extract[String](s"$path.subscription.type").ensure(new IllegalArgumentException(s"The subscription.type is not supported. " +
           s"The supported values are ${AcceptableValues.mkString(",", "', '", ",")}.").toNel)(st =>
-          AcceptableValues.map(_.toLowerCase()).contains(st.toLowerCase)).get
-      val subscription = config.extract[String](s"$path.subscription.value").get
-      KafkaSubscription(subscriptionType, subscription)
-    }
+          AcceptableValues.map(_.toLowerCase()).contains(st.toLowerCase))
+        subscription <- config.extract[String](s"$path.subscription.value")
+      } yield KafkaSubscription(subscriptionType, subscription)
   }
 }

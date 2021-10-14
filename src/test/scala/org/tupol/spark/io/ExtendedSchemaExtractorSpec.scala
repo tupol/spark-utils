@@ -2,13 +2,14 @@ package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.types.StructType
-import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.configz._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.tupol.configz._
 import org.tupol.spark.sql.loadSchemaFromFile
 
-class ExtendedSchemaExtractorSpec extends FunSuite with Matchers {
+class ExtendedSchemaExtractorSpec extends AnyFunSuite with Matchers {
 
-  val ReferenceSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
+  val ReferenceSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json").get
 
   test("Load schema from an external resource with a schema configuration path") {
     val config = ConfigFactory.parseString(""" schema.path: "src/test/resources/sources/avro/sample_schema.json" """)

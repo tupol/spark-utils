@@ -1,14 +1,15 @@
 package org.tupol.spark.io
 
-import java.sql.{ Connection, PreparedStatement }
-
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.JdbcSourceConfiguration
 import org.tupol.spark.testing.H2Database
 
-class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession with H2Database {
+import java.sql.{Connection, PreparedStatement}
+
+class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession with H2Database {
 
   val TestTable = "test_table"
 
@@ -24,7 +25,7 @@ class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
 
     val sourceConfig = JdbcSourceConfiguration(h2url, TestTable, h2user, h2password, h2driver)
 
-    noException shouldBe thrownBy(spark.source(sourceConfig).read)
+    noException shouldBe thrownBy(spark.source(sourceConfig).read.get)
 
     spark.source(sourceConfig).read.get.as[JdbcTestRecord].collect should contain theSameElementsAs (TestData)
   }
@@ -33,7 +34,7 @@ class JdbcDataSourceSpec extends FunSuite with Matchers with SharedSparkSession 
 
     val sourceConfig = JdbcSourceConfiguration(h2url, TestTable, h2user, h2password, h2driver)
 
-    a[DataSourceException] should be thrownBy spark.source(sourceConfig).read
+    a[DataSourceException] should be thrownBy spark.source(sourceConfig).read.get
   }
 
   private def createTestTable(conection: Connection, testData: Seq[JdbcTestRecord]) = {

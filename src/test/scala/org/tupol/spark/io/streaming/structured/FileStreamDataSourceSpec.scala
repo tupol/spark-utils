@@ -1,12 +1,13 @@
 package org.tupol.spark.io.streaming.structured
 
 import java.io.File
-
 import org.apache.commons.io.FileUtils
 import org.apache.spark.sql.functions.current_timestamp
 import org.apache.spark.sql.streaming.Trigger
-import org.scalatest._
+import org.scalatest.{ BeforeAndAfter, GivenWhenThen }
 import org.scalatest.concurrent.Eventually
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{ Millis, Span }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
@@ -15,7 +16,7 @@ import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.Random
 
-class FileStreamDataSourceSpec extends FunSuite
+class FileStreamDataSourceSpec extends AnyFunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with TestTempFilePath1 {
 
@@ -59,7 +60,7 @@ class FileStreamDataSourceSpec extends FunSuite
     val options = Map[String, String]("path" -> testPath1)
     val parserConfig = TextSourceConfiguration(options, None)
     val inputConfig = FileStreamDataSourceConfiguration(testPath1, parserConfig)
-    an[Exception] shouldBe thrownBy(spark.source(inputConfig).read)
+    an[Exception] shouldBe thrownBy(spark.source(inputConfig).read.get)
   }
 
   def addFile(text: String, parentFile: File): Unit = {

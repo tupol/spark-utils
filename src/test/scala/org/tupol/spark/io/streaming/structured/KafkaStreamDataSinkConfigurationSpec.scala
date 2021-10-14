@@ -2,11 +2,12 @@ package org.tupol.spark.io.streaming.structured
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.streaming.Trigger
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.FormatType._
-import org.tupol.utils.configz._
+import org.tupol.configz._
 
-class KafkaStreamDataSinkConfigurationSpec extends FunSuite with Matchers {
+class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string") {
 

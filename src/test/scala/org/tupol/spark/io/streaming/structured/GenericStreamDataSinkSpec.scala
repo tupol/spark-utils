@@ -1,19 +1,20 @@
 package org.tupol.spark.io.streaming.structured
 
-import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
+import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
 import org.apache.spark.sql.execution.streaming.MemoryStream
 import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{ Seconds, Span }
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.time.{Seconds, Span}
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
-import org.tupol.spark.io.{ DataSinkException, FormatType }
+import org.tupol.spark.io.{DataSinkException, FormatType}
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
-import scala.util.{ Success, Try }
+import scala.util.Success
 
-class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
+class GenericStreamDataSinkSpec extends AnyFunSuite with Matchers with Eventually with SharedSparkSession
   with TestTempFilePath1 with EmbeddedKafka {
 
   import spark.implicits._
@@ -70,7 +71,7 @@ class GenericStreamDataSinkSpec extends FunSuite with Matchers with Eventually w
     val sinkConfig = GenericStreamDataSinkConfiguration(FormatType.Kafka, TestOptions, Some("TestQuery"))
 
     withRunningKafka {
-      a[DataSinkException] shouldBe thrownBy(data.streamingSink(sinkConfig).write)
+      a[DataSinkException] shouldBe thrownBy(data.streamingSink(sinkConfig).write.get)
     }
   }
 

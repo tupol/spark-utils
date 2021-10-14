@@ -1,10 +1,11 @@
 package org.tupol.spark.io.streaming.structured
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.sources.TextSourceConfiguration
 
-class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
+class FileStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract FileStreamDataSourceConfiguration out of a configuration string") {
 
@@ -18,7 +19,7 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
     val expected = FileStreamDataSourceConfiguration(
       path = "INPUT_PATH",
       sourceConfiguration = TextSourceConfiguration())
-    val result = FileStreamDataSourceConfiguration(config.getConfig("input"))
+    val result = FileStreamDataSourceConfiguration.extract(config.getConfig("input"))
 
     result.get shouldBe expected
   }
@@ -32,7 +33,7 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileStreamDataSourceConfiguration(config.getConfig("input"))
+    val result = FileStreamDataSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
 
@@ -46,7 +47,7 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileStreamDataSourceConfiguration(config.getConfig("input"))
+    val result = FileStreamDataSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
   }
@@ -59,7 +60,7 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileStreamDataSourceConfiguration(config.getConfig("input"))
+    val result = FileStreamDataSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
   }
@@ -73,7 +74,7 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileStreamDataSourceConfiguration(config.getConfig("input"))
+    val result = FileStreamDataSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
   }
@@ -83,7 +84,7 @@ class FileStreamDataSourceConfigurationSpec extends FunSuite with Matchers {
     val configStr = ""
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileStreamDataSourceConfiguration(config)
+    val result = FileStreamDataSourceConfiguration.extract(config)
 
     result.isSuccess shouldBe false
   }

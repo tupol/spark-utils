@@ -4,17 +4,18 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.execution.streaming.MemoryStream
 import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.concurrent.Eventually
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{ Seconds, Span }
-import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.FormatType
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.{ TestTempFilePath1, TestTempFilePath2 }
 
-import scala.util.{ Success, Try }
+import scala.util.Success
 
-class GenericFileStreamDataSinkSpec extends FunSuite with Matchers with Eventually with SharedSparkSession
+class GenericFileStreamDataSinkSpec extends AnyFunSuite with Matchers with Eventually with SharedSparkSession
   with TestTempFilePath1 with TestTempFilePath2 {
 
   import spark.implicits._

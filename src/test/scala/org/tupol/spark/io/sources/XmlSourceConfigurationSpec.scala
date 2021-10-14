@@ -1,12 +1,13 @@
 package org.tupol.spark.io.source
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.sources.{ SourceConfiguration, XmlSourceConfiguration }
 
 import scala.util.Success
 
-class XmlSourceConfigurationSpec extends FunSuite with Matchers {
+class XmlSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Parse configuration with schema") {
 
@@ -511,7 +512,7 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val parserConfig = SourceConfiguration(config)
+    val parserConfig = SourceConfiguration.extract(config)
 
     parserConfig shouldBe a[Success[_]]
     parserConfig.get shouldBe an[XmlSourceConfiguration]
@@ -528,7 +529,7 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val parserConfig = SourceConfiguration(config)
+    val parserConfig = SourceConfiguration.extract(config)
 
     parserConfig shouldBe a[Success[_]]
     parserConfig.get shouldBe an[XmlSourceConfiguration]
@@ -551,7 +552,7 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val parserConfig = SourceConfiguration(config)
+    val parserConfig = SourceConfiguration.extract(config)
 
     parserConfig shouldBe a[Success[_]]
     parserConfig.get shouldBe an[XmlSourceConfiguration]
@@ -576,7 +577,7 @@ class XmlSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val parserConfig = SourceConfiguration(config)
+    val parserConfig = SourceConfiguration.extract(config)
 
     parserConfig shouldBe a[Success[_]]
     parserConfig.get shouldBe an[XmlSourceConfiguration]

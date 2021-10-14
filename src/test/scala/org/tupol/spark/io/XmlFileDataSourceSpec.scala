@@ -1,20 +1,21 @@
 package org.tupol.spark.io
 
 import org.apache.spark.sql.types._
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.XmlSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-import scala.util.{ Failure, Try }
+import scala.util.{Failure, Try}
 
-class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
+class XmlFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("Extract the root element of a single file should yield a single result") {
 
-    val schema = Some(loadSchemaFromFile("src/test/resources/sources/xml/sample-schema.json"))
+    val schema = Some(loadSchemaFromFile("src/test/resources/sources/xml/sample-schema.json").get)
     val inputPath = "src/test/resources/sources/xml/sample-1.xml"
     val mode = "PERMISSIVE"
     val rowTag = "root-name"
@@ -31,7 +32,7 @@ class XmlFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSessi
 
   test("Extract the root element of multiple files should yield as many results as the number of files") {
 
-    val schema = Some(loadSchemaFromFile("src/test/resources/sources/xml/sample-schema.json"))
+    val schema = Some(loadSchemaFromFile("src/test/resources/sources/xml/sample-schema.json").get)
     val inputPath = "src/test/resources/sources/xml/sample-*.xml"
     val mode = "PERMISSIVE"
     val rowTag = "root-name"

@@ -1,14 +1,16 @@
 package org.tupol.spark.io.streaming.structured
 
-import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
+import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
 import org.apache.spark.sql.streaming.Trigger
-import org.scalatest._
+import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{ Seconds, Span }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.time.{Seconds, Span}
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 
-class KafkaStreamDataSourceSpec extends FunSuite
+class KafkaStreamDataSourceSpec extends AnyFunSuite
   with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
   with SharedSparkSession with EmbeddedKafka {
 
@@ -53,7 +55,7 @@ class KafkaStreamDataSourceSpec extends FunSuite
     val inputConfig = KafkaStreamDataSourceConfiguration(
       "unknown_host:0000000",
       KafkaSubscription("ILLEGAL-SUBSCRIPTION-TYPE", "UNKNOWN-TOPIC"), Some("earliest"))
-    an[Exception] shouldBe thrownBy(spark.source(inputConfig).read)
+    an[Exception] shouldBe thrownBy(spark.source(inputConfig).read.get)
   }
 
 }

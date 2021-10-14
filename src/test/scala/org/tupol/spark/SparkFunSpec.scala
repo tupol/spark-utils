@@ -3,11 +3,12 @@ package org.tupol.spark
 import java.io.File
 import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{ Failure, Success, Try }
 
-class SparkFunSpec extends FunSuite with Matchers with LocalSparkSession {
+class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   val filesArg = Seq(
     new File("src/test/resources/MockFun/application.conf").getAbsolutePath)

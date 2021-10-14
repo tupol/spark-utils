@@ -1,8 +1,9 @@
 package org.tupol.spark.implicits
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class ProductOpsSpec extends FunSuite with Matchers {
+class ProductOpsSpec extends AnyFunSuite with Matchers {
 
   test("Simple case class toMap") {
     val cc1 = CC1(1, "1", Seq("1", "2"))

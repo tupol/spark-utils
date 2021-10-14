@@ -26,7 +26,8 @@ package org.tupol
 import org.tupol.utils.implicits._
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.spark.SparkFiles
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
+import org.apache.spark.sql.{ Encoder, SparkSession }
 
 import scala.util.Try
 
@@ -129,4 +130,25 @@ package object spark {
     protected def renderConfig(config: Config): String = config.root.render
   }
 
+  object encoders {
+
+    /**
+     * This code is taken from [[org.apache.spark.sql.catalyst.encoders]] to work around a Databricks runtime issue.
+     *
+     * Returns an internal encoder object that can be used to serialize / deserialize JVM objects
+     * into Spark SQL rows.  The implicit encoder should always be unresolved (i.e. have no attribute
+     * references from a specific schema.)  This requirement allows us to preserve whether a given
+     * object type is being bound by name or by ordinal when doing resolution.
+     */
+    def encoderFor[A: Encoder]: ExpressionEncoder[A] =
+      implicitly[Encoder[A]] match {
+        case e: ExpressionEncoder[A] =>
+          e.assertUnresolved()
+          e
+        case _ => sys.error(s"Only expression encoders are supported today")
+      }
+
+    def tuple2[A: Encoder, B: Encoder]: Encoder[(A, B)] =
+      org.apache.spark.sql.Encoders.tuple(encoderFor[A], encoderFor[B])
+  }
 }

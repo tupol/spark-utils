@@ -1,17 +1,11 @@
+import Dependencies._
 
 name := "spark-utils"
 
 organization := "org.tupol"
 
-scalaVersion := "2.12.12"
-crossScalaVersions := Seq("2.12.12")
-
-val scalaUtilsVersion = "1.0.0"
-
-val sparkVersion = "3.0.1"
-val sparkXmlVersion = "0.13.0"
-val fasterxmlVersion = "2.10.0"
-val json4sVersion = "3.6.6"
+scalaVersion := Versions.scala
+crossScalaVersions := Versions.crossScala
 
 // ------------------------------
 // DEPENDENCIES AND RESOLVERS
@@ -20,34 +14,10 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-lazy val providedDependencies = Seq(
-  "org.apache.spark" %% "spark-core" % sparkVersion force(),
-  "org.apache.spark" %% "spark-sql" % sparkVersion force(),
-  "org.apache.spark" %% "spark-mllib" % sparkVersion force(),
-  "org.apache.spark" %% "spark-streaming" % sparkVersion force(),
-  "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion,
-  "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion
-)
 
-libraryDependencies ++= providedDependencies.map(_ % "provided")
+dependencyOverrides ++= FasterXmlOverrides
 
-// Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
-dependencyOverrides += "com.fasterxml.jackson.core" %% "jackson-databind" % fasterxmlVersion
-dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % fasterxmlVersion
-dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-paranamer" % fasterxmlVersion
-
-
-libraryDependencies ++= Seq(
-  "org.tupol" %% "scala-utils" % scalaUtilsVersion,
-  "org.json4s" %% "json4s-core" % json4sVersion % "test",
-  "org.json4s" %% "json4s-jackson" % json4sVersion % "test",
-  "com.h2database" % "h2" % "1.4.197" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-  "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
-  "com.h2database" % "h2" % "1.4.197" % "test",
-  "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % "test",
-  "org.apache.spark" %% "spark-avro" % sparkVersion % "test"
-)
+libraryDependencies ++= AllDependencies
 
 // ------------------------------
 // TESTING

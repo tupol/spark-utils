@@ -1,10 +1,11 @@
 package org.tupol.spark.utils
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.Failure
 
-class UtilsSpec extends FunSuite with Matchers {
+class UtilsSpec extends AnyFunSuite with Matchers {
 
   val expectedText = Seq("line 1", "line 2").mkString("\n")
 

@@ -1,7 +1,8 @@
 package org.tupol.spark.io
 
 import org.apache.spark.sql.DataFrame
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.testing._
@@ -9,7 +10,7 @@ import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.Success
 
-class FileDataSinkSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
+class FileDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
 
   override val sparkConfig = super.sparkConfig + ("spark.io.compression.codec" -> "snappy")
 

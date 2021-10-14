@@ -1,10 +1,11 @@
 package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.configz._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.tupol.configz._
 
-class FileSinkConfigurationSpec extends FunSuite with Matchers {
+class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract FileSinkConfiguration out of a configuration string") {
 
@@ -48,7 +49,7 @@ class FileSinkConfigurationSpec extends FunSuite with Matchers {
       partitionColumns = Seq("OUTPUT_PATH"),
       partitionFilesNumber = None)
 
-    val result = FileSinkConfiguration(config.getConfig("output"))
+    val result = FileSinkConfiguration.extract(config.getConfig("output"))
 
     result.get shouldBe expected
   }
@@ -113,7 +114,7 @@ class FileSinkConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSinkConfiguration(config.getConfig("output"))
+    val result = FileSinkConfiguration.extract(config.getConfig("output"))
 
     result.isSuccess shouldBe false
   }
@@ -130,7 +131,7 @@ class FileSinkConfigurationSpec extends FunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSinkConfiguration(config.getConfig("output"))
+    val result = FileSinkConfiguration.extract(config.getConfig("output"))
 
     result.isSuccess shouldBe false
   }
@@ -140,7 +141,7 @@ class FileSinkConfigurationSpec extends FunSuite with Matchers {
     val configStr = ""
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSinkConfiguration(config)
+    val result = FileSinkConfiguration.extract(config)
 
     result.isSuccess shouldBe false
   }

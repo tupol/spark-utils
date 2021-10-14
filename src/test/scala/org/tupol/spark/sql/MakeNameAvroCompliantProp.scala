@@ -4,7 +4,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{ const, _ }
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{ Gen, Properties }
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{ Failure, Try }
 

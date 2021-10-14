@@ -1,7 +1,8 @@
 package org.tupol.spark.io
 
 import org.apache.spark.sql.types.{ IntegerType, StringType, StructField, StructType }
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.CsvSourceConfiguration
@@ -9,7 +10,7 @@ import org.tupol.spark.testing._
 
 import scala.util.{ Failure, Try }
 
-class CsvFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
+class CsvFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("The number of records in the csv provided must be the same in the output result") {
 

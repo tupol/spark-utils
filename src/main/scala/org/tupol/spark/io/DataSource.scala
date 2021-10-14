@@ -26,7 +26,7 @@ package org.tupol.spark.io
 import com.typesafe.config.Config
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.io.sources.{ GenericSourceConfiguration, JdbcSourceConfiguration }
-import org.tupol.utils.configz.Configurator
+import org.tupol.configz.Configurator
 import scalaz.ValidationNel
 
 import scala.util.Try

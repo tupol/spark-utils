@@ -27,7 +27,7 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.streaming.StreamingQuery
 import org.tupol.spark.Logging
 import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
-import org.tupol.utils.configz.Configurator
+import org.tupol.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.Try
@@ -62,7 +62,7 @@ case class FileStreamDataSinkConfiguration private (
 }
 object FileStreamDataSinkConfiguration extends Configurator[FileStreamDataSinkConfiguration] {
   import com.typesafe.config.Config
-  import org.tupol.utils.configz._
+  import org.tupol.configz._
   import scalaz.syntax.applicative._
 
   def apply(

@@ -1,13 +1,14 @@
 package org.tupol.spark.io
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.funsuite.AnyFunSuite
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.ParquetSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-class ParquetFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
+class ParquetFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("The number of records in the file provided and the schema must match") {
 
@@ -19,7 +20,7 @@ class ParquetFileDataSourceSpec extends FunSuite with Matchers with SharedSparkS
 
     resultDF.count shouldBe 3
 
-    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/parquet/sample_schema.json")
+    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/parquet/sample_schema.json").get
     resultDF.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
     val resultDF2 = spark.source(inputConfig).read.get

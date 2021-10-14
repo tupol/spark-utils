@@ -1,6 +1,7 @@
 package org.tupol.spark.io
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.funsuite.AnyFunSuite
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.JsonSourceConfiguration
@@ -9,11 +10,11 @@ import org.tupol.spark.testing._
 
 import scala.util.{ Failure, Try }
 
-class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
+class JsonFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("Extract from a single file with a single record should yield a single result") {
 
-    val schema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json")
+    val schema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json").get
     val inputPath = "src/test/resources/sources/json/sample_1line.json"
     val mode = "FAILFAST"
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
@@ -29,7 +30,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
   test("Extract from multiple files should yield as many results as the total number of records in the files") {
 
-    val schema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json")
+    val schema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json").get
     val inputPath = "src/test/resources/sources/json/ManyFiles/*.json"
     val mode = "FAILFAST"
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
@@ -50,7 +51,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
     val resultDF = FileDataSource(inputConfig).read.get
     // Test that the field was inferred and the correct metadata was added
 
-    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json")
+    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/json/sample_schema.json").get
     resultDF.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
     resultDF.count shouldBe 3
@@ -58,7 +59,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
   test("Deal with corrupted records in default mode (PERMISSIVE)") {
 
-    val schema = loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json")
+    val schema = loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json").get
     val inputPath = "src/test/resources/sources/json/sample_fail.json"
     val mode = "PERMISSIVE"
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
@@ -72,7 +73,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
     val columnNameOfCorruptRecord = "_customColumnNameOfCorruptRecord"
 
-    val schema = Some(loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json"))
+    val schema = Some(loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json").get)
     val inputPath = "src/test/resources/sources/json/sample_fail.json"
     val mode = "PERMISSIVE"
     val options = Map[String, String]("columnNameOfCorruptRecord" -> columnNameOfCorruptRecord, "mode" -> mode)
@@ -85,7 +86,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
   test("Deal with corrupted records in DROPMALFORMED mode") {
 
-    val schema = Some(loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json"))
+    val schema = Some(loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json").get)
     val inputPath = "src/test/resources/sources/json/sample_fail.json"
     val mode = "DROPMALFORMED"
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)
@@ -99,7 +100,7 @@ class JsonFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
   test("Deal with corrupted records in FAILFAST mode") {
 
-    val schema = Some(loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json"))
+    val schema = Some(loadSchemaFromFile("src/test/resources/sources/json/sample_fail_schema.json").get)
     val inputPath = "src/test/resources/sources/json/sample_fail.json"
     val mode = "FAILFAST"
     val options = Map[String, String]("columnNameOfCorruptRecord" -> "_corrupt_record", "mode" -> mode)

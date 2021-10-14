@@ -1,10 +1,11 @@
 package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.configz._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.tupol.configz._
 
-class GenericSinkConfigurationSpec extends FunSuite with Matchers {
+class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract GenericSinkConfiguration out of a configuration string") {
 
@@ -44,7 +45,7 @@ class GenericSinkConfigurationSpec extends FunSuite with Matchers {
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("PARTITION"))
 
-    val result = GenericSinkConfiguration(config.getConfig("output"))
+    val result = GenericSinkConfiguration.extract(config.getConfig("output"))
 
     result.get shouldBe expected
   }
@@ -83,7 +84,7 @@ class GenericSinkConfigurationSpec extends FunSuite with Matchers {
     val configStr = ""
     val config = ConfigFactory.parseString(configStr)
 
-    val result = GenericSinkConfiguration(config)
+    val result = GenericSinkConfiguration.extract(config)
 
     result.isSuccess shouldBe false
   }

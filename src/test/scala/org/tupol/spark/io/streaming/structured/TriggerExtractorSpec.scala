@@ -2,10 +2,11 @@ package org.tupol.spark.io.streaming.structured
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.streaming.Trigger
-import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.configz._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.tupol.configz._
 
-class TriggerExtractorSpec extends FunSuite with Matchers {
+class TriggerExtractorSpec extends AnyFunSuite with Matchers {
 
   test("TriggerExtractor -> Trigger.Once()") {
     val configStr =

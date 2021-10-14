@@ -1,10 +1,11 @@
 package org.tupol.spark.sql
 
 import org.apache.spark.sql.types._
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.implicits._
 
-class SchemaOpsSpec extends FunSuite with Matchers {
+class SchemaOpsSpec extends AnyFunSuite with Matchers {
 
   test("mapFields & checkAllFields") {
 

@@ -29,6 +29,7 @@ import org.apache.spark.sql.{ Column, DataFrame, Row, SparkSession }
 
 import scala.io.Source
 import scala.reflect.runtime.universe._
+import scala.util.Try
 
 package object sql {
 
@@ -44,18 +45,19 @@ package object sql {
    * @param json
    * @return
    */
-  def loadSchemaFromString(json: String): StructType =
-    DataType.fromJson(json).asInstanceOf[StructType]
+  def loadSchemaFromString(json: String): Try[StructType] =
+    Try(DataType.fromJson(json).asInstanceOf[StructType])
 
   /**
    * Load a schema ([[StructType]]) from a given file. The schema must be in json format.
    * @param resourcePath
    * @return
    */
-  def loadSchemaFromFile(resourcePath: String): StructType = {
-    val json = Source.fromFile(resourcePath).getLines.mkString(" ")
-    loadSchemaFromString(json)
-  }
+  def loadSchemaFromFile(resourcePath: String): Try[StructType] =
+    for {
+      json <- Try(Source.fromFile(resourcePath).getLines.mkString(" "))
+      schema <- loadSchemaFromString(json)
+    } yield schema
 
   /**
    * "Flatten" a DataFrame.

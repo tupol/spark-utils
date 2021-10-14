@@ -30,7 +30,9 @@ import org.tupol.spark.io.sources._
 import org.tupol.spark.io.streaming.structured._
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
-import org.tupol.utils.configz.Extractor
+import org.tupol.configz.Extractor
+
+import scala.util.Try
 
 /** Common IO utilities */
 package object io {
@@ -48,9 +50,7 @@ package object io {
    * `config.extract[FormatType]("configuration_path_to_format")`
    */
   implicit val FormatTypeExtractor = new Extractor[FormatType] {
-    def extract(config: Config, path: String): FormatType = {
-      FormatType.fromString(config.getString(path)).get
-    }
+    def extract(config: Config, path: String): Try[FormatType] = Try(FormatType.fromString(config.getString(path))).flatten
   }
 
   /*
@@ -129,13 +129,21 @@ package object io {
    * `config.extract[StructType]("configuration_path_to_schema")`
    */
   implicit val ExtendedStructTypeExtractor = new Extractor[StructType] {
-    def extract(config: Config, path: String): StructType = {
-      val schemaFromPath = if (config.getConfig(path).hasPath("path")) {
-        fuzzyLoadTextResourceFile(config.getConfig(path).getString("path")).toOption
-      } else None
+    def extract(config: Config, path: String): Try[StructType] = {
 
-      val schema = schemaFromPath.getOrElse(config.getObject(path).render(ConfigRenderOptions.concise()))
-      loadSchemaFromString(schema)
+      def schemaFromPath: Try[String] = {
+        for {
+          path <- Try(config.getConfig(path).getString("path"))
+          stringSchema <- fuzzyLoadTextResourceFile(path)
+        } yield stringSchema
+      }
+      def schemaFromConfig: Try[String] = Try(config.getObject(path).render(ConfigRenderOptions.concise()))
+
+      for {
+        stringSchema <- schemaFromPath orElse schemaFromConfig
+        schema <- loadSchemaFromString(stringSchema)
+      } yield schema
+
     }
   }
 

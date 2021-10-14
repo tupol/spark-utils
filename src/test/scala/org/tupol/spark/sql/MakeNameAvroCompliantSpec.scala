@@ -1,12 +1,13 @@
 package org.tupol.spark.sql
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.testing.files.TestTempFilePath1
 
 import scala.util.{ Failure, Success, Try }
 
-class MakeNameAvroCompliantSpec extends FunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
+class MakeNameAvroCompliantSpec extends AnyFunSuite with Matchers with SharedSparkSession with TestTempFilePath1 {
 
   val acceptableChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') :+ '_'
   val acceptableString = acceptableChars.mkString

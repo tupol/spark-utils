@@ -1,12 +1,13 @@
 package org.tupol.spark.io.source
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.sources.{ JsonSourceConfiguration, SourceConfiguration }
 
 import scala.util.Success
 
-class JsonSourceConfigurationSpec extends FunSuite with Matchers {
+class JsonSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Parse configuration with schema") {
 
@@ -123,7 +124,7 @@ class JsonSourceConfigurationSpec extends FunSuite with Matchers {
                       """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[JsonSourceConfiguration]
@@ -140,7 +141,7 @@ class JsonSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[JsonSourceConfiguration]
@@ -160,7 +161,7 @@ class JsonSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[JsonSourceConfiguration]

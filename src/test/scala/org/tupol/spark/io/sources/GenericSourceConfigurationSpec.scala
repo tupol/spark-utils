@@ -1,11 +1,12 @@
 package org.tupol.spark.io.sources
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.Success
 
-class GenericSourceConfigurationSpec extends FunSuite with Matchers {
+class GenericSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Parse configuration without options") {
 
@@ -14,7 +15,7 @@ class GenericSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[GenericSourceConfiguration]
@@ -34,7 +35,7 @@ class GenericSourceConfigurationSpec extends FunSuite with Matchers {
                     """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
-    val converterConfig = SourceConfiguration(config)
+    val converterConfig = SourceConfiguration.extract(config)
 
     converterConfig shouldBe a[Success[_]]
     converterConfig.get shouldBe a[GenericSourceConfiguration]

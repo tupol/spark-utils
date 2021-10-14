@@ -29,7 +29,7 @@ import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
 import org.tupol.spark.io.{ DataSource, FormatType, _ }
-import org.tupol.utils.configz.Configurator
+import org.tupol.configz.Configurator
 import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.Try
@@ -80,7 +80,7 @@ case class KafkaStreamDataSourceConfiguration(
 object KafkaStreamDataSourceConfiguration extends Configurator[KafkaStreamDataSourceConfiguration] {
   val AcceptableFormat = Kafka
   override def validationNel(config: Config): ValidationNel[Throwable, KafkaStreamDataSourceConfiguration] = {
-    import org.tupol.utils.configz._
+    import org.tupol.configz._
     import scalaz.syntax.applicative._
 
     val format = config.extract[Option[FormatType]]("format").ensure(

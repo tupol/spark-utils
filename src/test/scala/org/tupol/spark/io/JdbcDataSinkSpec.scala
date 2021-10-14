@@ -1,7 +1,9 @@
 package org.tupol.spark.io
 
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+
 import java.sql.ResultSet
-import org.scalatest.{ FunSuite, Matchers }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.testing.H2Database
@@ -9,7 +11,7 @@ import org.tupol.spark.testing.H2Database
 import scala.collection.mutable
 import scala.util.Success
 
-class JdbcDataSinkSpec extends FunSuite with Matchers with SharedSparkSession with H2Database {
+class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession with H2Database {
 
   val TestTable = "test_table"
 

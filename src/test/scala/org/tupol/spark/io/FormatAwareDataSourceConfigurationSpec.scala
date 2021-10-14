@@ -1,15 +1,16 @@
 package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.sources.{ JdbcSourceConfiguration, TextSourceConfiguration }
 import org.tupol.spark.sql.loadSchemaFromFile
-import org.tupol.utils.configz._
+import org.tupol.configz._
 
-class FormatAwareDataSourceConfigurationSpec extends FunSuite with Matchers with SharedSparkSession {
+class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
-  val ReferenceSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
+  val ReferenceSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json").get
 
   test("Successfully extract FileSourceConfiguration out of a configuration string") {
 
@@ -57,7 +58,7 @@ class FormatAwareDataSourceConfigurationSpec extends FunSuite with Matchers with
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = FileSourceConfiguration(config.getConfig("input"))
+    val result = FileSourceConfiguration.extract(config.getConfig("input"))
 
     result.isSuccess shouldBe false
   }

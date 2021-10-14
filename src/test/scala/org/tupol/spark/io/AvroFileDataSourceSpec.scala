@@ -1,13 +1,14 @@
 package org.tupol.spark.io
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.implicits._
 import org.tupol.spark.io.sources.AvroSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-class AvroFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSession {
+class AvroFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("The number of records in the file provided and the schema must match") {
 
@@ -19,7 +20,7 @@ class AvroFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
     resultDF1.count shouldBe 3
 
-    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
+    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json").get
     resultDF1.schema.fields.map(_.name) should contain allElementsOf (expectedSchema.fields.map(_.name))
 
     val resultDF2 = spark.source(inputConfig).read.get
@@ -28,7 +29,7 @@ class AvroFileDataSourceSpec extends FunSuite with Matchers with SharedSparkSess
 
   test("The number of records in the file provided and the other schema must match") {
 
-    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema-2.json")
+    val expectedSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema-2.json").get
     val inputPath = "src/test/resources/sources/avro/sample.avro"
     val options = Map[String, String]()
     val parserConfig = AvroSourceConfiguration(options, Some(expectedSchema))

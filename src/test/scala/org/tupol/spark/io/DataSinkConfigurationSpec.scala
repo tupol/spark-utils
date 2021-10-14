@@ -1,10 +1,11 @@
 package org.tupol.spark.io
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ FunSuite, Matchers }
-import org.tupol.utils.configz._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.tupol.configz._
 
-class DataSinkConfigurationSpec extends FunSuite with Matchers {
+class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract FileSinkConfiguration out of a configuration string") {
 
