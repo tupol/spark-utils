@@ -49,7 +49,12 @@ object Dependencies {
   ).map(_ % "provided")
 
   val CoreDependencies: Seq[ModuleID] =  Seq(
-    "org.tupol" %% "scala-utils" % Versions.scalaUtils
+    "org.tupol" %% "scala-utils-core" % Versions.scalaUtils,
+    "com.typesafe" % "config" % Versions.typesafe_config
+  )
+
+  val IoConfigzDependencies: Seq[ModuleID] =  Seq(
+    "org.tupol" %% "scala-utils-config-z" % Versions.scalaUtils
   )
 
 

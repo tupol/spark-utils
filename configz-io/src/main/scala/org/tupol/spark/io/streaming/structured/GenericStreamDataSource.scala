@@ -21,31 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package org.tupol.spark.io
+package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.streaming.DataStreamReader
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.tupol.spark.Logging
+import org.tupol.spark.io._
+import org.tupol.configz.Configurator
+import org.tupol.utils.implicits._
+import scalaz.ValidationNel
 
 import scala.util.Try
 
-/** Common trait for reading a DataFrame from an external resource */
-trait DataSource[Config <: DataSourceConfiguration] {
-  /** `DataSource` configuration */
-  def configuration: Config
-  /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  def read(implicit spark: SparkSession): Try[DataFrame]
+object GenericStreamDataSourceConfiguration extends Configurator[GenericStreamDataSourceConfiguration] {
+  import com.typesafe.config.Config
+  import org.tupol.configz._
+  import scalaz.syntax.applicative._
+
+  def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSourceConfiguration] = {
+    config.extract[FormatType]("format") |@|
+      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) |@|
+      config.extract[Option[StructType]]("schema") apply
+      GenericStreamDataSourceConfiguration.apply
+  }
 }
-
-/** Factory trait for DataSourceFactory */
-trait DataSourceFactory {
-  def apply[Config <: DataSourceConfiguration](configuration: Config): DataSource[Config]
-}
-
-/** Common marker trait for `DataSource` configuration that also knows the data format  */
-trait FormatAwareDataSourceConfiguration extends DataSourceConfiguration with FormatAware
-
-/** Common marker trait for `DataSource` configuration */
-trait DataSourceConfiguration
-
-case class DataSourceException(private val message: String = "", private val cause: Throwable = None.orNull)
-  extends Exception(message, cause)
-

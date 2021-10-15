@@ -23,14 +23,12 @@ SOFTWARE.
 */
 package org.tupol.spark
 
-import com.typesafe.config.{Config, ConfigRenderOptions}
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
 import org.apache.spark.sql.functions.{col, struct}
 import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Dataset, Encoder, Row, SparkSession}
 import org.tupol.spark.sql.{loadSchemaFromString, row2map}
 import org.tupol.spark.utils._
-import org.tupol.configz.Extractor
 
 import java.util.UUID
 import scala.util.Try
@@ -64,21 +62,6 @@ package object implicits {
       val formats = Serialization.formats(NoTypeHints) ++ TimeSerializers
       Extraction.decompose(product)(formats).values.asInstanceOf[Map[String, Any]]
     }
-  }
-
-  /**
-   * Configuration extractor for Schemas.
-   *
-   * It can be used as
-   * `config.extract[Option[StructType]]("configuration_path_to_schema")` or as
-   * `config.extract[StructType]("configuration_path_to_schema")`
-   */
-  implicit val StructTypeExtractor = new Extractor[StructType] {
-    def extract(config: Config, path: String): Try[StructType] =
-      for {
-        schemaJson <- Try(config.getObject(path).render(ConfigRenderOptions.concise()))
-        schema <- loadSchemaFromString(schemaJson)
-      } yield schema
   }
 
   /** StructType decorator. */

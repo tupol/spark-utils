@@ -23,29 +23,19 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import com.typesafe.config.Config
+import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.tupol.spark.io.sources.{ GenericSourceConfiguration, JdbcSourceConfiguration }
+import org.tupol.configz.Configurator
+import scalaz.ValidationNel
 
 import scala.util.Try
 
-/** Common trait for reading a DataFrame from an external resource */
-trait DataSource[Config <: DataSourceConfiguration] {
-  /** `DataSource` configuration */
-  def configuration: Config
-  /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  def read(implicit spark: SparkSession): Try[DataFrame]
+
+/** Factory for FormatAwareDataSourceConfiguration */
+object FormatAwareDataSourceConfiguration extends Configurator[FormatAwareDataSourceConfiguration] {
+  override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareDataSourceConfiguration] =
+    FileSourceConfiguration.validationNel(config) orElse
+      JdbcSourceConfiguration.validationNel(config) orElse
+      GenericSourceConfiguration.validationNel(config)
 }
-
-/** Factory trait for DataSourceFactory */
-trait DataSourceFactory {
-  def apply[Config <: DataSourceConfiguration](configuration: Config): DataSource[Config]
-}
-
-/** Common marker trait for `DataSource` configuration that also knows the data format  */
-trait FormatAwareDataSourceConfiguration extends DataSourceConfiguration with FormatAware
-
-/** Common marker trait for `DataSource` configuration */
-trait DataSourceConfiguration
-
-case class DataSourceException(private val message: String = "", private val cause: Throwable = None.orNull)
-  extends Exception(message, cause)
-

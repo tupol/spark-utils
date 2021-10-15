@@ -23,29 +23,30 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
+import org.tupol.spark.Logging
+import org.tupol.configz.Configurator
+import org.tupol.utils.implicits._
 
 import scala.util.Try
 
-/** Common trait for reading a DataFrame from an external resource */
-trait DataSource[Config <: DataSourceConfiguration] {
-  /** `DataSource` configuration */
-  def configuration: Config
-  /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  def read(implicit spark: SparkSession): Try[DataFrame]
+object GenericSinkConfiguration extends Configurator[GenericSinkConfiguration] with Logging {
+  import com.typesafe.config.Config
+  import org.tupol.configz._
+  import scalaz.ValidationNel
+  import scalaz.syntax.applicative._
+
+  implicit val bucketsExtractor = BucketsConfiguration
+
+  def validationNel(config: Config): ValidationNel[Throwable, GenericSinkConfiguration] = {
+    config.extract[FormatType]("format") |@|
+      config.extract[Option[String]]("mode") |@|
+      config.extract[Option[Seq[String]]]("partition.columns").map {
+        case (Some(partition_columns)) => partition_columns
+        case None => Seq[String]()
+      } |@|
+      config.extract[Option[BucketsConfiguration]]("buckets") |@|
+      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
+      GenericSinkConfiguration.apply
+  }
 }
-
-/** Factory trait for DataSourceFactory */
-trait DataSourceFactory {
-  def apply[Config <: DataSourceConfiguration](configuration: Config): DataSource[Config]
-}
-
-/** Common marker trait for `DataSource` configuration that also knows the data format  */
-trait FormatAwareDataSourceConfiguration extends DataSourceConfiguration with FormatAware
-
-/** Common marker trait for `DataSource` configuration */
-trait DataSourceConfiguration
-
-case class DataSourceException(private val message: String = "", private val cause: Throwable = None.orNull)
-  extends Exception(message, cause)
-

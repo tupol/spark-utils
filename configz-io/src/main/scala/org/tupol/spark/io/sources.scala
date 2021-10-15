@@ -1,0 +1,157 @@
+/*
+MIT License
+
+Copyright (c) 2018 Tupol (github.com/tupol)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+package org.tupol.spark.io
+
+import com.typesafe.config.Config
+import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
+import org.apache.spark.sql.types.StructType
+import org.tupol.configz.Configurator
+import scalaz.{ NonEmptyList, ValidationNel }
+
+package object sources {
+
+  object SourceConfiguration extends Configurator[SourceConfiguration] {
+    override def validationNel(config: Config): ValidationNel[Throwable, SourceConfiguration] = {
+      import org.tupol.configz._
+      val format = config.extract[FormatType]("format")
+      format match {
+        case scalaz.Success(formatString) =>
+          formatString match {
+            case FormatType.Xml => XmlSourceConfiguration.validationNel(config)
+            case FormatType.Csv => CsvSourceConfiguration.validationNel(config)
+            case FormatType.Json => JsonSourceConfiguration.validationNel(config)
+            case FormatType.Parquet => ParquetSourceConfiguration.validationNel(config)
+            case FormatType.Avro => AvroSourceConfiguration.validationNel(config)
+            case FormatType.Orc => OrcSourceConfiguration.validationNel(config)
+            case FormatType.Text => TextSourceConfiguration.validationNel(config)
+            case FormatType.Jdbc => JdbcSourceConfiguration.validationNel(config)
+            case _ => GenericSourceConfiguration.validationNel(config)
+          }
+        case scalaz.Failure(e) =>
+          scalaz.Failure[NonEmptyList[Throwable]](e)
+      }
+    }
+  }
+
+  object CsvSourceConfiguration extends Configurator[CsvSourceConfiguration] {
+    def apply(options: Map[String, String], inputSchema: Option[StructType], delimiter: String, header: Boolean): CsvSourceConfiguration =
+      CsvSourceConfiguration(
+        options + ("delimiter" -> delimiter) + ("header" -> header.toString), inputSchema)
+    override def validationNel(config: Config): ValidationNel[Throwable, CsvSourceConfiguration] = {
+      import org.tupol.configz._
+      import scalaz.syntax.applicative._
+
+      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
+      val inputSchema = config.extract[Option[StructType]]("schema")
+      val delimiter = config.extract[Option[String]]("delimiter").map(_.getOrElse(","))
+      val header = config.extract[Option[Boolean]]("header").map(_.getOrElse(false))
+
+      options |@| inputSchema |@| delimiter |@| header apply CsvSourceConfiguration.apply
+    }
+  }
+
+  object XmlSourceConfiguration extends Configurator[XmlSourceConfiguration] {
+    def apply(options: Map[String, String], inputSchema: Option[StructType], rowTag: String): XmlSourceConfiguration =
+      XmlSourceConfiguration(options + ("rowTag" -> rowTag), inputSchema)
+    override def validationNel(config: Config): ValidationNel[Throwable, XmlSourceConfiguration] = {
+      import org.tupol.configz._
+      import scalaz.syntax.applicative._
+
+      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
+      val inputSchema = config.extract[Option[StructType]]("schema")
+      val rowTag = config.extract[String]("rowTag")
+
+      options |@| inputSchema |@| rowTag apply XmlSourceConfiguration.apply
+    }
+  }
+
+  object JsonSourceConfiguration extends Configurator[JsonSourceConfiguration] {
+    def apply(basicConfig: GenericSourceConfiguration) =
+      new JsonSourceConfiguration(basicConfig.options, basicConfig.schema)
+    override def validationNel(config: Config): ValidationNel[Throwable, JsonSourceConfiguration] =
+      GenericSourceConfiguration.validationNel(config) map JsonSourceConfiguration.apply
+  }
+
+
+  object ParquetSourceConfiguration extends Configurator[ParquetSourceConfiguration] {
+    def apply(basicConfig: GenericSourceConfiguration) =
+      new ParquetSourceConfiguration(basicConfig.options, basicConfig.schema)
+    override def validationNel(config: Config): ValidationNel[Throwable, ParquetSourceConfiguration] =
+      GenericSourceConfiguration.validationNel(config) map ParquetSourceConfiguration.apply
+  }
+
+  object OrcSourceConfiguration extends Configurator[OrcSourceConfiguration] {
+    def apply(basicConfig: GenericSourceConfiguration) =
+      new OrcSourceConfiguration(basicConfig.options, basicConfig.schema)
+    override def validationNel(config: Config): ValidationNel[Throwable, OrcSourceConfiguration] =
+      GenericSourceConfiguration.validationNel(config) map OrcSourceConfiguration.apply
+  }
+
+  object AvroSourceConfiguration extends Configurator[AvroSourceConfiguration] {
+    def apply(basicConfig: GenericSourceConfiguration) =
+      new AvroSourceConfiguration(basicConfig.options, basicConfig.schema)
+    override def validationNel(config: Config): ValidationNel[Throwable, AvroSourceConfiguration] =
+      GenericSourceConfiguration.validationNel(config) map AvroSourceConfiguration.apply
+  }
+
+  object TextSourceConfiguration extends Configurator[TextSourceConfiguration] {
+    def apply(basicConfig: GenericSourceConfiguration) =
+      new TextSourceConfiguration(basicConfig.options, basicConfig.schema)
+    override def validationNel(config: Config): ValidationNel[Throwable, TextSourceConfiguration] =
+      GenericSourceConfiguration.validationNel(config) map TextSourceConfiguration.apply
+  }
+
+  object JdbcSourceConfiguration extends Configurator[JdbcSourceConfiguration] {
+    def apply(url: String, table: String, user: String, password: String,
+      driver: String, options: Map[String, String] = Map(),
+      schema: Option[StructType] = None): JdbcSourceConfiguration =
+      new JdbcSourceConfiguration(url, table, Some(user), Some(password), Some(driver), options, schema)
+
+    override def validationNel(config: Config): ValidationNel[Throwable, JdbcSourceConfiguration] = {
+      import org.tupol.configz._
+      import scalaz.syntax.applicative._
+      config.extract[String]("url") |@|
+        config.extract[String]("table") |@|
+        config.extract[Option[String]]("user") |@|
+        config.extract[Option[String]]("password") |@|
+        config.extract[Option[String]]("driver") |@|
+        config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) |@|
+        config.extract[Option[StructType]]("schema") apply
+        JdbcSourceConfiguration.apply
+    }
+  }
+
+
+  object GenericSourceConfiguration extends Configurator[GenericSourceConfiguration] {
+    override def validationNel(config: Config): ValidationNel[Throwable, GenericSourceConfiguration] = {
+      import org.tupol.configz._
+      import scalaz.syntax.applicative._
+      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
+      val inputSchema = config.extract[Option[StructType]]("schema")
+      val format = config.extract[FormatType]("format")
+
+      format |@| options |@| inputSchema apply GenericSourceConfiguration.apply
+    }
+  }
+}

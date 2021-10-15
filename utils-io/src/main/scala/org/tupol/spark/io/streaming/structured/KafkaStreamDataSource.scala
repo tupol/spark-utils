@@ -23,14 +23,12 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming.structured
 
-import com.typesafe.config.Config
+
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
-import org.tupol.spark.io.{ DataSource, FormatType, _ }
-import org.tupol.configz.Configurator
-import scalaz.{ NonEmptyList, ValidationNel }
+import org.tupol.spark.io.{DataSource, FormatType}
 
 import scala.util.Try
 
@@ -75,33 +73,5 @@ case class KafkaStreamDataSourceConfiguration(
     val optionsStr = internalOptions.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
     s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-  }
-}
-object KafkaStreamDataSourceConfiguration extends Configurator[KafkaStreamDataSourceConfiguration] {
-  val AcceptableFormat = Kafka
-  override def validationNel(config: Config): ValidationNel[Throwable, KafkaStreamDataSourceConfiguration] = {
-    import org.tupol.configz._
-    import scalaz.syntax.applicative._
-
-    val format = config.extract[Option[FormatType]]("format").ensure(
-      new IllegalArgumentException(s"This is a Kafka Data Source, only the $Kafka format is supported.").toNel)(f =>
-        f.map(_ == Kafka).getOrElse(true))
-
-    format match {
-      case scalaz.Success(_) =>
-        config.extract[String]("kafka.bootstrap.servers") |@|
-          config.extract[KafkaSubscription] |@|
-          config.extract[Option[String]]("startingOffsets") |@|
-          config.extract[Option[String]]("endingOffsets") |@|
-          config.extract[Option[Boolean]]("failOnDataLoss") |@|
-          config.extract[Option[Long]]("kafkaConsumer.pollTimeoutMs") |@|
-          config.extract[Option[Int]]("fetchOffset.numRetries") |@|
-          config.extract[Option[Long]]("fetchOffset.retryIntervalMs") |@|
-          config.extract[Option[Long]]("maxOffsetsPerTrigger") |@|
-          config.extract[Option[StructType]]("schema") apply
-          KafkaStreamDataSourceConfiguration.apply
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
   }
 }

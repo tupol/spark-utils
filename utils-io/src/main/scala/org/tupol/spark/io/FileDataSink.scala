@@ -25,7 +25,6 @@ package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
 
 import scala.util.Try
@@ -127,35 +126,6 @@ case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveM
   }
 }
 
-object FileSinkConfiguration extends Configurator[FileSinkConfiguration] with Logging {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.ValidationNel
-  import scalaz.syntax.applicative._
-
-  implicit val bucketsExtractor = BucketsConfiguration
-
-  def apply(path: String, format: FormatType): FileSinkConfiguration = new FileSinkConfiguration(path, format, None, None, Seq())
-
-  def validationNel(config: Config): ValidationNel[Throwable, FileSinkConfiguration] = {
-    config.extract[String]("path") |@|
-      config.extract[FormatType]("format").ensure(
-        new IllegalArgumentException(s"The provided format is unsupported for a file data sink. " +
-          s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f => FormatType.AcceptableFileFormats.contains(f)) |@|
-        config.extract[Option[String]]("mode") |@|
-        config.extract[Option[Int]]("partition.files").
-        ensure(new IllegalArgumentException(
-          "If specified, the partition.files should be a positive integer > 0.").toNel)(_.map(_ > 0).getOrElse(true)) |@|
-        config.extract[Option[Seq[String]]]("partition.columns").map {
-          case (Some(partition_columns)) => partition_columns
-          case None => Seq[String]()
-        } |@|
-        config.extract[Option[BucketsConfiguration]]("buckets") |@|
-        config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
-        FileSinkConfiguration.apply
-  }
-}
-
 /**
  * Bucketing configuration
  * @param number number of buckets
@@ -170,20 +140,3 @@ case class BucketsConfiguration(number: Int, bucketColumns: Seq[String], sortByC
   }
 }
 
-object BucketsConfiguration extends Configurator[BucketsConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.ValidationNel
-  import scalaz.syntax.applicative._
-
-  def validationNel(config: Config): ValidationNel[Throwable, BucketsConfiguration] = {
-    config.extract[Int]("number")
-      .ensure(new IllegalArgumentException("The number of buckets must be a positive integer > 0.").toNel)(_ > 0) |@|
-      config.extract[Seq[String]]("bucketColumns")
-      .ensure(new IllegalArgumentException("At least one column needs to be specified for bucketing.").toNel)(_.size > 0) |@|
-      config.extract[Option[Seq[String]]]("sortByColumns").map {
-        case (Some(sortByColumns)) => sortByColumns
-        case None => Seq[String]()
-      } apply BucketsConfiguration.apply
-  }
-}

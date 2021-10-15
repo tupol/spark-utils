@@ -27,8 +27,8 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.streaming.StreamingQuery
 import org.tupol.spark.Logging
 import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
-import org.tupol.configz.Configurator
-import scalaz.{ NonEmptyList, ValidationNel }
+
+
 
 import scala.util.Try
 
@@ -59,34 +59,4 @@ case class FileStreamDataSinkConfiguration private (
     .collect { case (key, Some(value)) => (key, value) }
   val generic = genericConfig.copy(options = options)
   override def toString: String = generic.toString
-}
-object FileStreamDataSinkConfiguration extends Configurator[FileStreamDataSinkConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.syntax.applicative._
-
-  def apply(
-    path: String,
-    genericConfig: GenericStreamDataSinkConfiguration,
-    checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
-    new FileStreamDataSinkConfiguration(genericConfig.format, path, genericConfig, checkpointLocation)
-
-  def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSinkConfiguration] = {
-
-    val format = config.extract[FormatType]("format").ensure(
-      new IllegalArgumentException(s"The provided format is unsupported for a file data source. " +
-        s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f =>
-        FormatType.AcceptableFileFormats.contains(f))
-
-    format match {
-      case scalaz.Success(_) =>
-        format |@|
-          config.extract[String]("path") |@|
-          GenericStreamDataSinkConfiguration.validationNel(config) |@|
-          config.extract[Option[String]]("checkpointLocation") apply
-          FileStreamDataSinkConfiguration.apply
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
-  }
 }
