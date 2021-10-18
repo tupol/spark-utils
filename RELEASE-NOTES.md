@@ -1,5 +1,22 @@
 # Release Notes
 
+## 0.6
+
+**0.6.1**
+
+- Small dependencies and documentation improvements
+- The documentation needs to be further reviewed
+- The project is split into two modules: `spark-utils-core` and `spark-utils-io`
+- The project moved to Apache Spark 3.0.1, which is a popular choice for the Databricks Cluster users
+- The project is only compiled on Scala 2.12
+- There is a major redesign of core components, mainly returning `Try[_]` for better exception handling
+- Dependencies updates
+
+
+## 0.5
+
+**N/A**
+
 
 ## 0.4
 

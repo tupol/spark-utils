@@ -127,7 +127,7 @@ The documentation for the main utilities and frameworks available:
 - [DataSource Framework](docs/data-source.md) for both batch and structured streaming applications
 - [DataSink Framework](docs/data-sink.md) for both batch and structured streaming applications
 
-Latest stable API documentation is available [here](https://www.javadoc.io/doc/org.tupol/spark-utils_2.11/0.4.1).
+Latest stable API documentation is available [here](https://www.javadoc.io/doc/org.tupol/spark-utils_2.12/0.4.2).
 
 An extensive tutorial and walk-through can be found [here](https://github.com/tupol/spark-utils-demos/wiki).
 Extensive samples and demos can be found [here](https://github.com/tupol/spark-utils-demos).
@@ -150,12 +150,14 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
-- Latest stable version is `0.4.2`
+- Latest stable versions:
+  - Spark 2.4: `0.4.2`
+  - Spark 3.0: `0.6.1`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.4.2"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.6.1"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
@@ -198,31 +200,15 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**0.6.1-SNAPSHOT**
+**0.6.1**
 
 - Small dependencies and documentation improvements
 - The documentation needs to be further reviewed
-
-**0.6.0-SNAPSHOT**
-
-- The project is split into two modules: `spark-utils-core` and `spark-utils-io` 
-
-**0.5.0-SNAPSHOT**
-
+- The project is split into two modules: `spark-utils-core` and `spark-utils-io`
 - The project moved to Apache Spark 3.0.1, which is a popular choice for the Databricks Cluster users
 - The project is only compiled on Scala 2.12
 - There is a major redesign of core components, mainly returning `Try[_]` for better exception handling
 - Dependencies updates
-
-
-**0.4.2**
-
-- The project compiles with both Scala `2.11.12` and `2.12.12`
-- Updated Apache Spark to `2.4.6`
-- Updated the `spark-xml` library to `0.10.0`
-- Removed the `com.databricks:spark-avro` dependency, as avro support is now built into Apache Spark
-- Removed the shadow `org.apache.spark.Loggin` class, which is replaced by the `org.tupol.spark.Loggign` knock-off
-
 
 For previous versions please consult the [release notes](RELEASE-NOTES.md).
 
@@ -239,6 +225,6 @@ This code is open source software licensed under the [MIT License](LICENSE).
 [license]: https://github.com/tupol/spark-utils/blob/master/LICENSE
 [travis.org]: https://travis-ci.com/tupol/spark-utils 
 [codecov]: https://codecov.io/gh/tupol/spark-utils
-[javadocs]: https://www.javadoc.io/doc/org.tupol/spark-utils_2.11
+[javadocs]: https://www.javadoc.io/doc/org.tupol/spark-utils_2.12
 [gitter]: https://gitter.im/spark-utils/spark-utils
 [twitter]: https://twitter.com/_tupol
