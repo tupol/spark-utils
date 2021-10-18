@@ -26,7 +26,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 **Sample code**
 ```scala
     import org.tupol.spark.io._
-    import org.tupol.spark.implicits._
+    import org.tupol.spark.io.implicits._
     ...
     val sourceConfiguration = GenericStreamDataSourceConfiguration(...)
     val dataframe = spark.source(sourceConfiguration).read
@@ -94,5 +94,5 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - [Structured Streaming + Kafka Integration Guide][SSKIG]
 
 
-[SSIS]: https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#input-sources
-[SSKIG]: https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html
+[SSIS]: https://spark.apache.org/docs/3.0.1/structured-streaming-programming-guide.html#input-sources
+[SSKIG]: https://spark.apache.org/docs/3.0.1/structured-streaming-kafka-integration.html
