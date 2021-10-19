@@ -1,12 +1,12 @@
 # Spark Utils #
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.tupol/spark-utils_2.11.svg)][maven-central] &nbsp;
-[![GitHub](https://img.shields.io/github/license/tupol/spark-utils.svg)][license] &nbsp; 
-[![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)][travis.org] &nbsp; 
+[![Maven Central](https://img.shields.io/maven-central/v/org.tupol/spark-utils_2.12.svg)][maven-central] &nbsp;
+[![GitHub](https://img.shields.io/github/license/tupol/spark-utils.svg)][license] &nbsp;
+[![Travis (.org)](https://img.shields.io/travis/tupol/spark-utils.svg)][travis.org] &nbsp;
 [![Codecov](https://img.shields.io/codecov/c/github/tupol/spark-utils.svg)][codecov] &nbsp;
-[![Javadocs](https://www.javadoc.io/badge/org.tupol/spark-utils_2.11.svg)][javadocs] &nbsp; 
-[![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)][gitter] &nbsp; 
-[![Twitter](https://img.shields.io/twitter/url/https/_tupol.svg?color=%2317A2F2)][twitter] &nbsp; 
+[![Javadocs](https://www.javadoc.io/badge/org.tupol/spark-utils_2.12.svg)][javadocs] &nbsp;
+[![Gitter](https://badges.gitter.im/spark-utils/spark-utils.svg)][gitter] &nbsp;
+[![Twitter](https://img.shields.io/twitter/url/https/_tupol.svg?color=%2317A2F2)][twitter] &nbsp;
 
 
 ## Motivation ##
