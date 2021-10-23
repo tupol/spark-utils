@@ -23,12 +23,33 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
+import com.typesafe.config.{Config, ConfigRenderOptions}
 import org.apache.spark.sql.streaming.StreamingQuery
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.tupol.configz.Extractor
 import org.tupol.spark.sql
+import org.tupol.spark.sql.loadSchemaFromString
+
+import scala.util.Try
 
 
 package object implicits {
+
+  /**
+   * Configuration extractor for Schemas.
+   *
+   * It can be used as
+   * `config.extract[Option[StructType]]("configuration_path_to_schema")` or as
+   * `config.extract[StructType]("configuration_path_to_schema")`
+   */
+  implicit val StructTypeExtractor = new Extractor[StructType] {
+    def extract(config: Config, path: String): Try[StructType] =
+      for {
+        schemaJson <- Try(config.getObject(path).render(ConfigRenderOptions.concise()))
+        schema <- loadSchemaFromString(schemaJson)
+      } yield schema
+  }
 
   /** SparkSession decorator. */
   implicit class SparkSessionOps(spark: SparkSession) {

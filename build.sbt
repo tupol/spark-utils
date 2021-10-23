@@ -102,7 +102,7 @@ lazy val io_utils = (project in file("utils-io"))
     buildInfoPackage := "org.tupol.spark.io.info",
     libraryDependencies ++= ProvidedSparkCoreDependencies,
     libraryDependencies ++= ProvidedSparkKafkaDependencies,
-    libraryDependencies ++= CoreDependencies,
+    libraryDependencies ++= IoDependencies,
     libraryDependencies ++= IoTestDependencies,
     publishArtifact in Test := true
   )
