@@ -157,7 +157,7 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.6.1"
+libraryDependencies += "org.tupol" %% "spark-utils" % "0.6.2"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
@@ -200,15 +200,11 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**0.6.1**
+**0.6.2**
 
-- Small dependencies and documentation improvements
-- The documentation needs to be further reviewed
-- The project is split into two modules: `spark-utils-core` and `spark-utils-io`
-- The project moved to Apache Spark 3.0.1, which is a popular choice for the Databricks Cluster users
-- The project is only compiled on Scala 2.12
-- There is a major redesign of core components, mainly returning `Try[_]` for better exception handling
-- Dependencies updates
+- Fixed `core` dependency to `scala-utils`; now using `scala-utils-core`
+- Refactored the `core`/`implicits` package to make the *implicits* a little more *explicit*
+
 
 For previous versions please consult the [release notes](RELEASE-NOTES.md).
 

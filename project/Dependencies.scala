@@ -49,8 +49,13 @@ object Dependencies {
   ).map(_ % "provided")
 
   val CoreDependencies: Seq[ModuleID] =  Seq(
-    "org.tupol" %% "scala-utils" % Versions.scalaUtils
+    "org.tupol" %% "scala-utils-core" % Versions.scalaUtils,
+    "com.typesafe" % "config" % Versions.typesafe_config
   )
+
+  val IoDependencies: Seq[ModuleID] =  Seq(
+    "org.tupol" %% "scala-utils-config-z" % Versions.scalaUtils
+  ) ++ CoreDependencies
 
 
   // Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
