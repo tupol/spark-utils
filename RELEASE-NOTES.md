@@ -2,6 +2,11 @@
 
 ## 0.6
 
+**0.6.2**
+
+- Fixed `core` dependency to `scala-utils`; now using `scala-utils-core`
+- Refactored the `core`/`implicits` package to make the *implicits* a little more *explicit*
+
 **0.6.1**
 
 - Small dependencies and documentation improvements

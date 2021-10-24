@@ -56,7 +56,7 @@ package object utils extends Logging {
   }
 
   /** Serializers for Time types that use commonly */
-  lazy val TimeSerializers: Seq[Serializer[_]] = {
+  val TimeSerializers: Seq[Serializer[_]] = {
     /** Serializer / deserializer for LocalDateFormat */
     case object LDTSerializer extends CustomSerializer[LocalDateTime](format => (
       { case JString(s) => LocalDateTime.parse(s) },
