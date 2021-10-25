@@ -22,23 +22,27 @@ The framework is composed of two classes:
 - `GenericSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = GenericSinkConfiguration(format, optionalSaveMode, 
-                                      partitionColumns, optionalBuckets, options)
-    GenericDataSink(sinkConfiguration).write(dataframe)
+    import org.tupol.spark.io.{configz, _}
+
+...
+val sinkConfiguration = configz.GenericSinkConfiguration(format, optionalSaveMode,
+  partitionColumns, optionalBuckets, options)
+GenericDataSink(sinkConfiguration).write(dataframe)
 ```
 
 Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = GenericSinkConfiguration(format, optionalSaveMode, 
-                                      partitionColumns, optionalBuckets, options)
-    dataframe.sink(sinkConfiguration).write
+    import org.tupol.spark.io.{configz, _}
+
+...
+val sinkConfiguration = configz.GenericSinkConfiguration(format, optionalSaveMode,
+  partitionColumns, optionalBuckets, options)
+dataframe.sink(sinkConfiguration).write
 ```
 
 

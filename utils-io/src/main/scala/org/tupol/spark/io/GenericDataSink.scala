@@ -25,7 +25,6 @@ package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
 
 import scala.util.Try
@@ -80,26 +79,5 @@ case class GenericSinkConfiguration(format: FormatType, optionalSaveMode: Option
       s"partition columns: [${partitionColumns.mkString(", ")}], " +
       s"bucketing: ${buckets.getOrElse("None")}, " +
       s"options: {$optionsStr}"
-  }
-}
-
-object GenericSinkConfiguration extends Configurator[GenericSinkConfiguration] with Logging {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.ValidationNel
-  import scalaz.syntax.applicative._
-
-  implicit val bucketsExtractor = BucketsConfiguration
-
-  def validationNel(config: Config): ValidationNel[Throwable, GenericSinkConfiguration] = {
-    config.extract[FormatType]("format") |@|
-      config.extract[Option[String]]("mode") |@|
-      config.extract[Option[Seq[String]]]("partition.columns").map {
-        case (Some(partition_columns)) => partition_columns
-        case None => Seq[String]()
-      } |@|
-      config.extract[Option[BucketsConfiguration]]("buckets") |@|
-      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
-      GenericSinkConfiguration.apply
   }
 }

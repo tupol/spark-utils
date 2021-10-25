@@ -23,10 +23,7 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.Config
 import org.apache.spark.sql.DataFrame
-import org.tupol.configz.Configurator
-import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.Try
 
@@ -51,33 +48,8 @@ trait DataAwareSinkFactory {
 /** Common marker trait for `DataSink` configuration that also knows the data format */
 trait FormatAwareDataSinkConfiguration extends DataSinkConfiguration with FormatAware
 
-/** Factory for DataSourceConfiguration */
-object FormatAwareDataSinkConfiguration extends Configurator[FormatAwareDataSinkConfiguration] {
-  override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareDataSinkConfiguration] = {
-    import org.tupol.configz._
-    val format = config.extract[FormatType]("format")
-    format match {
-      case scalaz.Success(formatString) =>
-        formatString match {
-          case FormatType.Jdbc => JdbcSinkConfiguration.validationNel(config)
-          case f if (FormatType.AcceptableFileFormats.contains(f)) =>
-            FileSinkConfiguration.validationNel(config)
-          case _ => GenericSinkConfiguration.validationNel(config)
-        }
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
-  }
-}
-
 /** Common marker trait for `DataSink` configuration */
 trait DataSinkConfiguration
-
-/** Factory for DataSourceConfiguration */
-object DataSinkConfiguration extends Configurator[DataSinkConfiguration] {
-  override def validationNel(config: Config): ValidationNel[Throwable, DataSinkConfiguration] =
-    FormatAwareDataSinkConfiguration.validationNel(config)
-}
 
 case class DataSinkException(private val message: String = "", private val cause: Throwable = None.orNull)
   extends Exception(message, cause)

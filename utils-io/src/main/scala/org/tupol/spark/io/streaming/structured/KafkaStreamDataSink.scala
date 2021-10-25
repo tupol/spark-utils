@@ -28,8 +28,8 @@ import org.apache.spark.sql.streaming.StreamingQuery
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.{ DataAwareSink, DataSink }
-import org.tupol.configz.Configurator
-import scalaz.ValidationNel
+
+
 
 import scala.util.Try
 
@@ -62,17 +62,4 @@ case class KafkaStreamDataSinkConfiguration(
     .collect { case (key, Some(value)) => (key, value) }
   val generic = genericConfig.copy(options = options)
   override def toString: String = generic.toString
-}
-object KafkaStreamDataSinkConfiguration extends Configurator[KafkaStreamDataSinkConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.syntax.applicative._
-
-  def validationNel(config: Config): ValidationNel[Throwable, KafkaStreamDataSinkConfiguration] = {
-    config.extract[String]("kafka.bootstrap.servers") |@|
-      config.extract[GenericStreamDataSinkConfiguration] |@|
-      config.extract[Option[String]]("topic") |@|
-      config.extract[Option[String]]("checkpointLocation") apply
-      KafkaStreamDataSinkConfiguration.apply
-  }
 }

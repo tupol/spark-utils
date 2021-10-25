@@ -23,11 +23,7 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.Config
 import org.apache.spark.sql.{ DataFrame, SparkSession }
-import org.tupol.spark.io.sources.{ GenericSourceConfiguration, JdbcSourceConfiguration }
-import org.tupol.configz.Configurator
-import scalaz.ValidationNel
 
 import scala.util.Try
 
@@ -47,13 +43,6 @@ trait DataSourceFactory {
 /** Common marker trait for `DataSource` configuration that also knows the data format  */
 trait FormatAwareDataSourceConfiguration extends DataSourceConfiguration with FormatAware
 
-/** Factory for FormatAwareDataSourceConfiguration */
-object FormatAwareDataSourceConfiguration extends Configurator[FormatAwareDataSourceConfiguration] {
-  override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareDataSourceConfiguration] =
-    FileSourceConfiguration.validationNel(config) orElse
-      JdbcSourceConfiguration.validationNel(config) orElse
-      GenericSourceConfiguration.validationNel(config)
-}
 /** Common marker trait for `DataSource` configuration */
 trait DataSourceConfiguration
 

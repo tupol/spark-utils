@@ -23,11 +23,11 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.Config
+
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.types.StructType
-import org.tupol.configz.Configurator
-import scalaz.{ NonEmptyList, ValidationNel }
+
+
 
 package object sources {
 
@@ -46,28 +46,6 @@ package object sources {
       s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
     }
   }
-  object SourceConfiguration extends Configurator[SourceConfiguration] {
-    override def validationNel(config: Config): ValidationNel[Throwable, SourceConfiguration] = {
-      import org.tupol.configz._
-      val format = config.extract[FormatType]("format")
-      format match {
-        case scalaz.Success(formatString) =>
-          formatString match {
-            case FormatType.Xml => XmlSourceConfiguration.validationNel(config)
-            case FormatType.Csv => CsvSourceConfiguration.validationNel(config)
-            case FormatType.Json => JsonSourceConfiguration.validationNel(config)
-            case FormatType.Parquet => ParquetSourceConfiguration.validationNel(config)
-            case FormatType.Avro => AvroSourceConfiguration.validationNel(config)
-            case FormatType.Orc => OrcSourceConfiguration.validationNel(config)
-            case FormatType.Text => TextSourceConfiguration.validationNel(config)
-            case FormatType.Jdbc => JdbcSourceConfiguration.validationNel(config)
-            case _ => GenericSourceConfiguration.validationNel(config)
-          }
-        case scalaz.Failure(e) =>
-          scalaz.Failure[NonEmptyList[Throwable]](e)
-      }
-    }
-  }
 
   case class CsvSourceConfiguration(
     options: Map[String, String] = Map(),
@@ -76,40 +54,19 @@ package object sources {
     /** The csv parser does not support this feature */
     override val columnNameOfCorruptRecord = None
   }
-  object CsvSourceConfiguration extends Configurator[CsvSourceConfiguration] {
+  object CsvSourceConfiguration {
     def apply(options: Map[String, String], inputSchema: Option[StructType], delimiter: String, header: Boolean): CsvSourceConfiguration =
       CsvSourceConfiguration(
         options + ("delimiter" -> delimiter) + ("header" -> header.toString), inputSchema)
-    override def validationNel(config: Config): ValidationNel[Throwable, CsvSourceConfiguration] = {
-      import org.tupol.configz._
-      import scalaz.syntax.applicative._
-
-      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
-      val inputSchema = config.extract[Option[StructType]]("schema")
-      val delimiter = config.extract[Option[String]]("delimiter").map(_.getOrElse(","))
-      val header = config.extract[Option[Boolean]]("header").map(_.getOrElse(false))
-
-      options |@| inputSchema |@| delimiter |@| header apply CsvSourceConfiguration.apply
-    }
   }
 
   case class XmlSourceConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None)
     extends SourceConfiguration {
     val format = FormatType.Xml
   }
-  object XmlSourceConfiguration extends Configurator[XmlSourceConfiguration] {
+  object XmlSourceConfiguration {
     def apply(options: Map[String, String], inputSchema: Option[StructType], rowTag: String): XmlSourceConfiguration =
       XmlSourceConfiguration(options + ("rowTag" -> rowTag), inputSchema)
-    override def validationNel(config: Config): ValidationNel[Throwable, XmlSourceConfiguration] = {
-      import org.tupol.configz._
-      import scalaz.syntax.applicative._
-
-      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
-      val inputSchema = config.extract[Option[StructType]]("schema")
-      val rowTag = config.extract[String]("rowTag")
-
-      options |@| inputSchema |@| rowTag apply XmlSourceConfiguration.apply
-    }
   }
 
   case class JsonSourceConfiguration(
@@ -117,11 +74,9 @@ package object sources {
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Json
   }
-  object JsonSourceConfiguration extends Configurator[JsonSourceConfiguration] {
+  object JsonSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
       new JsonSourceConfiguration(basicConfig.options, basicConfig.schema)
-    override def validationNel(config: Config): ValidationNel[Throwable, JsonSourceConfiguration] =
-      GenericSourceConfiguration.validationNel(config) map JsonSourceConfiguration.apply
   }
 
   case class ParquetSourceConfiguration(
@@ -129,23 +84,20 @@ package object sources {
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Parquet
   }
-  object ParquetSourceConfiguration extends Configurator[ParquetSourceConfiguration] {
+  object ParquetSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
       new ParquetSourceConfiguration(basicConfig.options, basicConfig.schema)
-    override def validationNel(config: Config): ValidationNel[Throwable, ParquetSourceConfiguration] =
-      GenericSourceConfiguration.validationNel(config) map ParquetSourceConfiguration.apply
   }
+
 
   case class OrcSourceConfiguration(
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Orc
   }
-  object OrcSourceConfiguration extends Configurator[OrcSourceConfiguration] {
+  object OrcSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
       new OrcSourceConfiguration(basicConfig.options, basicConfig.schema)
-    override def validationNel(config: Config): ValidationNel[Throwable, OrcSourceConfiguration] =
-      GenericSourceConfiguration.validationNel(config) map OrcSourceConfiguration.apply
   }
 
   case class AvroSourceConfiguration(
@@ -153,11 +105,9 @@ package object sources {
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Avro
   }
-  object AvroSourceConfiguration extends Configurator[AvroSourceConfiguration] {
+  object AvroSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
       new AvroSourceConfiguration(basicConfig.options, basicConfig.schema)
-    override def validationNel(config: Config): ValidationNel[Throwable, AvroSourceConfiguration] =
-      GenericSourceConfiguration.validationNel(config) map AvroSourceConfiguration.apply
   }
 
   case class TextSourceConfiguration(
@@ -165,12 +115,11 @@ package object sources {
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Text
   }
-  object TextSourceConfiguration extends Configurator[TextSourceConfiguration] {
+  object TextSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
       new TextSourceConfiguration(basicConfig.options, basicConfig.schema)
-    override def validationNel(config: Config): ValidationNel[Throwable, TextSourceConfiguration] =
-      GenericSourceConfiguration.validationNel(config) map TextSourceConfiguration.apply
   }
+
 
   /**
    * Basic configuration for the `JdbcDataSource`
@@ -196,24 +145,11 @@ package object sources {
       s"format: '$format', url: '$url', table: '$table', connection properties: {$optionsStr}"
     }
   }
-  object JdbcSourceConfiguration extends Configurator[JdbcSourceConfiguration] {
+  object JdbcSourceConfiguration {
     def apply(url: String, table: String, user: String, password: String,
-      driver: String, options: Map[String, String] = Map(),
-      schema: Option[StructType] = None): JdbcSourceConfiguration =
+              driver: String, options: Map[String, String] = Map(),
+              schema: Option[StructType] = None): JdbcSourceConfiguration =
       new JdbcSourceConfiguration(url, table, Some(user), Some(password), Some(driver), options, schema)
-
-    override def validationNel(config: Config): ValidationNel[Throwable, JdbcSourceConfiguration] = {
-      import org.tupol.configz._
-      import scalaz.syntax.applicative._
-      config.extract[String]("url") |@|
-        config.extract[String]("table") |@|
-        config.extract[Option[String]]("user") |@|
-        config.extract[Option[String]]("password") |@|
-        config.extract[Option[String]]("driver") |@|
-        config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) |@|
-        config.extract[Option[StructType]]("schema") apply
-        JdbcSourceConfiguration.apply
-    }
   }
 
   case class GenericSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),
@@ -222,18 +158,6 @@ package object sources {
       val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
       val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
       s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-    }
-  }
-
-  object GenericSourceConfiguration extends Configurator[GenericSourceConfiguration] {
-    override def validationNel(config: Config): ValidationNel[Throwable, GenericSourceConfiguration] = {
-      import org.tupol.configz._
-      import scalaz.syntax.applicative._
-      val options = config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]()))
-      val inputSchema = config.extract[Option[StructType]]("schema")
-      val format = config.extract[FormatType]("format")
-
-      format |@| options |@| inputSchema apply GenericSourceConfiguration.apply
     }
   }
 }
