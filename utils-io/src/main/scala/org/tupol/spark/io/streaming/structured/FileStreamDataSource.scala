@@ -23,17 +23,14 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming.structured
 
-import com.typesafe.config.Config
+
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
-import org.tupol.spark.io.FormatType._
 import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, SourceConfiguration }
 import org.tupol.spark.io.{ DataSource, DataSourceException, FormatType }
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
-import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.Try
 
@@ -79,24 +76,4 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
   override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"
-}
-object FileStreamDataSourceConfiguration extends Configurator[FileStreamDataSourceConfiguration] {
-  val AcceptableFileFormats = Seq(Csv, Json, Parquet, Orc, Text)
-  override def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSourceConfiguration] = {
-    import org.tupol.configz._
-    import scalaz.syntax.applicative._
-
-    val format = config.extract[FormatType]("format").ensure(
-      new IllegalArgumentException(s"The provided format is unsupported for a file data source. " +
-        s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f => FormatType.AcceptableFileFormats.contains(f))
-
-    format match {
-      case scalaz.Success(_) =>
-        config.extract[String]("path") |@|
-          SourceConfiguration.validationNel(config) apply
-          FileStreamDataSourceConfiguration.apply
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
-  }
 }

@@ -28,9 +28,9 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io._
-import org.tupol.configz.Configurator
+
 import org.tupol.utils.implicits._
-import scalaz.ValidationNel
+
 
 import scala.util.Try
 
@@ -64,17 +64,5 @@ case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map
     val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
     val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
     s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-  }
-}
-object GenericStreamDataSourceConfiguration extends Configurator[GenericStreamDataSourceConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.syntax.applicative._
-
-  def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSourceConfiguration] = {
-    config.extract[FormatType]("format") |@|
-      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) |@|
-      config.extract[Option[StructType]]("schema") apply
-      GenericStreamDataSourceConfiguration.apply
   }
 }

@@ -52,11 +52,11 @@ This allows us to create the `DataSink` by calling the `sink()` function on a Da
 passing a `DataSinkConfiguration`  configuration instance.
 
 ```scala
-import org.tupol.spark.io._
+import org.tupol.spark.io.{configz, _}
 import org.tupol.spark.io.implicits._
 
 def dataFrame: DataFrame = ???
-def dataSinkConfiguration: DataSinkConfiguration = ???
+def dataSinkConfiguration: configz.DataSinkConfiguration = ???
 val dataSink: DataSink = dataFrame.sink(dataSinkConfiguration)
 ```
 

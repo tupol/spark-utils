@@ -53,10 +53,9 @@ object Dependencies {
     "com.typesafe" % "config" % Versions.typesafe_config
   )
 
-  val IoDependencies: Seq[ModuleID] =  Seq(
+  val IoConfigzDependencies: Seq[ModuleID] =  Seq(
     "org.tupol" %% "scala-utils-config-z" % Versions.scalaUtils
-  ) ++ CoreDependencies
-
+  )
 
   // Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
   val FasterXmlOverrides: Seq[ModuleID] = Seq(

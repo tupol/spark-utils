@@ -27,9 +27,9 @@ import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery, Trigge
 import org.apache.spark.sql.{ DataFrame, Row }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.{ DataAwareSink, DataSink, DataSinkException, FormatType }
-import org.tupol.configz.Configurator
+
 import org.tupol.utils.implicits._
-import scalaz.ValidationNel
+
 
 import scala.util.Try
 
@@ -78,24 +78,5 @@ case class GenericStreamDataSinkConfiguration(format: FormatType, options: Map[S
       s"query name: ${queryName.getOrElse("not specified")}, " +
       s"output mode: ${outputMode.getOrElse("not specified")}, " +
       s"trigger: ${trigger.getOrElse("not specified")}"
-  }
-}
-
-object GenericStreamDataSinkConfiguration extends Configurator[GenericStreamDataSinkConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.syntax.applicative._
-
-  def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSinkConfiguration] = {
-    config.extract[FormatType]("format") |@|
-      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) |@|
-      config.extract[Option[String]]("queryName") |@|
-      config.extract[Option[Trigger]] |@|
-      config.extract[Option[Seq[String]]]("partition.columns").map {
-        case (Some(partition_columns)) => partition_columns
-        case None => Seq[String]()
-      } |@|
-      config.extract[Option[String]]("outputMode") apply
-      GenericStreamDataSinkConfiguration.apply
   }
 }

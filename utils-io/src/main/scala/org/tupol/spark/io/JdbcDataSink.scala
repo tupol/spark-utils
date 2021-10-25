@@ -23,13 +23,10 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.Config
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
-import scalaz.ValidationNel
 
 import scala.util.Try
 
@@ -89,25 +86,11 @@ case class JdbcSinkConfiguration(url: String, table: String, user: Option[String
     s"url: '$url', table: '$table', connection properties: {$optionsStr}"
   }
 }
-object JdbcSinkConfiguration extends Configurator[JdbcSinkConfiguration] {
-
+object JdbcSinkConfiguration {
   def apply(url: String, table: String, user: String, password: String,
-    driver: String, saveMode: String, options: Map[String, String]): JdbcSinkConfiguration =
+            driver: String, saveMode: String, options: Map[String, String]): JdbcSinkConfiguration =
     new JdbcSinkConfiguration(url, table, Some(user), Some(password), Some(driver), Some(saveMode), options)
   def apply(url: String, table: String, user: String, password: String,
-    driver: String, saveMode: Option[String] = None, options: Map[String, String] = Map()): JdbcSinkConfiguration =
+            driver: String, saveMode: Option[String] = None, options: Map[String, String] = Map()): JdbcSinkConfiguration =
     new JdbcSinkConfiguration(url, table, Some(user), Some(password), Some(driver), saveMode, options)
-
-  override def validationNel(config: Config): ValidationNel[Throwable, JdbcSinkConfiguration] = {
-    import org.tupol.configz._
-    import scalaz.syntax.applicative._
-    config.extract[String]("url") |@|
-      config.extract[String]("table") |@|
-      config.extract[Option[String]]("user") |@|
-      config.extract[Option[String]]("password") |@|
-      config.extract[Option[String]]("driver") |@|
-      config.extract[Option[String]]("mode") |@|
-      config.extract[Map[String, String]]("options") apply
-      JdbcSinkConfiguration.apply
-  }
 }

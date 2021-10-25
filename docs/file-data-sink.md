@@ -20,21 +20,25 @@ The framework is composed of two classes:
 - `FileSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = FileSinkConfiguration(outputPath, format)
-    FileDataSink(sinkConfiguration).write(dataframe)
+    import org.tupol.spark.io.{configz, _}
+
+...
+val sinkConfiguration = configz.FileSinkConfiguration(outputPath, format)
+FileDataSink(sinkConfiguration).write(dataframe)
 ```
 
 Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = FileSinkConfiguration(outputPath, format)
-    dataframe.sink(sinkConfiguration).write
+    import org.tupol.spark.io.{configz, _}
+
+...
+val sinkConfiguration = configz.FileSinkConfiguration(outputPath, format)
+dataframe.sink(sinkConfiguration).write
 ```
 
 
