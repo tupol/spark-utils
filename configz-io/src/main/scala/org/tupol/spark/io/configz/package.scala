@@ -25,13 +25,10 @@ package org.tupol.spark.io
 
 
 import com.typesafe.config.{Config, ConfigRenderOptions}
-import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
 import org.tupol.configz.Extractor
 import org.tupol.spark.io.configz.sources._
 import org.tupol.spark.io.configz.streaming.structured._
-import org.tupol.spark.io.sources._
-import org.tupol.spark.io.streaming.structured._
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 
@@ -93,43 +90,6 @@ package object configz {
   implicit val KafkaStreamDataSourceConfigurationExtractor = KafkaStreamDataSourceConfigurator
   implicit val KafkaStreamDataSinkConfigurationExtractor = KafkaStreamDataSinkConfigurator
 
-  implicit val DataSourceFactory =
-    new DataSourceFactory {
-      override def apply[C <: DataSourceConfiguration](configuration: C): DataSource[C] =
-        configuration match {
-          //TODO There must be a better way to use the type system without the type cast
-          case c: FileSourceConfiguration => FileDataSource(c).asInstanceOf[DataSource[C]]
-          case c: JdbcSourceConfiguration => JdbcDataSource(c).asInstanceOf[DataSource[C]]
-          case c: GenericSourceConfiguration => GenericDataSource(c).asInstanceOf[DataSource[C]]
-          case c: FileStreamDataSourceConfiguration => FileStreamDataSource(c).asInstanceOf[DataSource[C]]
-          case c: KafkaStreamDataSourceConfiguration => KafkaStreamDataSource(c).asInstanceOf[DataSource[C]]
-          case c: GenericStreamDataSourceConfiguration => GenericStreamDataSource(c).asInstanceOf[DataSource[C]]
-          case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
-        }
-    }
-
-  implicit val DataAwareSinkFactory =
-    new DataAwareSinkFactory {
-      override def apply[C <: DataSinkConfiguration, WO](configuration: C, data: DataFrame): DataAwareSink[C, WO] =
-        data.isStreaming match {
-          case false =>
-            configuration match {
-              //TODO There must be a better way to use the type system without the type cast
-              case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: GenericSinkConfiguration => GenericDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
-            }
-          case true =>
-            configuration match {
-              //TODO There must be a better way to use the type system without the type cast
-              case c: FileStreamDataSinkConfiguration => FileStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: KafkaStreamDataSinkConfiguration => KafkaStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: GenericStreamDataSinkConfiguration => GenericStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
-            }
-        }
-    }
 
   /**
    * Extended Configuration extractor for Schemas.

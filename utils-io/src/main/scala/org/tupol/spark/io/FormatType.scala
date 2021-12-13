@@ -40,7 +40,7 @@ object FormatType {
   private val SocketFormat = "socket"
   private val KafkaFormat = "kafka"
 
-  def fromString(formatString: String): Try[FormatType] = formatString.trim match {
+  def fromString(formatString: String): Try[FormatType] = formatString.toLowerCase.trim match {
     case XmlFormat | "xml" => Success(Xml)
     case CsvFormat => Success(Csv)
     case JsonFormat => Success(Json)
@@ -51,7 +51,7 @@ object FormatType {
     case JdbcFormat => Success(Jdbc)
     case SocketFormat => Success(Socket)
     case KafkaFormat => Success(Kafka)
-    case customFormat => Success(Custom(customFormat))
+    case _ => Success(Custom(formatString.trim))
   }
 
   val AvailableFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text, Jdbc)
