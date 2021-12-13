@@ -125,6 +125,23 @@ lazy val io_configz = (project in file("configz-io"))
   )
   .dependsOn(io_utils % "test->test;compile->compile")
 
+lazy val io_pureconfig = (project in file("utils-io-pureconfig"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "spark-utils-io-pureconfig",
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime, BuildInfoOption.ToMap, BuildInfoOption.ToJson),
+    buildInfoPackage := "org.tupol.spark.io.pureconfig.info",
+    libraryDependencies ++= ProvidedSparkCoreDependencies,
+    libraryDependencies ++= ProvidedSparkKafkaDependencies,
+    libraryDependencies ++= CoreDependencies,
+    libraryDependencies ++= IoPureconfigDependencies,
+    libraryDependencies ++= IoTestDependencies,
+    publishArtifact in Test := true
+  )
+  .dependsOn(io_utils % "test->test;compile->compile")
+
 lazy val scala_utils = Project(
   id = "scala-utils",
   base = file(".")

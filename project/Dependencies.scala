@@ -14,6 +14,7 @@ object Dependencies {
     val mockito = "1.14.4"
     val typesafe_config = "1.4.0"
     val h2database = "1.4.197"
+    val pureconfig = "0.16.0"
 
     val spark = "3.0.1"
     val sparkXml = "0.13.0"
@@ -55,6 +56,10 @@ object Dependencies {
 
   val IoConfigzDependencies: Seq[ModuleID] =  Seq(
     "org.tupol" %% "scala-utils-config-z" % Versions.scalaUtils
+  )
+
+  val IoPureconfigDependencies: Seq[ModuleID] =  Seq(
+    "com.github.pureconfig" %% "pureconfig" % Versions.pureconfig
   )
 
   // Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
