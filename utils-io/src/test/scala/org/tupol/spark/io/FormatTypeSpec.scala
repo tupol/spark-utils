@@ -1,5 +1,6 @@
 package org.tupol.spark.io
 
+import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
