@@ -1,0 +1,34 @@
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "node_name",
+    "type" : {
+      "type" : "struct",
+      "fields" : [ {
+        "name" : "_isome_attribute",
+        "type" : "string",
+        "nullable" : true,
+        "metadata" : { }
+      }, {
+        "name" : "good_node_name",
+        "type" : {
+          "type" : "struct",
+          "fields" : [ {
+            "name" : "_other_good_node_name",
+            "type" : {
+              "type" : "array",
+              "elementType" : "long",
+              "containsNull" : true
+            },
+            "nullable" : true,
+            "metadata" : { }
+          } ]
+        },
+        "nullable" : true,
+        "metadata" : { }
+      } ]
+    },
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}

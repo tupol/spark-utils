@@ -146,5 +146,5 @@ lazy val scala_utils = Project(
   id = "scala-utils",
   base = file(".")
 ).settings(commonSettings: _*)
-  .dependsOn(core_utils % "test->test;compile->compile", io_utils, io_configz)
-  .aggregate(core_utils, io_utils, io_configz)
+  .dependsOn(core_utils % "test->test;compile->compile", io_utils, io_configz, io_pureconfig)
+  .aggregate(core_utils, io_utils, io_configz, io_pureconfig)
