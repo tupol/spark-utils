@@ -3,15 +3,20 @@ package org.tupol.spark.io.pureconf
 import com.typesafe.config.ConfigRenderOptions
 import org.apache.spark.sql.types.StructType
 import org.tupol.spark.io.FormatType
-import org.tupol.spark.io.pureconf.errors.ConfigTryFailure
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 import pureconfig.{ConfigCursor, ConfigReader}
-import pureconfig.error.{CannotConvert, ConfigReaderFailures}
+import pureconfig.error.{CannotConvert, ConfigReaderFailures, FailureReason}
 import org.tupol.utils.implicits._
 
 object readers {
 
+  final case class CanNotLoadResource(path: String, cause: Throwable) extends FailureReason {
+    def description = s"Cannot load '$path': ${cause.getMessage}"
+  }
+
+  private def readerFailure(cursor: ConfigCursor, reason: FailureReason) =
+    ConfigReaderFailures(cursor.failureFor(reason))
   /**
    * Configuration extractor for Schemas.
    *
@@ -27,9 +32,9 @@ object readers {
         pathCur <- objCur.atKey(pathKey)
         path    <- pathCur.asString
         stringSchema <- fuzzyLoadTextResourceFile(path).toEither
-          .mapLeft(t => ConfigReaderFailures(ConfigTryFailure(t, objCur.origin, s"${cur.path}.$pathKey")))
+          .mapLeft(t => readerFailure(cur, CanNotLoadResource(path, t)))
         schema <- loadSchemaFromString(stringSchema).toEither
-          .mapLeft(t => ConfigReaderFailures(ConfigTryFailure(t, objCur.origin, s"${cur.path}.$pathKey")))
+          .mapLeft(t => readerFailure(cur, CannotConvert(stringSchema, "StructType", t.getMessage)))
       } yield schema
 
     def fromString(cur: ConfigCursor): ConfigReader.Result[StructType] = {
@@ -37,7 +42,7 @@ object readers {
         objCur <- cur.asConfigValue
         stringSchema = objCur.render(ConfigRenderOptions.concise())
         schema <- loadSchemaFromString(stringSchema).toEither
-          .mapLeft(t => ConfigReaderFailures(ConfigTryFailure(t, cur.origin, cur.path)))
+          .mapLeft(t => readerFailure(cur, CannotConvert(stringSchema, "StructType", t.getMessage)))
       } yield schema
     }
 
@@ -46,6 +51,9 @@ object readers {
       case res      => res
     }
   }
-  val FormatTypeReader: ConfigReader[FormatType] = ConfigReader[String].emap(value => FormatType.fromString(value).toEither.mapLeft(t => CannotConvert(value, "FormatType", t.getMessage)))
+  val FormatTypeReader: ConfigReader[FormatType] = ConfigReader[String].emap { value =>
+    FormatType.fromString(value).toEither.mapLeft(t => CannotConvert(value, "FormatType", t.getMessage))
+  }
+
 
 }

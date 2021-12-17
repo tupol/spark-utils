@@ -14,7 +14,6 @@ class ExtendedSchemaExtractorSpec extends AnyFunSuite with Matchers {
 
   test("Load schema from an external resource with a schema configuration path") {
     val config = ConfigFactory.parseString(""" schema.path: "sources/avro/sample_schema.json" """)
-    println(config.extract[StructType]("schema"))
     config.extract[StructType]("schema").get shouldBe ReferenceSchema
   }
 

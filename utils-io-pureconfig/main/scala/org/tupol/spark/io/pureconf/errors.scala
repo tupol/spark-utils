@@ -13,9 +13,4 @@ object errors {
       new ConfigError(message)
   }
 
-  case class ConfigTryFailure(cause: Throwable, origin: Option[ConfigOrigin], path: String)
-    extends ConfigReaderFailure {
-    def description = cause.getMessage
-  }
-
 }
