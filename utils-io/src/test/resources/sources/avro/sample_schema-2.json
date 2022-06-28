@@ -1,0 +1,46 @@
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "array",
+    "type" : {
+      "type" : "array",
+      "elementType" : "long",
+      "containsNull" : true
+    },
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "dict",
+    "type" : {
+      "type" : "struct",
+      "fields" : [ {
+        "name" : "extra_key",
+        "type" : "string",
+        "nullable" : true,
+        "metadata" : { }
+      }, {
+        "name" : "key",
+        "type" : "string",
+        "nullable" : true,
+        "metadata" : { }
+      } ]
+    },
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "int",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "string",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "other-string",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}

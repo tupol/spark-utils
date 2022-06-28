@@ -34,7 +34,7 @@ case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSo
 
   /** Create and configure a `DataFrameReader` based on the given `JdbcDataSourceConfig` */
   private def createReader(configuration: JdbcSourceConfiguration)(implicit spark: SparkSession): DataFrameReader = {
-    spark.read.format(configuration.format.toString).options(configuration.readerOptions)
+    spark.read.format(configuration.format.toString).options(configuration.options)
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */

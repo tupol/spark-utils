@@ -15,14 +15,14 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |number=1
-        |bucketColumns=["a", "b", "c"]
+        |columns=["a", "b", "c"]
         |sortByColumns=["a", "b" ]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = BucketsConfiguration(
       number = 1,
-      bucketColumns = Seq("a", "b", "c"),
+      columns = Seq("a", "b", "c"),
       sortByColumns = Seq("a", "b"))
 
     config.extract[BucketsConfiguration].get shouldBe expected
@@ -33,19 +33,19 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |number=1
-        |bucketColumns=["a", "b", "c"]
+        |columns=["a", "b", "c"]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = BucketsConfiguration(
       number = 1,
-      bucketColumns = Seq("a", "b", "c"),
+      columns = Seq("a", "b", "c"),
       sortByColumns = Seq())
 
     config.extract[BucketsConfiguration].get shouldBe expected
   }
 
-  test("Failed BucketsConfiguration, missing bucketColumns") {
+  test("Failed BucketsConfiguration, missing columns") {
 
     val configStr =
       """
@@ -57,13 +57,13 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
     a[ConfigurationException] shouldBe thrownBy(config.extract[BucketsConfiguration].get)
   }
 
-  test("Failed BucketsConfiguration, empty bucketColumns") {
+  test("Failed BucketsConfiguration, empty columns") {
 
     val configStr =
       """
         |number=1
         |sortByColumns=["a", "b", "c"]
-        |bucketColumns=[]
+        |columns=[]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -75,7 +75,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |number=0
-        |bucketColumns=["a", "b", "c"]
+        |columns=["a", "b", "c"]
         |sortByColumns=["a", "b" ]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
@@ -88,7 +88,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |number=-1
-        |bucketColumns=["a", "b", "c"]
+        |columns=["a", "b", "c"]
         |sortByColumns=["a", "b" ]
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)

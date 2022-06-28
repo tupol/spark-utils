@@ -16,7 +16,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="text"
         |output.mode="MODE"
         |output.partition.columns=["OUTPUT_PATH"]
-        |output.partition.files=2
+        |output.partition.number=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -32,7 +32,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
     result.get shouldBe expected
   }
 
-  test("Successfully extract FileSinkConfiguration out of a configuration string without the partition files") {
+  test("Successfully extract FileSinkConfiguration out of a configuration string without the partition number") {
 
     val configStr =
       """
@@ -78,7 +78,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="avro"
         |output.mode="MODE"
         |output.partition.columns=["OUTPUT_PATH"]
-        |output.partition.files=2
+        |output.partition.number=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -94,7 +94,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.path="OUTPUT_PATH"
         |output.mode="MODE"
         |output.partition.columns=["OUTPUT_PATH"]
-        |output.partition.files=2
+        |output.partition.number=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -111,7 +111,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="custom.format"
         |output.mode="overwrite"
         |output.partition.columns=["OUTPUT_PATH"]
-        |output.partition.files=2
+        |output.partition.number=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -120,7 +120,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
     result.isSuccess shouldBe false
   }
 
-  test("Failed to extract FileSinkConfiguration if the partition.files is a number smaller than 0") {
+  test("Failed to extract FileSinkConfiguration if the partition.number is a number smaller than 0") {
 
     val configStr =
       """
@@ -128,7 +128,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="parquet"
         |output.mode="append"
         |output.partition.columns=["OUTPUT_PATH"]
-        |output.partition.files=-2
+        |output.partition.number=-2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 

@@ -22,7 +22,7 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = GenericSinkConfiguration(
       format = FormatType.Text,
-      optionalSaveMode = Some("MODE"),
+      mode = Some("MODE"),
       partitionColumns = Seq("OUTPUT_PATH"))
 
     val result = config.extract[GenericSinkConfiguration]("output")
@@ -43,7 +43,7 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = GenericSinkConfiguration(
       format = FormatType.Custom("custom.format"),
-      optionalSaveMode = Some("MODE"),
+      mode = Some("MODE"),
       partitionColumns = Seq("PARTITION"))
 
     val result = GenericSinkConfigurator.extract(config.getConfig("output"))
@@ -57,7 +57,7 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = GenericSinkConfiguration(
       format = FormatType.Text,
-      optionalSaveMode = Some("append"),
+      mode = Some("append"),
       partitionColumns = Seq())
 
     result shouldBe expected
