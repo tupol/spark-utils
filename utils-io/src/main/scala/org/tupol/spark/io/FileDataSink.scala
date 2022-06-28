@@ -37,7 +37,7 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
    * setting up the partitions, partitions number, save mode and format
    */
   private def configureWriter(data: DataFrame, configuration: FileSinkConfiguration): DataFrameWriter[Row] = {
-    val writer = configuration.partitionFilesNumber match {
+    val writer = configuration.partition.flatMap(_.number) match {
       case Some(partsNo) =>
         logDebug(s"Initializing the DataFrameWriter after repartitioning data to $partsNo partitions.")
         // For the distinction between repartition and coalesce please check the API
@@ -45,41 +45,48 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
         else data.coalesce(partsNo).write
       case None => data.write
     }
-    val partitionsWriter = configuration.partitionColumns match {
-      case Nil => writer
-      case partitions =>
+    val partitionsWriter = configuration.partition match {
+      case None => writer
+      case Some(PartitionsConfiguration(_, Nil)) => writer
+      case Some(PartitionsConfiguration(_, columns)) =>
         logDebug(s"Initializing the DataFrameWriter to partition the data using the following partition columns: " +
-          s"[${partitions.mkString(", ")}].")
-        writer.partitionBy(partitions: _*)
+          s"[${columns.mkString(", ")}].")
+        writer.partitionBy(columns: _*)
     }
     val bucketsWriter = configuration.buckets match {
       case None => partitionsWriter
       case Some(bc) =>
         logDebug(s"Initializing the DataFrameWriter to bucket the data into ${bc.number} buckets " +
-          s"using the following partition columns: ${bc.bucketColumns.mkString(", ")}].")
+          s"using the following partition columns: ${bc.columns.mkString(", ")}].")
         val sortedWriter = bc.sortByColumns match {
-          case Nil => partitionsWriter
-          case _ =>
-            logDebug(s"Buckets will be sorted by the following columns: ${bc.sortByColumns.mkString(", ")}].")
-            partitionsWriter.sortBy(bc.sortByColumns.head, bc.sortByColumns.tail: _*)
+          case None => partitionsWriter
+          case Some(Nil) => partitionsWriter
+          case Some(sortByColumns) =>
+            logDebug(s"Buckets will be sorted by the following columns: ${sortByColumns.mkString(", ")}].")
+            partitionsWriter.sortBy(sortByColumns.head, sortByColumns.tail: _*)
         }
-        sortedWriter.bucketBy(bc.number, bc.bucketColumns.head, bc.bucketColumns.tail: _*)
+        sortedWriter.bucketBy(bc.number, bc.columns.head, bc.columns.tail: _*)
     }
-    bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(configuration.options)
+    configuration.options match {
+      case None => bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString)
+      case Some(options) => bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(options)
+    }
+
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
   def write(data: DataFrame): Try[DataFrame] = {
 
+    val writer = configureWriter(data, configuration)
     Try {
       configuration.buckets match {
         case Some(bc) =>
-          logInfo(s"Writing data to Hive as '${configuration.format}' in the '${configuration.path}' table. " +
+          logInfo(s"Writing data to Hive as '${configuration.format}' in the '${configuration.path}' table due to the buckets configuration: $bc. " +
             s"Notice that the path parameter is used as a table name in this case.")
-          configureWriter(data, configuration).saveAsTable(configuration.path)
+          writer.saveAsTable(configuration.path)
         case None =>
           logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
-          configureWriter(data, configuration).save(configuration.path)
+          writer.save(configuration.path)
       }
     }
       .map(_ => data)
@@ -110,33 +117,74 @@ case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFra
  * @param options other sink specific options
  *
  */
-case class FileSinkConfiguration(path: String, format: FormatType, optionalSaveMode: Option[String] = None,
-  partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq(),
-  buckets: Option[BucketsConfiguration] = None,
-  options: Map[String, String] = Map())
+case class FileSinkConfiguration(path: String, format: FormatType, mode: Option[String],
+  partition: Option[PartitionsConfiguration],
+  buckets: Option[BucketsConfiguration],
+  options: Option[Map[String, String]])
   extends FormatAwareDataSinkConfiguration {
-  def saveMode = optionalSaveMode.getOrElse("default")
+  def saveMode = mode.getOrElse("default")
   override def toString: String = {
-    val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+    val optionsStr = options match {
+      case Some(options) => if(options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      case None => ""
+    }
     s"path: '$path', format: '$format', save mode: '$saveMode', " +
-      s"partition files number: ${partitionFilesNumber.getOrElse("not specified")}, " +
-      s"partition columns: [${partitionColumns.mkString(", ")}], " +
+      s"partitioning: ${partition.getOrElse("None")}, " +
       s"bucketing: ${buckets.getOrElse("None")}, " +
       s"options: {$optionsStr}"
+  }
+}
+object FileSinkConfiguration {
+  def apply(path: String, format: FormatType, optionalSaveMode: Option[String] = None,
+            partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq(),
+            buckets: Option[BucketsConfiguration] = None,
+            options: Option[Map[String, String]] = None): FileSinkConfiguration = {
+    val partition = (partitionFilesNumber, partitionColumns) match {
+      case (None, Nil) => None
+      case (None, columns) => Some(PartitionsConfiguration(None, columns))
+      case (number, columns) => Some(PartitionsConfiguration(number, columns))
+    }
+    new FileSinkConfiguration(path, format, optionalSaveMode, partition, buckets, options)
+  }
+}
+
+/**
+ * Partitioning configuration
+ * @param number number of partition files
+ * @param columns optional columns for partitioning
+ */
+case class PartitionsConfiguration(number: Option[Int], columns: Seq[String]) {
+  override def toString: String = {
+    s"number of partition: '${number.getOrElse("Unchanged")}', " +
+      s"partition columns: [${columns.mkString(", ")}]"
   }
 }
 
 /**
  * Bucketing configuration
  * @param number number of buckets
- * @param bucketColumns columns for bucketing
+ * @param columns columns for bucketing
  * @param sortByColumns optional sort columns for bucketing
  */
-case class BucketsConfiguration(number: Int, bucketColumns: Seq[String], sortByColumns: Seq[String] = Seq()) {
+case class BucketsConfiguration(number: Int, columns: Seq[String], sortByColumns: Option[Seq[String]]) {
   override def toString: String = {
+    val sortByColumnsStr = sortByColumns match {
+      case None => "not specified"
+      case Some(sbc) => s"[${sbc.mkString(", ")}]"
+    }
     s"number of buckets: '$number', " +
-      s"bucketing columns: [${bucketColumns.mkString(", ")}], " +
-      s"sortBy columns: [${sortByColumns.mkString(", ")}]"
+      s"bucketing columns: [${columns.mkString(", ")}], " +
+      s"sortBy columns: $sortByColumnsStr"
+  }
+}
+
+object BucketsConfiguration {
+  def apply(number: Int, columns: Seq[String], sortByColumns: Seq[String]): BucketsConfiguration = {
+    val optSortByColumns = sortByColumns match {
+      case Nil => None
+      case _ => Some(sortByColumns)
+    }
+    new BucketsConfiguration(number, columns, optSortByColumns)
   }
 }
 

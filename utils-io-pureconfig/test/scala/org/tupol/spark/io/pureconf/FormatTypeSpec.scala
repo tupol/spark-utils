@@ -8,9 +8,10 @@ import org.tupol.spark.io._
 class FormatTypeSpec extends AnyFunSuite with Matchers {
 
   import pureconfig.generic.auto._
+  import org.tupol.spark.io.pureconf.readers.FormatTypeReader
 
   test("FormatTypeExtractor - custom") {
-    val configStr = """  format: unknown  """
+    val configStr = """ format = unknown  """
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[TestFormatType].get
     result.format shouldBe FormatType.Custom("unknown")

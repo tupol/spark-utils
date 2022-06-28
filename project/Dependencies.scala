@@ -14,7 +14,7 @@ object Dependencies {
     val mockito = "1.14.4"
     val typesafe_config = "1.4.0"
     val h2database = "1.4.197"
-    val pureconfig = "0.16.0"
+    val pureconfig = "0.17.1"
 
     val spark = "3.0.1"
     val sparkXml = "0.13.0"

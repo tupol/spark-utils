@@ -35,7 +35,7 @@ object FileSinkConfigurator extends Configurator[FileSinkConfiguration] with Log
 
   implicit val bucketsExtractor = BucketsConfigurator
 
-  def apply(path: String, format: FormatType): FileSinkConfiguration = new FileSinkConfiguration(path, format, None, None, Seq())
+  def apply(path: String, format: FormatType): FileSinkConfiguration = new FileSinkConfiguration(path, format, None, None, None, None)
 
   def validationNel(config: Config): ValidationNel[Throwable, FileSinkConfiguration] = {
     config.extract[String]("path") |@|
@@ -43,15 +43,15 @@ object FileSinkConfigurator extends Configurator[FileSinkConfiguration] with Log
         new IllegalArgumentException(s"The provided format is unsupported for a file data sink. " +
           s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f => FormatType.AcceptableFileFormats.contains(f)) |@|
         config.extract[Option[String]]("mode") |@|
-        config.extract[Option[Int]]("partition.files").
+        config.extract[Option[Int]]("partition.number").
         ensure(new IllegalArgumentException(
-          "If specified, the partition.files should be a positive integer > 0.").toNel)(_.map(_ > 0).getOrElse(true)) |@|
+          "If specified, the partition.number should be a positive integer > 0.").toNel)(_.map(_ > 0).getOrElse(true)) |@|
         config.extract[Option[Seq[String]]]("partition.columns").map {
           case (Some(partition_columns)) => partition_columns
           case None => Seq[String]()
         } |@|
         config.extract[Option[BucketsConfiguration]]("buckets") |@|
-        config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
+        config.extract[Option[Map[String, String]]]("options") apply
         FileSinkConfiguration.apply
   }
 }
@@ -65,7 +65,7 @@ object BucketsConfigurator extends Configurator[BucketsConfiguration] {
   def validationNel(config: Config): ValidationNel[Throwable, BucketsConfiguration] = {
     config.extract[Int]("number")
       .ensure(new IllegalArgumentException("The number of buckets must be a positive integer > 0.").toNel)(_ > 0) |@|
-      config.extract[Seq[String]]("bucketColumns")
+      config.extract[Seq[String]]("columns")
       .ensure(new IllegalArgumentException("At least one column needs to be specified for bucketing.").toNel)(_.size > 0) |@|
       config.extract[Option[Seq[String]]]("sortByColumns").map {
         case (Some(sortByColumns)) => sortByColumns

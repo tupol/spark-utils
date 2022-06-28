@@ -58,6 +58,8 @@ package object sources {
     def apply(options: Map[String, String], inputSchema: Option[StructType], delimiter: String, header: Boolean): CsvSourceConfiguration =
       CsvSourceConfiguration(
         options + ("delimiter" -> delimiter) + ("header" -> header.toString), inputSchema)
+    def apply(genericConfig: GenericSourceConfiguration, delimiter: String, header: Boolean): CsvSourceConfiguration =
+      apply(genericConfig.options, genericConfig.schema, delimiter, header)
   }
 
   case class XmlSourceConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None)
@@ -67,6 +69,8 @@ package object sources {
   object XmlSourceConfiguration {
     def apply(options: Map[String, String], inputSchema: Option[StructType], rowTag: String): XmlSourceConfiguration =
       XmlSourceConfiguration(options + ("rowTag" -> rowTag), inputSchema)
+    def apply(genericConfig: GenericSourceConfiguration, rowTag: String): XmlSourceConfiguration =
+      apply(genericConfig.options, genericConfig.schema, rowTag)
   }
 
   case class JsonSourceConfiguration(
@@ -129,27 +133,39 @@ package object sources {
    * @param password
    * @param driver
    */
-  case class JdbcSourceConfiguration(url: String, table: String, user: Option[String], password: Option[String],
-    driver: Option[String], options: Map[String, String], schema: Option[StructType]) extends SourceConfiguration {
+  case class JdbcSourceConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Jdbc
-    def readerOptions: Map[String, String] = {
-      val userOption = user.map(v => Map("user" -> v)).getOrElse(Nil)
-      val passwordOption = password.map(v => Map("password" -> v)).getOrElse(Nil)
-      val driverOption = driver.map(v => Map("driver" -> v)).getOrElse(Nil)
-      options + (JDBCOptions.JDBC_URL -> url, JDBCOptions.JDBC_TABLE_NAME -> table) ++
-        userOption ++ passwordOption ++ driverOption
-    }
+
+    def table: String = options.get(JDBCOptions.JDBC_TABLE_NAME).getOrElse("")
+    def url: String = options.get(JDBCOptions.JDBC_URL).getOrElse("")
+
     override def toString: String = {
-      val optionsStr = if (readerOptions.isEmpty) ""
-      else readerOptions.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
-      s"format: '$format', url: '$url', table: '$table', connection properties: {$optionsStr}"
+      val optionsStr = if (options.isEmpty) ""
+      else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      s"format: '$format', connection properties: {$optionsStr}"
     }
   }
   object JdbcSourceConfiguration {
+    def apply(url: String, table: String, user: Option[String], password: Option[String],
+              driver: Option[String], options: Map[String, String],
+              schema: Option[StructType]): JdbcSourceConfiguration = {
+      val userOption = user.map(v => Map("user" -> v)).getOrElse(Nil)
+      val passwordOption = password.map(v => Map("password" -> v)).getOrElse(Nil)
+      val driverOption = driver.map(v => Map("driver" -> v)).getOrElse(Nil)
+      val extraOptions = Map(JDBCOptions.JDBC_URL -> url, JDBCOptions.JDBC_TABLE_NAME -> table) ++
+        userOption ++ passwordOption ++ driverOption
+      new JdbcSourceConfiguration(options ++ extraOptions, schema)
+    }
     def apply(url: String, table: String, user: String, password: String,
-              driver: String, options: Map[String, String] = Map(),
-              schema: Option[StructType] = None): JdbcSourceConfiguration =
-      new JdbcSourceConfiguration(url, table, Some(user), Some(password), Some(driver), options, schema)
+              driver: String, options: Map[String, String],
+              schema: Option[StructType]): JdbcSourceConfiguration =
+      apply(url, table, Some(user), Some(password), Some(driver), options, schema)
+    def apply(url: String, table: String, user: String, password: String,
+              driver: String, options: Map[String, String]): JdbcSourceConfiguration =
+      apply(url, table, Some(user), Some(password), Some(driver), options, None)
+    def apply(url: String, table: String, user: String, password: String,
+              driver: String): JdbcSourceConfiguration =
+      apply(url, table, Some(user), Some(password), Some(driver), Map[String, String](), None)
   }
 
   case class GenericSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),

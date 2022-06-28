@@ -55,7 +55,7 @@ dataframe.sink(sinkConfiguration).write
   - a sequence of columns that should be used for partitioning data on disk;
   - they should exist in the result of the given sql;
   - if empty no partitioning will be performed.
-- `partition.files` *Optional*
+- `partition.number` *Optional*
   - the number of partition files that will end up in each partition folder;
   - one can always look at the average size of the data inside partition folders and come up 
     with a number that is appropriate for the application;
@@ -68,7 +68,7 @@ dataframe.sink(sinkConfiguration).write
   - the used output function is `saveAsTable` using the `path` parameter as the table name
   - `number` **Required** 
     - the number of buckets
-  - `bucketColumns` **Required** 
+  - `columns` **Required** 
     - columns used for bucketing
   - `sortByColumns` *Optional*
     - sort columns

@@ -16,7 +16,7 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="text"
         |output.mode="MODE"
         |output.partition.columns=["COL1"]
-        |output.partition.files=2
+        |output.partition.number=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -73,7 +73,7 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
     val configStr =
       """
-        |output.format="avro"
+        |output.format="test"
         |output.mode="MODE"
         |output.partition.columns=["COL1", "COL2"]
         |output.partition.files=2
@@ -81,8 +81,8 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val config = ConfigFactory.parseString(configStr)
 
     val expected = GenericSinkConfiguration(
-      FormatType.Custom("avro"),
-      optionalSaveMode = Some("MODE"),
+      FormatType.Custom("test"),
+      mode = Some("MODE"),
       partitionColumns = Seq("COL1", "COL2"))
     val result = config.extract[DataSinkConfiguration]("output")
 
@@ -97,13 +97,13 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="UNKNOWN_FORMAT"
         |output.mode="MODE"
         |output.partition.columns=["COL1"]
-        |output.partition.files=2
+        |output.partition.number=2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = GenericSinkConfiguration(
       FormatType.Custom("UNKNOWN_FORMAT"),
-      optionalSaveMode = Some("MODE"),
+      mode = Some("MODE"),
       partitionColumns = Seq("COL1"))
     val result = config.extract[DataSinkConfiguration]("output")
 
@@ -118,7 +118,7 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
         |output.format="parquet"
         |output.mode="append"
         |output.partition.columns=["COL1"]
-        |output.partition.files=-2
+        |output.partition.number=-2
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
     val result = config.extract[DataSinkConfiguration]("output")
@@ -159,7 +159,7 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       user = Some("USER_NAME"),
       password = Some("USER_PASS"),
       driver = Some("SOME_DRIVER"),
-      optionalSaveMode = Some("SOME_MODE"),
+      mode = Some("SOME_MODE"),
       options = Map("opt1" -> "val1"))
     val result = config.extract[DataSinkConfiguration]("output")
 

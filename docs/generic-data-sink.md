@@ -65,7 +65,7 @@ dataframe.sink(sinkConfiguration).write
   - the used output function is `saveAsTable` using the `path` parameter as the table name
   - `number` **Required** 
     - the number of buckets
-  - `bucketColumns` **Required** 
+  - `columns` **Required** 
     - columns used for bucketing
   - `sortByColumns` *Optional*
     - sort columns

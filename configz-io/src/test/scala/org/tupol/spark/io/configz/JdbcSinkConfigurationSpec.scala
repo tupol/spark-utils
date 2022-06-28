@@ -31,7 +31,7 @@ class JdbcSinkConfigurationSpec extends AnyFunSuite with Matchers {
       user = Some("USER_NAME"),
       password = Some("USER_PASS"),
       driver = Some("SOME_DRIVER"),
-      optionalSaveMode = Some("SOME_MODE"),
+      mode = Some("SOME_MODE"),
       options = Map("opt1" -> "val1"))
     val result = config.extract[JdbcSinkConfiguration]("output")
 

@@ -23,17 +23,22 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import scala.util.{ Success, Try }
+import scala.util.{Success, Try}
 
-sealed trait FormatType
+sealed trait FormatType {
+  val format: String
+  override def toString: String = format
+}
 
 object FormatType {
 
   private val XmlFormat = "com.databricks.spark.xml"
+  private val XmlFormatShort = "xml"
   private val CsvFormat = "csv"
   private val JsonFormat = "json"
   private val ParquetFormat = "parquet"
   private val AvroFormat = "com.databricks.spark.avro" // Starting Spark 4.x "avro" is part of org.apache.spark
+  private val AvroFormatShort = "avro"
   private val OrcFormat = "orc"
   private val TextFormat = "text"
   private val JdbcFormat = "jdbc"
@@ -41,11 +46,11 @@ object FormatType {
   private val KafkaFormat = "kafka"
 
   def fromString(formatString: String): Try[FormatType] = formatString.toLowerCase.trim match {
-    case XmlFormat | "xml" => Success(Xml)
+    case XmlFormat | XmlFormatShort => Success(Xml)
     case CsvFormat => Success(Csv)
     case JsonFormat => Success(Json)
     case ParquetFormat => Success(Parquet)
-    case AvroFormat => Success(Avro)
+    case AvroFormat | AvroFormatShort => Success(Avro)
     case OrcFormat => Success(Orc)
     case TextFormat => Success(Text)
     case JdbcFormat => Success(Jdbc)
@@ -56,15 +61,15 @@ object FormatType {
 
   val AvailableFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text, Jdbc)
   val AcceptableFileFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text)
-  case object Xml extends FormatType { override def toString: String = XmlFormat }
-  case object Csv extends FormatType { override def toString: String = CsvFormat }
-  case object Json extends FormatType { override def toString: String = JsonFormat }
-  case object Parquet extends FormatType { override def toString: String = ParquetFormat }
-  case object Avro extends FormatType { override def toString: String = AvroFormat }
-  case object Orc extends FormatType { override def toString: String = OrcFormat }
-  case object Text extends FormatType { override def toString: String = TextFormat }
-  case object Jdbc extends FormatType { override def toString: String = JdbcFormat }
-  case object Socket extends FormatType { override def toString: String = SocketFormat }
-  case object Kafka extends FormatType { override def toString: String = KafkaFormat }
-  case class Custom(format: String) extends FormatType { override def toString: String = format }
+  case object Xml extends FormatType { val format = XmlFormat }
+  case object Csv extends FormatType { val format = CsvFormat }
+  case object Json extends FormatType { val format = JsonFormat }
+  case object Parquet extends FormatType { val format = ParquetFormat }
+  case object Avro extends FormatType { val format = AvroFormat }
+  case object Orc extends FormatType { val format = OrcFormat }
+  case object Text extends FormatType { val format = TextFormat }
+  case object Jdbc extends FormatType { val format = JdbcFormat }
+  case object Socket extends FormatType { val format = SocketFormat }
+  case object Kafka extends FormatType { val format = KafkaFormat }
+  case class Custom(format: String) extends FormatType
 }

@@ -5,6 +5,7 @@ import org.apache.spark.sql.types.StructType
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.sql.loadSchemaFromFile
+import org.tupol.spark.io.pureconf.readers._
 
 import scala.util.Failure
 
@@ -23,12 +24,12 @@ class ExtendedSchemaExtractorSpec extends AnyFunSuite with Matchers {
   }
 
   test("Load schema from a classpath resource with a schema configuration path") {
-    val config = ConfigFactory.parseString(""" schema.path: "/sources/avro/sample_schema.json" """)
+    val config = ConfigFactory.parseString(""" schema.path: "sources/avro/sample_schema.json" """)
     config.extract[StructType]("schema").get shouldBe ReferenceSchema
   }
 
   test("Load schema from a classpath resource without a schema configuration path") {
-    val config = ConfigFactory.parseString(""" path: "/sources/avro/sample_schema.json" """)
+    val config = ConfigFactory.parseString(""" path: "sources/avro/sample_schema.json" """)
     config.extract[StructType].get shouldBe ReferenceSchema
   }
 
