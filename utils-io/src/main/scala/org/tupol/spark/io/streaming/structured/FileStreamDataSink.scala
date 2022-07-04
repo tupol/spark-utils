@@ -45,7 +45,7 @@ object FileStreamDataSink {
              path: String,
              genericConfig: GenericStreamDataSinkConfiguration,
              checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
-    FileStreamDataSinkConfiguration(genericConfig.format, path, genericConfig, checkpointLocation)
+    FileStreamDataSinkConfiguration(path, genericConfig, checkpointLocation)
 }
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
@@ -55,24 +55,17 @@ case class FileStreamDataAwareSink(configuration: FileStreamDataSinkConfiguratio
 }
 
 case class FileStreamDataSinkConfiguration(
-  format: FormatType,
-  private val path: String,
-  private val genericConfig: GenericStreamDataSinkConfiguration,
-  private val checkpointLocation: Option[String])
+  path: String,
+  genericConfig: GenericStreamDataSinkConfiguration,
+  checkpointLocation: Option[String])
   extends FormatAwareStreamingSinkConfiguration {
-  private val options = genericConfig.options ++
+  private val options =
     Map(
       "path" -> Some(path),
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
-  val generic = genericConfig.copy(options = options)
-  override def toString: String = generic.toString
+  val generic = genericConfig.addOptions(options)
+  def format: FormatType = generic.format
+  def resolve: FileStreamDataSinkConfiguration = this.copy(genericConfig = generic)
 }
-object FileStreamDataSinkConfiguration {
-  def apply(
-             path: String,
-             genericConfig: GenericStreamDataSinkConfiguration,
-             checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
-    new FileStreamDataSinkConfiguration(genericConfig.format, path, genericConfig, checkpointLocation)
 
-}

@@ -77,3 +77,7 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
   def format: FormatType = sourceConfiguration.format
   override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"
 }
+object FileStreamDataSourceConfiguration {
+  import org.tupol.spark.io.FormatType._
+  val AcceptableFileFormats = Seq(Csv, Json, Parquet, Orc, Text)
+}

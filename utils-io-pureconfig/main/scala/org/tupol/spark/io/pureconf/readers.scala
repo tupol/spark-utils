@@ -179,7 +179,9 @@ object readers {
 
   implicit val FormatAwareDataSourceConfigurationReader: ConfigReader[FormatAwareDataSourceConfiguration] = {
     import pureconfig.generic.auto._
-    ConfigReader[FileSourceConfiguration].orElse(ConfigReader[JdbcSourceConfiguration]).orElse(ConfigReader[GenericSourceConfiguration])
+    ConfigReader[FileSourceConfiguration]
+      .orElse(ConfigReader[JdbcSourceConfiguration])
+      .orElse(ConfigReader[GenericSourceConfiguration])
   }
 
   implicit val PartitionsConfigurationReader: ConfigReader[PartitionsConfiguration] =
@@ -202,7 +204,7 @@ object readers {
   }
 
   implicit val FileSinkConfigurationReader: ConfigReader[FileSinkConfiguration] = {
-    import pureconfig.generic.auto._
+
     import org.tupol.spark.io.pureconf._
     deriveReader[FileSinkConfiguration]
       .ensure(conf => FormatType.AcceptableFileFormats.contains(conf.format),

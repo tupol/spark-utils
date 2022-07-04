@@ -14,6 +14,7 @@ import org.tupol.spark.io.sources.TextSourceConfiguration
 import org.tupol.spark.testing.files.TestTempFilePath1
 
 import java.io.File
+import java.nio.charset.Charset
 import scala.util.Random
 
 class FileStreamDataSourceSpec extends AnyFunSuite
@@ -65,7 +66,7 @@ class FileStreamDataSourceSpec extends AnyFunSuite
 
   def addFile(text: String, parentFile: File): Unit = {
     val file = new File(parentFile, f"test-${math.abs(Random.nextLong())}%010d")
-    FileUtils.write(file, text)
+    FileUtils.write(file, text, Charset.defaultCharset)
   }
 
 }

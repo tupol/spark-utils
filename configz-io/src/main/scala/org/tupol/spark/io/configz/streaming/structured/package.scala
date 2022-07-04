@@ -74,12 +74,12 @@ package object structured {
   }
 
   implicit val KafkaSubscriptionExtractor = new Extractor[KafkaSubscription] {
-    val AcceptableValues = Seq("assign", "subscribe", "subscribePattern")
+    import org.tupol.spark.io.streaming.structured.KafkaSubscription.AcceptableTypes
     override def extract(config: Config, path: String): Try[KafkaSubscription] =
       for {
         subscriptionType <- config.extract[String](s"$path.subscription.type").ensure(new IllegalArgumentException(s"The subscription.type is not supported. " +
-          s"The supported values are ${AcceptableValues.mkString(",", "', '", ",")}.").toNel)(st =>
-          AcceptableValues.map(_.toLowerCase()).contains(st.toLowerCase))
+          s"The supported values are ${AcceptableTypes.mkString(",", "', '", ",")}.").toNel)(st =>
+          AcceptableTypes.map(_.toLowerCase()).contains(st.toLowerCase))
         subscription <- config.extract[String](s"$path.subscription.value")
       } yield KafkaSubscription(subscriptionType, subscription)
   }

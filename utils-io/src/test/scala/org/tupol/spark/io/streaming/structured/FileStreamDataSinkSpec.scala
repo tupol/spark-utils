@@ -35,7 +35,7 @@ class FileStreamDataSinkSpec extends AnyFunSuite with Matchers with Eventually w
 
     val genericConfig = GenericStreamDataSinkConfiguration(FormatType.Json, Map(), Some("testQuery"),
       Some(Trigger.ProcessingTime("1 second")))
-    val sinkConfig = FileStreamDataSinkConfiguration(FormatType.Json, testPath1, genericConfig, Some(testPath2))
+    val sinkConfig = FileStreamDataSinkConfiguration(testPath1, genericConfig, Some(testPath2))
 
     val steamingQuery = data.streamingSink(sinkConfig).write
     steamingQuery shouldBe a[Success[_]]
@@ -55,7 +55,7 @@ class FileStreamDataSinkSpec extends AnyFunSuite with Matchers with Eventually w
 
     val genericConfig = GenericStreamDataSinkConfiguration(FormatType.Parquet, Map(), Some("testQuery"),
       Some(Trigger.ProcessingTime("1 second")))
-    val sinkConfig = FileStreamDataSinkConfiguration(FormatType.Parquet, testPath1, genericConfig, Some(testPath2))
+    val sinkConfig = FileStreamDataSinkConfiguration( testPath1, genericConfig, Some(testPath2))
 
     val steamingQuery = data.streamingSink(sinkConfig).write
     steamingQuery shouldBe a[Success[_]]

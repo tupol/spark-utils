@@ -1,18 +1,21 @@
-package org.tupol.spark.io.configz.streaming.structured
+package org.tupol.spark.io.pureconf.streaming.structured
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.configz._
+import org.tupol.spark.io.pureconf.config.ConfigOps
 import org.tupol.spark.io.FormatType.{Json, Kafka, Socket, Text}
-import org.tupol.spark.sql.loadSchemaFromFile
-import org.tupol.configz._
 import org.tupol.spark.io.streaming.structured.{FileStreamDataSinkConfiguration, FormatAwareStreamingSinkConfiguration, GenericStreamDataSinkConfiguration, KafkaStreamDataSinkConfiguration}
+import org.tupol.spark.sql.loadSchemaFromFile
+
+import scala.util.Failure
 
 class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
-  val ReferenceSchema = loadSchemaFromFile("src/test/resources/sources/avro/sample_schema.json")
+  import org.tupol.spark.io.pureconf.streaming.structured.readers._
+
+  val ReferenceSchema = loadSchemaFromFile("sources/avro/sample_schema.json")
 
   test("Successfully extract a Text FileStreamDataSinkConfiguration out of a configuration string") {
 
@@ -20,7 +23,6 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
       """
         |input.path="INPUT_PATH"
         |input.format="text"
-        |input.options {}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -28,10 +30,10 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
       path = "INPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Text, Map()),
       checkpointLocation = None
-    )
+    ).resolve
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
 
-    result.get shouldBe expected
+    result.get.asInstanceOf[FileStreamDataSinkConfiguration].resolve shouldBe expected
   }
 
   test("Successfully extract a Json FileStreamDataSinkConfiguration out of a configuration string") {
@@ -40,17 +42,16 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
       """
         |input.path="INPUT_PATH"
         |input.format="json"
-        |input.options {}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = FileStreamDataSinkConfiguration(
       path = "INPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Json, Map()),
-      checkpointLocation = None)
+      checkpointLocation = None).resolve
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
 
-    result.get shouldBe expected
+    result.get.asInstanceOf[FileStreamDataSinkConfiguration].resolve shouldBe expected
   }
 
   test("Successfully extract KafkaStreamDataSinkConfiguration out of a configuration string") {
@@ -58,8 +59,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
     val configStr =
       """
         |input.format="kafka"
-        |input.kafka.bootstrap.servers="test_server"
-        |input.options {}
+        |input.kafkaBootstrapServers="test_server"
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -68,7 +68,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
       genericConfig = GenericStreamDataSinkConfiguration(Kafka, Map("kafka.bootstrap.servers" -> "test_server")))
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
 
-    result.get.asInstanceOf[KafkaStreamDataSinkConfiguration].generic shouldBe expected.generic
+    result.get.asInstanceOf[KafkaStreamDataSinkConfiguration].resolve shouldBe expected
   }
 
   test("Successfully extract GenericStreamDataSinkConfiguration out of a configuration string") {
@@ -103,7 +103,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
 
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
 
-    noException shouldBe thrownBy(result.get)
+    result shouldBe a[Failure[_]]
   }
 
 }

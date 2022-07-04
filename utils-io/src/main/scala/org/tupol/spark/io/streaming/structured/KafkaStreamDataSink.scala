@@ -54,12 +54,12 @@ case class KafkaStreamDataSinkConfiguration(
   private val checkpointLocation: Option[String] = None)
   extends FormatAwareStreamingSinkConfiguration {
   val format = Kafka
-  private val options = genericConfig.options ++
+  private val options =
     Map(
       "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),
       "topic" -> topic,
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
-  val generic = genericConfig.copy(options = options)
-  override def toString: String = generic.toString
+  val generic = genericConfig.addOptions(options = options)
+  def resolve: KafkaStreamDataSinkConfiguration = this.copy(genericConfig = generic)
 }

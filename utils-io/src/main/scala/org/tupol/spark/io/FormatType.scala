@@ -61,6 +61,7 @@ object FormatType {
 
   val AvailableFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text, Jdbc)
   val AcceptableFileFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text)
+  val AcceptableStreamingFormats = AcceptableFileFormats ++ Seq(Kafka, Socket)
   case object Xml extends FormatType { val format = XmlFormat }
   case object Csv extends FormatType { val format = CsvFormat }
   case object Json extends FormatType { val format = JsonFormat }
