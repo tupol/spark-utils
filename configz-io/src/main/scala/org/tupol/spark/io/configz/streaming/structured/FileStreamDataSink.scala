@@ -43,7 +43,6 @@ object FileStreamDataSinkConfigurator extends Configurator[FileStreamDataSinkCon
 
     format match {
       case scalaz.Success(_) =>
-        format |@|
           config.extract[String]("path") |@|
           GenericStreamDataSinkConfigurator.validationNel(config) |@|
           config.extract[Option[String]]("checkpointLocation") apply

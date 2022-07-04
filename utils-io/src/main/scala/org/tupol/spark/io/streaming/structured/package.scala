@@ -42,4 +42,7 @@ package object structured {
    * @param subscription the topic name to subscribe to
    */
   case class KafkaSubscription(subscriptionType: String, subscription: String)
+  object KafkaSubscription{
+    val AcceptableTypes = Seq("assign", "subscribe", "subscribePattern")
+  }
 }
