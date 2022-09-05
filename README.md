@@ -200,6 +200,12 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
+**1.0.0-SNAPSHOT**
+
+Major library redesign
+- split configuration into different module for ScalaZ based configz 
+- added configuration module based on `Pureconfig`
+
 **0.6.2**
 
 - Fixed `core` dependency to `scala-utils`; now using `scala-utils-core`
