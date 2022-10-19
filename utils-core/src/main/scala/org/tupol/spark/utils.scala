@@ -26,13 +26,12 @@ package org.tupol.spark
 import java.net.{ URI, URL }
 import java.sql.Timestamp
 import java.time.LocalDateTime
-
 import org.json4s.JsonAST.JString
 import org.json4s.{ CustomSerializer, Serializer }
-
+import org.tupol.utils.Bracket
 import org.tupol.utils.implicits._
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
 import scala.util.{ Failure, Try }
 
 /** A few common functions that might be useful. */
@@ -77,7 +76,7 @@ package object utils extends Logging {
    */
   def fuzzyLoadTextResourceFile(path: String): Try[String] = {
 
-    val bufferedSource = if (path.trim.isEmpty)
+    def createBufferedSource: Try[BufferedSource] = if (path.trim.isEmpty)
       Failure(new IllegalArgumentException(s"Cannot load a text resource from an empty path."))
     else {
       Try {
@@ -107,7 +106,8 @@ package object utils extends Logging {
             .logSuccess(_ => logDebug(s"Successfully loaded text resource from classpath '$path'."))
         }
     }
-    bufferedSource.map(_.getLines.mkString("\n"))
+    Bracket.auto(createBufferedSource.get)(source => Try(source.getLines.mkString("\n")))
+      .flatten
       .logFailure(logError(s"Failed to load text resource from '$path'.", _))
   }
 

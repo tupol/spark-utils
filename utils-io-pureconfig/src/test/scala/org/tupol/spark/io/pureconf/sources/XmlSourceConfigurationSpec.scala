@@ -3,7 +3,7 @@ package org.tupol.spark.io.pureconf.sources
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.tupol.spark.io.sources.{SourceConfiguration, XmlSourceConfiguration}
+import org.tupol.spark.io.sources.XmlSourceConfiguration
 import org.tupol.spark.sql.loadSchemaFromFile
 
 import scala.util.Success

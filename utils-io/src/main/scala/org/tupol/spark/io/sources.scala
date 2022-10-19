@@ -25,7 +25,8 @@ package org.tupol.spark.io
 
 
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
-import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.types.{StringType, StructType}
+import org.tupol.spark.Logging
 
 
 
@@ -33,11 +34,19 @@ package object sources {
 
   val ColumnNameOfCorruptRecord = "columnNameOfCorruptRecord"
 
-  trait SourceConfiguration extends FormatAwareDataSourceConfiguration {
+  trait SourceConfiguration extends FormatAwareDataSourceConfiguration with Logging {
     /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
     def options: Map[String, String]
     /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
     def schema: Option[StructType]
+    /** If the schema and columnNameOfCorruptRecord are defined add the columnNameOfCorruptRecord column to the schema */
+    final def schemaWithCorruptRecord: Option[StructType] =
+      (for {
+        inputSchema <- schema
+        errorColumn <- columnNameOfCorruptRecord
+        _ = logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; adding column '$errorColumn' to the input schema.")
+        enhancedSchema = inputSchema.add(errorColumn, StringType)
+      } yield enhancedSchema).orElse(schema)
     /** If the parser supports storing the failed records, they will be stored in this column */
     def columnNameOfCorruptRecord: Option[String] = options.get(ColumnNameOfCorruptRecord)
     override def toString: String = {
@@ -169,11 +178,5 @@ package object sources {
   }
 
   case class GenericSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),
-    schema: Option[StructType] = None) extends SourceConfiguration {
-    override def toString: String = {
-      val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
-      val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
-      s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-    }
-  }
+    schema: Option[StructType] = None) extends SourceConfiguration
 }

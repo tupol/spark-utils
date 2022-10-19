@@ -29,7 +29,7 @@ import org.tupol.spark.io.sources.{JdbcSourceConfiguration, _}
 import org.tupol.spark.io.{BucketsConfiguration, DataSinkConfiguration, FileSinkConfiguration, FileSourceConfiguration, FormatAwareDataSinkConfiguration, FormatAwareDataSourceConfiguration, FormatType, GenericSinkConfiguration, JdbcSinkConfiguration, PartitionsConfiguration}
 import org.tupol.spark.sql.loadSchemaFromString
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
-import pureconfig.{CamelCase, ConfigCursor, ConfigFieldMapping, ConfigObjectCursor, ConfigReader, ConfigSource, SimpleConfigCursor}
+import pureconfig.{CamelCase, ConfigCursor, ConfigFieldMapping, ConfigObjectCursor, ConfigReader, ConfigSource}
 import pureconfig.error.{CannotConvert, ConfigReaderFailures, FailureReason}
 import org.tupol.utils.implicits._
 import pureconfig.ConfigReader.Result

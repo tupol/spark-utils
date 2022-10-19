@@ -10,9 +10,7 @@ import org.scalatest.{ BeforeAndAfterAll, Suite }
 
 import scala.util.Try
 
-/**
- * Shares a SparkSession, with the SparkContext and the SqlContext for all the tests in the Suite.
- */
+/** Shares a SparkSession, with the SparkContext and the SqlContext for all the tests in the Suite. */
 trait SharedSparkSession extends BeforeAndAfterAll {
   this: Suite =>
 

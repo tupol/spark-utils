@@ -77,7 +77,7 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSourceConfiguration(Kafka, Map())
+    val expected = GenericStreamDataSourceConfiguration(Kafka)
     val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected

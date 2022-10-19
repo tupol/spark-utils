@@ -16,7 +16,7 @@ class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |format=kafka
-        |kafka.bootstrap.servers=test_server
+        |kafkaBootstrapServers=test_server
         |options {
         |   key1: val1
         |   key2: val2
@@ -46,7 +46,7 @@ class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |format=kafka
-        |kafka.bootstrap.servers=test_server
+        |kafkaBootstrapServers=test_server
         |options {
         |}
       """.stripMargin
@@ -61,7 +61,7 @@ class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |format=kafka
-        |kafka.bootstrap.servers=test_server
+        |kafkaBootstrapServers=test_server
         |options {
         | key1: val1
         | key2: val2

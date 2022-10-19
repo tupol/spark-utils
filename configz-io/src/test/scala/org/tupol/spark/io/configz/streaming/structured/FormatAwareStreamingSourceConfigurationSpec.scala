@@ -54,7 +54,7 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
     val configStr =
       """
         |input.format="kafka"
-        |input.kafka.bootstrap.servers="my_server"
+        |input.kafkaBootstrapServers="my_server"
         |input.subscription.type="subscribePattern"
         |input.subscription.value="topic_*"
       """.stripMargin
@@ -77,7 +77,7 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSourceConfiguration(Kafka, Map())
+    val expected = GenericStreamDataSourceConfiguration(Kafka)
     val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected

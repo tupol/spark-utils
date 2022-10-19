@@ -38,7 +38,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - `format` **Required**
   - the type of the input file and the corresponding source / parser
   - possible values are:  `xml`, `csv`, `json`, `parquet`, `avro`, `orc` and `text`
-- `kafka.bootstrap.servers` **Required** 
+- `kafkaBootstrapServers` **Required** 
 - `topic` **Required** 
 - `trigger` *Optional*
    - `type`: possible values: "Continuous", "Once", "ProcessingTime" 

@@ -64,7 +64,7 @@ class GenericStreamDataSinkSpec extends AnyFunSuite with Matchers with Eventuall
     inputStream.addData(TestData)
 
     val TestOptions = Map(
-      "kafka.bootstrap.servers" -> s"unknown_host:0000000",
+      "kafkaBootstrapServers" -> s"unknown_host:0000000",
       "topic" -> topic,
       "checkpointLocation" -> "")
 

@@ -38,7 +38,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 
 - `format` **Required**
   - acceptable value: `kafka`
-- `kafka.bootstrap.servers` **Required**
+- `kafkaBootstrapServers` **Required**
 - `subscription` **Required**
   - `type`: possible values are "assign", "subscribe", "subscribePattern"
   - `value`: depending on the type; for more details please check [Structured Streaming + Kafka Integration Guide][SSKIG]

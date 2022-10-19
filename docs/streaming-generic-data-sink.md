@@ -59,7 +59,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 ### Kafka Parameters
 
 - `options` **Required**
-  - `kafka.bootstrap.servers` **Required** 
+  - `kafkaBootstrapServers` **Required** 
   - `topic` **Required** 
 
 

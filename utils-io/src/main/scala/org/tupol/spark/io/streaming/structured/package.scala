@@ -23,14 +23,15 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming
 
-import org.tupol.spark.io.{ DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration }
+import org.tupol.spark.io.sources.SourceConfiguration
+import org.tupol.spark.io.{DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration}
 
 package object structured {
 
   trait StreamingConfiguration
   trait StreamingSourceConfiguration extends DataSourceConfiguration with StreamingConfiguration
 
-  trait FormatAwareStreamingSourceConfiguration extends StreamingSourceConfiguration with FormatAware
+  trait FormatAwareStreamingSourceConfiguration extends StreamingSourceConfiguration with SourceConfiguration
 
   /** Common marker trait for `DataSink` configuration that also knows the data format */
   trait FormatAwareStreamingSinkConfiguration extends FormatAwareDataSinkConfiguration with StreamingConfiguration

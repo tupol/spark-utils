@@ -58,7 +58,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
     val configStr =
       """
         |input.format="kafka"
-        |input.kafka.bootstrap.servers="test_server"
+        |input.kafkaBootstrapServers="test_server"
         |input.options {}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)

@@ -25,13 +25,10 @@ package org.tupol.spark.io.streaming.structured
 
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.tupol.spark.Logging
 import org.tupol.spark.io._
-import org.tupol.utils.CollectionOps._
-
 import org.tupol.utils.implicits._
-
 
 import scala.util.Try
 
@@ -44,7 +41,7 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
     val dataFormat = sourceConfiguration.format.toString
     val basicReader = spark.readStream
       .format(dataFormat)
-    val readerWithOptions = sourceConfiguration.options.map(basicReader.options(_)).getOrElse(basicReader)
+    val readerWithOptions = basicReader.options(sourceConfiguration.options)
     readerWithOptions
   }
 
@@ -58,17 +55,11 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
   }
 }
 
-case class GenericStreamDataSourceConfiguration(format: FormatType, options: Option[Map[String, String]],
-  schema: Option[StructType]) extends FormatAwareStreamingSourceConfiguration {
-  override def toString: String = {
-    val optionsStr = options.map(options => if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")).getOrElse("")
-    val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
-    s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-  }
-}
+case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
+  schema: Option[StructType]) extends FormatAwareStreamingSourceConfiguration
 object GenericStreamDataSourceConfiguration {
-  def apply(format: FormatType, options: Map[String, String] = Map(),
+  def apply(format: FormatType, options: Option[Map[String, String]] = None,
             schema: Option[StructType] = None): GenericStreamDataSourceConfiguration = {
-    GenericStreamDataSourceConfiguration(format, options.toSeq.toOptionNel.map(_.toMap), schema)
+    GenericStreamDataSourceConfiguration(format, options.getOrElse(Map()), schema)
   }
 }

@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf.SourceConfigurator
-import org.tupol.spark.io.sources.{SourceConfiguration, TextSourceConfiguration}
+import org.tupol.spark.io.sources.TextSourceConfiguration
 
 import scala.util.Success
 
