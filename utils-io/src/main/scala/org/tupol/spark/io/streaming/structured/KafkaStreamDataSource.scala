@@ -25,7 +25,7 @@ package org.tupol.spark.io.streaming.structured
 
 
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
 import org.tupol.spark.io.{DataSource, FormatType}
@@ -69,9 +69,4 @@ case class KafkaStreamDataSourceConfiguration(
       "maxOffsetsPerTrigger" -> maxOffsetsPerTrigger)
   val options: Map[String, String] = internalOptions.collect { case (key, Some(value)) => (key, value.toString) }
 
-  override def toString: String = {
-    val optionsStr = internalOptions.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
-    val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
-    s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-  }
 }

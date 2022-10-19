@@ -6,30 +6,32 @@
 The `KafkaStreamDataSink` framework is a utility framework that helps configuring and writing `DataFrame`s to streams.
 
 The framework is composed of two classes:
-- `KafkaStreamDataSink`, which is created based on a `KafkaStreamDataSinkConfiguration` class and provides one main function:
+- `KafkaStreamDataSink`, which is created based on a `KafkaStreamDataSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataStreamWriter[Row]]
     def write(implicit spark: SparkSession): Try[StreamingQuery]
     ```
 - `KafkaStreamDataSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    ...
-    implicit val sparkSession = ...
-    val sourceConfiguration = KafkaStreamDataSinkConfiguration(...)
-    val dataframe = KafkaStreamDataSink(sourceConfiguration).write(data)
+import org.tupol.spark.io._
+
+implicit val sparkSession: SparkSession = ???
+val sourceConfiguration: KafkaStreamDataSinkConfiguration = ???
+val dataframe = KafkaStreamDataSink(sourceConfiguration).write(data)
 ```
 
-Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    import org.tupol.spark.io.implicits._
-    ...
-    val sourceConfiguration = KafkaStreamDataSinkConfiguration(...)
-    val dataframe = data.streamingSink(sourceConfiguration).write
+import org.tupol.spark.io._
+import org.tupol.spark.io.implicits._
+import org.tupol.spark.io.streaming.structured._
+
+val sourceConfiguration: KafkaStreamDataSinkConfiguration = ???
+val dataframe = data.streamingSink(sourceConfiguration).write
 ```
 
 
@@ -38,7 +40,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 - `format` **Required**
   - the type of the input file and the corresponding source / parser
   - possible values are:  `xml`, `csv`, `json`, `parquet`, `avro`, `orc` and `text`
-- `kafka.bootstrap.servers` **Required** 
+- `kafkaBootstrapServers` **Required** 
 - `topic` **Required** 
 - `trigger` *Optional*
    - `type`: possible values: "Continuous", "Once", "ProcessingTime" 

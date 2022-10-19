@@ -1,7 +1,6 @@
 package org.tupol.spark.io.pureconf.sources
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.tupol.spark.io.pureconf.SourceConfigurator

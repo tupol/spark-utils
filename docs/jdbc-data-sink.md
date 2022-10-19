@@ -11,28 +11,29 @@ This framework supports different save modes like `overwrite` or `append`, as we
 columns and number of partition files.
 
 The framework is composed of two classes:
-- `JdbcDataSink`, which is created based on a `JdbcSinkConfiguration` class and provides one main function:
+- `JdbcDataSink`, which is created based on a `JdbcSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataFrameWriter[Row]]
     def write(data: DataFrame): Try[DataFrame]
     ```
 - `JdbcSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = JdbcSinkConfiguration(outputPath, format)
-    JdbcDataSink(sinkConfiguration).write(dataframe)
+import org.tupol.spark.io._
+
+val sinkConfiguration: JdbcSinkConfiguration = ???
+JdbcDataSink(sinkConfiguration).write(dataframe)
 ```
 
-Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = JdbcSinkConfiguration(outputPath, format)
-    dataframe.sink(sinkConfiguration).write
+import org.tupol.spark.io._
+
+val sinkConfiguration: JdbcSinkConfiguration = ???
+dataframe.sink(sinkConfiguration).write
 ```
 
 

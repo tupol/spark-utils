@@ -9,8 +9,11 @@ This framework provides for reading from a given path with the specified format 
 `csv`, `jdbc`...
 
 The framework is composed of two main traits:
-- `DataSink`, which is created based on a `FileSourceConfiguration` class and provides one main function:
-    `def write(data: DataFrame): Try[DataFrame]`
+- `DataSink`, which is created based on a `FileSourceConfiguration` class and provides two main functions:
+    ```scala
+    def writer(data: DataFrame): Try[DataFrameWriter[Row]]
+    def write(data: DataFrame): Try[DataFrame]
+    ```
 - `DataSinkConfiguration`: a marker trait to define `DataSink` configuration classes
 
 
@@ -52,12 +55,12 @@ This allows us to create the `DataSink` by calling the `sink()` function on a Da
 passing a `DataSinkConfiguration`  configuration instance.
 
 ```scala
-import org.tupol.spark.io.{configz, _}
+import org.tupol.spark.io.{pureconf, _}
 import org.tupol.spark.io.implicits._
 
 def dataFrame: DataFrame = ???
-def dataSinkConfiguration: configz.DataSinkConfiguration = ???
-val dataSink: DataSink = dataFrame.sink(dataSinkConfiguration)
+def dataSinkConfiguration: DataSinkConfiguration = ???
+val dataSink: DataSink[_, _, _] = dataFrame.sink(dataSinkConfiguration)
 ```
 
 

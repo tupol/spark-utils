@@ -23,7 +23,7 @@ SOFTWARE.
 */
 package org.tupol.spark.io.pureconf
 
-import pureconfig.error.{ConfigReaderException, ConfigReaderFailures}
+import pureconfig.error.{ConfigReaderException, ConfigReaderFailures, FailureReason}
 
 object errors {
 
@@ -33,6 +33,10 @@ object errors {
       ConfigError(ConfigReaderException(configReaderFailures).getMessage())
     def apply(message: String): ConfigError =
       new ConfigError(message)
+  }
+
+  final case class CanNotLoadResource(path: String, cause: Throwable) extends FailureReason {
+    def description = s"Cannot load '$path': ${cause.getMessage}"
   }
 
 }

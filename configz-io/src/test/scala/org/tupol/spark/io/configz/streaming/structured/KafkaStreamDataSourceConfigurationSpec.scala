@@ -13,7 +13,7 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
     val configStr =
       """
-        |kafka.bootstrap.servers="server"
+        |kafkaBootstrapServers="server"
         |subscription.type="subscribePattern"
         |subscription.value="topic_*"
       """.stripMargin
@@ -32,7 +32,7 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |input.format="kafka"
-        |input.kafka.bootstrap.servers="server"
+        |input.kafkaBootstrapServers="server"
         |input.subscription.type="subscribe"
         |input.subscription.value="topic"
         |input.startingOffsets="earliest"
@@ -61,7 +61,7 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
     result.get shouldBe expected
   }
 
-  test("Failed to extract KafkaStreamDataSourceConfiguration if 'kafka.bootstrap.servers' is not defined") {
+  test("Failed to extract KafkaStreamDataSourceConfiguration if 'kafkaBootstrapServers' is not defined") {
 
     val configStr =
       """
@@ -88,7 +88,7 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
     val configStr =
       """
         |input.format="kafka"
-        |input.kafka.bootstrap.servers="server"
+        |input.kafkaBootstrapServers="server"
         |input.subscription.type="UNKNOWN"
         |input.subscription.value="topic"
         |input.startingOffsets="earliest"

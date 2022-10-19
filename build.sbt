@@ -35,7 +35,7 @@ lazy val publishSettings = Seq(
   },
   publishArtifact in Test := true,
   publishMavenStyle := true,
-  pomIncludeRepository := { x => false },
+  pomIncludeRepository := { _ => false },
   licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/tupol/spark-utils")),
   scmInfo := Some(

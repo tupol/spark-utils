@@ -14,22 +14,24 @@ The framework is composed of two classes:
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    ...
-    implicit val sparkSession = ...
-    val sourceConfiguration = GenericStreamDataSourceConfiguration(...)
-    val dataframe = GenericStreamDataSource(sourceConfiguration).read
+import org.tupol.spark.io._
+import org.tupol.spark.io.streaming.structured._
+
+implicit val sparkSession: SparkSession = ???
+val sourceConfiguration: GenericStreamDataSourceConfiguration = ???
+val dataframe = GenericStreamDataSource(sourceConfiguration).read
 ```
 
-Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    import org.tupol.spark.io.implicits._
-    ...
-    val sourceConfiguration = GenericStreamDataSourceConfiguration(...)
-    val dataframe = spark.source(sourceConfiguration).read
+import org.tupol.spark.io._
+import org.tupol.spark.io.implicits._
+import org.tupol.spark.io.streaming.structured._
+
+val sourceConfiguration: GenericStreamDataSourceConfiguration = ???
+val dataframe = spark.source(sourceConfiguration).read
 ```
 
 
@@ -76,7 +78,7 @@ Optionally, one can use the implicit decorator for the `SparkSession` available 
 ### Kafka Parameters
 
 - `options` **Required**
-  - `kafka.bootstrap.servers` **Required** 
+  - `kafkaBootstrapServers` **Required** 
   - `assign` | `subscribe` | `subscribePattern` **Required** * 
   - `startingOffsets` *Optional* 
   - `endingOffsets` *Optional* 

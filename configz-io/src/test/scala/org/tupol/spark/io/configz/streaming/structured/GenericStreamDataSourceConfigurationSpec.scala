@@ -19,7 +19,7 @@ class GenericStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSourceConfiguration(Kafka, Map())
+    val expected = GenericStreamDataSourceConfiguration(Kafka)
     config.extract[GenericStreamDataSourceConfiguration].get shouldBe expected
   }
 
@@ -35,7 +35,7 @@ class GenericStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSourceConfiguration(Kafka, Map("key1" -> "val1", "key2" -> "val2"))
+    val expected = GenericStreamDataSourceConfiguration(Kafka, Map("key1" -> "val1", "key2" -> "val2"), None)
     config.extract[GenericStreamDataSourceConfiguration].get shouldBe expected
   }
 

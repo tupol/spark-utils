@@ -6,9 +6,7 @@ import org.scalatest.{ BeforeAndAfterEach, Suite }
 
 import scala.util.Try
 
-/**
- * A fresh SparkSession, with the SparkContext and the SqlContext for each test in the Suite.
- */
+/** A fresh SparkSession, with the SparkContext and the SqlContext for each test in the Suite. */
 trait LocalSparkSession extends BeforeAndAfterEach {
   this: Suite =>
 

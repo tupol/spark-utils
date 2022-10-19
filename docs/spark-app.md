@@ -30,7 +30,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logg
    */
   def createContext(config: Config): Try[Context]
 
-  ....
+.
 }
 ```
  

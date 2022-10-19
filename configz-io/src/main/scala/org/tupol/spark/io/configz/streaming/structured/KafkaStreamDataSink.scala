@@ -34,7 +34,7 @@ object KafkaStreamDataSinkConfigurator extends Configurator[KafkaStreamDataSinkC
   import scalaz.syntax.applicative._
 
   def validationNel(config: Config): ValidationNel[Throwable, KafkaStreamDataSinkConfiguration] = {
-    config.extract[String]("kafka.bootstrap.servers") |@|
+    config.extract[String]("kafkaBootstrapServers") |@|
       config.extract[GenericStreamDataSinkConfiguration] |@|
       config.extract[Option[String]]("topic") |@|
       config.extract[Option[String]]("checkpointLocation") apply

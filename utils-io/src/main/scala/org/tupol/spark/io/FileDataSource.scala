@@ -23,7 +23,6 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources._
@@ -41,16 +40,9 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
       .format(dataFormat)
       .options(sourceConfiguration.options)
 
-    sourceConfiguration.schema match {
-      case Some(inputSchema) =>
+    sourceConfiguration.schemaWithCorruptRecord match {
+      case Some(schema) =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
-        val schema = sourceConfiguration.columnNameOfCorruptRecord
-          .map { columnNameOfCorruptRecord =>
-            logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; " +
-              s"adding column '$columnNameOfCorruptRecord' to the input schema.")
-            inputSchema.add(columnNameOfCorruptRecord, StringType)
-          }
-          .getOrElse(inputSchema)
         basicReader.schema(schema)
       case None =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader inferring the schema.")

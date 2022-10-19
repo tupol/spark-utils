@@ -13,8 +13,9 @@ This framework supports different save modes like `overwrite` or `append`, as we
 columns and number of partition files.
 
 The framework is composed of two classes:
-- `FileDataSink`, which is created based on a `FileSinkConfiguration` class and provides one main function:
+- `FileDataSink`, which is created based on a `FileSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataFrameWriter[Row]]
     def write(data: DataFrame): Try[DataFrame]
     ```
 - `FileSinkConfiguration`: the necessary configuration parameters
@@ -22,22 +23,34 @@ The framework is composed of two classes:
 **Sample code**
 
 ```scala
-    import org.tupol.spark.io.{configz, _}
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.DataFrame
+import com.typesafe.config.Config
 
-...
-val sinkConfiguration = configz.FileSinkConfiguration(outputPath, format)
+
+import org.tupol.spark.io.{ pureconf, _ }
+
+val dataframe: DataFrame = ???
+
+val sinkConfiguration: FileSinkConfiguration = ???
 FileDataSink(sinkConfiguration).write(dataframe)
 ```
 
-Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 
 ```scala
-    import org.tupol.spark.io.{configz, _}
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.DataFrame
+import com.typesafe.config.Config
 
-...
-val sinkConfiguration = configz.FileSinkConfiguration(outputPath, format)
+val dataframe: DataFrame = ???
+
+import org.tupol.spark.io.{ pureconf, _ }
+import org.tupol.spark.io.implicits._
+
+val sinkConfiguration: FileSinkConfiguration = ???
 dataframe.sink(sinkConfiguration).write
 ```
 

@@ -44,7 +44,7 @@ object KafkaStreamDataSourceConfigurator extends Configurator[KafkaStreamDataSou
 
     format match {
       case scalaz.Success(_) =>
-        config.extract[String]("kafka.bootstrap.servers") |@|
+        config.extract[String]("kafkaBootstrapServers") |@|
           config.extract[KafkaSubscription] |@|
           config.extract[Option[String]]("startingOffsets") |@|
           config.extract[Option[String]]("endingOffsets") |@|

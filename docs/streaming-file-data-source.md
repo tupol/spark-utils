@@ -17,22 +17,23 @@ The framework is composed of two classes:
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    ...
-    implicit val sparkSession = ...
-    val sourceConfiguration = FileStreamDataSourceConfiguration(...)
-    val dataframe = FileStreamDataSource(sourceConfiguration).read
+import org.tupol.spark.io._
+
+implicit val sparkSession: SparkSession = ???
+val sourceConfiguration: FileStreamDataSourceConfiguration = ???
+val dataframe = FileStreamDataSource(sourceConfiguration).read
 ```
 
-Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    import org.tupol.spark.io.implicits._
-    ...
-    val sourceConfiguration = FileStreamDataSourceConfiguration(...)
-    val dataframe = spark.source(sourceConfiguration).read
+import org.tupol.spark.io._
+import org.tupol.spark.io.implicits._
+import org.tupol.spark.io.streaming.structured._
+
+val sourceConfiguration: FileStreamDataSourceConfiguration = ???
+val dataframe = spark.source(sourceConfiguration).read
 ```
 
 
