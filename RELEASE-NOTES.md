@@ -26,6 +26,8 @@
 - `SourceConfiguration.extract` is no longer used; use `SourceConfigurator.extract` instead
 - `FileSourceConfiguration.extract` is no longer used; use `FileSourceConfigurator.extract` instead
 - `GenericSinkConfiguration.optionalSaveMode` was renamed to `GenericSinkConfiguration.mode`
+- `TypesafeConfigBuilder.applicationConfiguration()` was renamed to `getApplicationConfiguration()` and was made public,
+   so it can be overridden and the `args` is no longer an implicit parameter; This impacts `SparkApp` and `SparkFun`
 
 
 ## 0.6

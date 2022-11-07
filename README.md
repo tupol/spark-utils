@@ -157,7 +157,7 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils" % "0.6.2"
+libraryDependencies += "org.tupol" %% "spark-utils" % "1.0.0-RC1-SNAPSHOT"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
