@@ -25,7 +25,7 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
     """SparkApp.applicationConfiguration loads first the app params then defaults to application.conf file,
       |then to the application.conf in the classpath and then to reference.conf""".stripMargin) {
 
-      val conf = MockApp$.applicationConfiguration(spark, Array(
+      val conf = MockApp$.getApplicationConfiguration(Array(
         "MockApp.whoami=\"app.param\"",
         "MockApp.param=\"param\""))
       conf.getString("param") shouldBe "param"
@@ -36,7 +36,7 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
     }
 
   test("SparkApp.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
-    val conf = MockApp$.applicationConfiguration(spark, Array(
+    val conf = MockApp$.getApplicationConfiguration(Array(
       "MockApp.param=\"param\""))
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
@@ -46,7 +46,7 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
   }
 
   test("SparkApp.applicationConfiguration performs variable substitution") {
-    val conf = MockApp$.applicationConfiguration(spark, Array(
+    val conf = MockApp$.getApplicationConfiguration(Array(
       "MockApp.param=\"param\"", "my.var=\"MYVAR\""))
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"

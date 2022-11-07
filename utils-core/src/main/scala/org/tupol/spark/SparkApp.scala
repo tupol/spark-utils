@@ -61,7 +61,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
   def main(implicit args: Array[String]): Unit = {
     log.info(s"Running $appName")
     implicit val spark = createSparkSession(appName)
-    implicit val conf = applicationConfiguration
+    implicit val conf = getApplicationConfiguration(args)
 
     val outcome = for {
       context <- createContext(conf)

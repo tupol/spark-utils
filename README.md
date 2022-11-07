@@ -21,38 +21,13 @@ application logic rather than the details of configuring the application and set
 Spark context.
 
 This project is also trying to create and encourage a friendly yet professional environment 
-for developers to help each other, so please do not be shy and join through [gitter], [twitter], 
+for developers to help each other, so please do no be shy and join through [gitter], [twitter], 
 [issue reports](https://github.com/tupol/spark-utils/issues/new/choose) or pull requests.
-
-
-## ATTENTION!
-
-At the moment there are a lot of changes happening to the `spark-utils` project, hopefully for the better.
-
-The latest stable versions, available through Maven Central are
-- Spark 2.4: `0.4.2`
-- Spark 3.0: `0.6.2`
-
-The development version is `1.0.0-RC2` which is bringing a clean separation between configuration implementation and the
-core, and additionally the [PureConfig] based configuration module that brings the power and features of [PureConfig]
-to increase productivity even further and allowing for a more mature configuration framework.
-
-The new modules are:
-- `spark-utils-io-pureconfig` for the new [PureConfig] implementation
-- `spark-utils-io-configz` for the legacy ConfigZ implementation
-
-We suggest to start considering the new for the future `spark-utils-io-pureconfig`.
-
-Migrating to the new `1.0.0-RC2` is quite easy, as the configuration structure was mainly preserved.
-More details are available in the [RELEASE-NOTES](RELEASE-NOTES.md).
-
-For now, some of the documentation related or referenced from this project might be obsolete or outdated,
-but as the project will get closer to the final release, there will be more improvements. 
 
 
 ## Description ##
 
-This project contains some basic utilities that can help setting up an Apache Spark application project.
+This project contains some basic utilities that can help setting up a Spark application project.
 
 The main point is the simplicity of writing Apache Spark applications just focusing on the logic,
 while providing for easy configuration and arguments passing.
@@ -60,13 +35,9 @@ while providing for easy configuration and arguments passing.
 The code sample bellow shows how easy can be to write a file format converter from any acceptable 
 type, with any acceptable parsing configuration options to any acceptable format.
 
-### Batch Application
-
 ```scala
-import org.tupol.spark._
-
 object FormatConverterExample extends SparkApp[FormatConverterContext, DataFrame] {
-  override def createContext(config: Config) = FormatConverterContext.extract(config)
+  override def createContext(config: Config) = FormatConverterContext(config)
   override def run(implicit spark: SparkSession, context: FormatConverterContext): Try[DataFrame] = {
     val inputData = spark.source(context.input).read
     inputData.sink(context.output).write
@@ -74,52 +45,12 @@ object FormatConverterExample extends SparkApp[FormatConverterContext, DataFrame
 }
 ```
 
-Optionally, the `SparkFun` can be used instead of `SparkApp` to make the code even more concise.
-
-```scala
-import org.tupol.spark._
-
-object FormatConverterExample extends 
-          SparkFun[FormatConverterContext, DataFrame](FormatConverterContext.extract) {
-  override def run(implicit spark: SparkSession, context: FormatConverterContext): Try[DataFrame] = 
-    spark.source(context.input).read.sink(context.output).write
-}
-```
-
-### Configuration
-
 Creating the configuration can be as simple as defining a case class to hold the configuration and
 a factory, that helps extract simple and complex data types like input sources and output sinks.
 
 ```scala
-import org.tupol.spark.io._
-
 case class FormatConverterContext(input: FormatAwareDataSourceConfiguration,
                                   output: FormatAwareDataSinkConfiguration)
-```
-
-There are multiple ways that the context can be easily created from configuration files.
-This project proposes two ways:
-- the new [PureConfig] based framework
-- the legacy ScalaZ based framework
-
-#### Configuration creation based on PureConfig
-
-```scala
-import com.typesafe.config.Config
-
-object FormatConverterContext {
-  import pureconfig.generic.auto._
-  import org.tupol.spark.io.pureconf._
-  import org.tupol.spark.io.pureconf.readers._
-  def extract(config: Config): Try[FormatConverterContext] = config.extract[FormatConverterContext]
-}
-```
-
-#### Configuration creation based on ConfigZ
-
-```scala
-import org.tupol.configz._
 
 object FormatConverterContext extends Configurator[FormatConverterContext] {
   import com.typesafe.config.Config
@@ -134,13 +65,22 @@ object FormatConverterContext extends Configurator[FormatConverterContext] {
 }
 ```
 
-### Streaming Application
+Optionally, the `SparkFun` can be used instead of  `SparkApp` to make the code even more concise.
+
+```scala
+object FormatConverterExample extends 
+          SparkFun[FormatConverterContext, DataFrame](FormatConverterContext(_).get) {
+  override def run(implicit spark: SparkSession, context: FormatConverterContext): Try[DataFrame] = 
+    spark.source(context.input).read.sink(context.output).write
+}
+```
+
 
 For structured streaming applications the format converter might look like this:
 
 ```scala
 object StreamingFormatConverterExample extends SparkApp[StreamingFormatConverterContext, DataFrame] {
-  override def createContext(config: Config) = StreamingFormatConverterContext.extract(config)
+  override def createContext(config: Config) = StreamingFormatConverterContext(config).get
   override def run(implicit spark: SparkSession, context: StreamingFormatConverterContext): Try[DataFrame] = {
     val inputData = spark.source(context.input).read
     inputData.streamingSink(context.output).write.awaitTermination()
@@ -148,32 +88,12 @@ object StreamingFormatConverterExample extends SparkApp[StreamingFormatConverter
 }
 ```
 
-### Configuration
-
 The streaming configuration the configuration can be as simple as following:
 
 ```scala
-import org.tupol.spark.io.streaming.structured._
-
 case class StreamingFormatConverterContext(input: FormatAwareStreamingSourceConfiguration, 
                                            output: FormatAwareStreamingSinkConfiguration)
-```
 
-#### Configuration creation based on PureConfig
-
-```scala
-object StreamingFormatConverterContext {
-  import com.typesafe.config.Config
-  import pureconfig.generic.auto._
-  import org.tupol.spark.io.pureconf._
-  import org.tupol.spark.io.pureconf.streaming.structured._
-  def extract(config: Config): Try[StreamingFormatConverterContext] = config.extract[StreamingFormatConverterContext]
-}
-```
-
-#### Configuration creation based on ConfigZ
-
-```scala
 object StreamingFormatConverterContext extends Configurator[StreamingFormatConverterContext] {
   def validationNel(config: Config): ValidationNel[Throwable, StreamingFormatConverterContext] = {
     config.extract[FormatAwareStreamingSourceConfiguration]("input") |@|
@@ -232,12 +152,12 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 - Artifact id / name: `spark-utils`
 - Latest stable versions:
   - Spark 2.4: `0.4.2`
-  - Spark 3.0: `0.6.2`
+  - Spark 3.0: `0.6.1`
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils-io-pureconfig" % "1.0.0-RC2"
+libraryDependencies += "org.tupol" %% "spark-utils" % "1.0.0-RC1-SNAPSHOT"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
@@ -247,8 +167,6 @@ $SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.12:0.4.2
 
 
 ## Starting a New **`spark-utils`** Project ##
-
-***Note*** [spark-utils-g8] was not yet updated for the 1.x version.
 
 The simplest way to start a new `spark-utils` is to make use of the 
 [`spark-apps.seed.g8`][spark-utils-g8] template project.
@@ -268,8 +186,8 @@ version [0.0.1-SNAPSHOT]:
 package [my.org.my_project]:
 classname [MyFirstApp]:
 scriptname [my-first-app]:
-scalaVersion [2.12.12]:
-sparkVersion [3.2.1]:
+scalaVersion [2.11.12]:
+sparkVersion [2.4.0]:
 sparkUtilsVersion [0.4.0]:
 ```
 
@@ -282,16 +200,11 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**1.0.0-RC2**
-
-- `DataSink` and `DataAwareSink` expose `writer` in addition to `write`
-- Documentation improvements 
-
-**1.0.0-RC1**
+**1.0.0-SNAPSHOT**
 
 Major library redesign
-- Split configuration into different module for ScalaZ based configz 
-- Added configuration module based on [PureConfig]
+- split configuration into different module for ScalaZ based configz 
+- added configuration module based on `Pureconfig`
 
 **0.6.2**
 
@@ -317,4 +230,3 @@ This code is open source software licensed under the [MIT License](LICENSE).
 [javadocs]: https://www.javadoc.io/doc/org.tupol/spark-utils_2.12
 [gitter]: https://gitter.im/spark-utils/spark-utils
 [twitter]: https://twitter.com/_tupol
-[PureConfig]: https://pureconfig.github.io/

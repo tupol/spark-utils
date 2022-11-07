@@ -24,7 +24,7 @@ SOFTWARE.
 package org.tupol.spark.io.streaming
 
 import org.tupol.spark.io.sources.SourceConfiguration
-import org.tupol.spark.io.{DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration}
+import org.tupol.spark.io.{DataSourceConfiguration, FormatAwareDataSinkConfiguration}
 
 package object structured {
 

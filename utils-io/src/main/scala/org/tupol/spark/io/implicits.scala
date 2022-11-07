@@ -24,7 +24,7 @@ SOFTWARE.
 package org.tupol.spark.io
 
 import org.apache.spark.sql.streaming.StreamingQuery
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 import org.tupol.spark.sql
 
 
@@ -54,6 +54,19 @@ package object implicits {
     /** See [[org.tupol.spark.io.DataSink]] */
     def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, StreamingQuery] =
       sinkFactory.apply[SC, StreamingQuery](configuration, dataFrame)
+
+  }
+
+  /** Dataset decorator. */
+  implicit class DatasetOps[T](val dataset: Dataset[T]) {
+
+    /** See [[org.tupol.spark.io.DataSink]] */
+    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrame] =
+      sinkFactory.apply[SC, DataFrame](configuration, dataset.toDF())
+
+    /** See [[org.tupol.spark.io.DataSink]] */
+    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, StreamingQuery] =
+      sinkFactory.apply[SC, StreamingQuery](configuration, dataset.toDF())
 
   }
 
