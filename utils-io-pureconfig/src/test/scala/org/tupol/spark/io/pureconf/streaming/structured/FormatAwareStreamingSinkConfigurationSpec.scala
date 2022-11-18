@@ -21,17 +21,17 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
 
     val configStr =
       """
-        |input.path="INPUT_PATH"
-        |input.format="text"
+        |output.path="OUTPUT_PATH"
+        |output.format="text"
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = FileStreamDataSinkConfiguration(
-      path = "INPUT_PATH",
+      path = "OUTPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Text, Map()),
       checkpointLocation = None
     ).resolve
-    val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
+    val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result.get.asInstanceOf[FileStreamDataSinkConfiguration].resolve shouldBe expected
   }
@@ -40,16 +40,16 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
 
     val configStr =
       """
-        |input.path="INPUT_PATH"
-        |input.format="json"
+        |output.path="OUTPUT_PATH"
+        |output.format="json"
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = FileStreamDataSinkConfiguration(
-      path = "INPUT_PATH",
+      path = "OUTPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Json, Map()),
       checkpointLocation = None).resolve
-    val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
+    val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result.get.asInstanceOf[FileStreamDataSinkConfiguration].resolve shouldBe expected
   }
@@ -58,25 +58,29 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
 
     val configStr =
       """
-        |input.format="kafka"
-        |input.kafkaBootstrapServers="test_server"
+        |output.format="kafka"
+        |output.kafkaBootstrapServers="test_server"
+        |output.options {
+        |   key1: val1
+        |   key2: val2
+        |}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = KafkaStreamDataSinkConfiguration(
       kafkaBootstrapServers = "test_server",
-      genericConfig = GenericStreamDataSinkConfiguration(Kafka, Map("kafka.bootstrap.servers" -> "test_server")))
-    val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
+      genericConfig = GenericStreamDataSinkConfiguration(Kafka, Map("kafka.bootstrap.servers" -> "test_server", "key1" -> "val1", "key2" -> "val2")))
+    val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
-    result.get.asInstanceOf[KafkaStreamDataSinkConfiguration].resolve shouldBe expected
+    result.get.asInstanceOf[KafkaStreamDataSinkConfiguration].generic shouldBe expected.generic
   }
 
   test("Successfully extract GenericStreamDataSinkConfiguration out of a configuration string") {
 
     val configStr =
       """
-        |input.format="socket"
-        |input.options {
+        |output.format="socket"
+        |output.options {
         |   key1: val1
         |   key2: val2
         |}
@@ -84,7 +88,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
     val config = ConfigFactory.parseString(configStr)
 
     val expected = GenericStreamDataSinkConfiguration(Socket, Map("key1" -> "val1", "key2" -> "val2"))
-    val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
+    val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result.get shouldBe expected
   }
@@ -93,15 +97,15 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
 
     val configStr =
       """
-        |input.format="unknown"
-        |input.options {
+        |output.format="unknown"
+        |output.options {
         |   key1: val1
         |   key2: val2
         |}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val result = config.extract[FormatAwareStreamingSinkConfiguration]("input")
+    val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result shouldBe a[Failure[_]]
   }

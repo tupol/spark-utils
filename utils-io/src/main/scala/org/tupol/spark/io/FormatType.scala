@@ -41,6 +41,7 @@ object FormatType {
   private val AvroFormatShort = "avro"
   private val OrcFormat = "orc"
   private val TextFormat = "text"
+  private val DeltaFormat = "delta"
   private val JdbcFormat = "jdbc"
   private val SocketFormat = "socket"
   private val KafkaFormat = "kafka"
@@ -53,15 +54,16 @@ object FormatType {
     case AvroFormat | AvroFormatShort => Success(Avro)
     case OrcFormat => Success(Orc)
     case TextFormat => Success(Text)
+    case DeltaFormat => Success(Delta)
     case JdbcFormat => Success(Jdbc)
     case SocketFormat => Success(Socket)
     case KafkaFormat => Success(Kafka)
     case _ => Success(Custom(formatString.trim))
   }
 
-  val AvailableFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text, Jdbc)
-  val AcceptableFileFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text)
-  val AcceptableStreamingFormats = AcceptableFileFormats ++ Seq(Kafka, Socket)
+  val AcceptableFileFormats = Seq(Xml, Csv, Json, Parquet, Avro, Orc, Text, Delta)
+  val AvailableFormats = AcceptableFileFormats :+ Jdbc
+  val AcceptableStreamingFormats = AvailableFormats ++ Seq(Kafka, Socket)
   case object Xml extends FormatType { val format = XmlFormat }
   case object Csv extends FormatType { val format = CsvFormat }
   case object Json extends FormatType { val format = JsonFormat }
@@ -69,6 +71,7 @@ object FormatType {
   case object Avro extends FormatType { val format = AvroFormat }
   case object Orc extends FormatType { val format = OrcFormat }
   case object Text extends FormatType { val format = TextFormat }
+  case object Delta extends FormatType { val format = DeltaFormat }
   case object Jdbc extends FormatType { val format = JdbcFormat }
   case object Socket extends FormatType { val format = SocketFormat }
   case object Kafka extends FormatType { val format = KafkaFormat }

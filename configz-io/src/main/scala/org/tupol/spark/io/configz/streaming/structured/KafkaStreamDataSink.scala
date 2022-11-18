@@ -37,7 +37,8 @@ object KafkaStreamDataSinkConfigurator extends Configurator[KafkaStreamDataSinkC
     config.extract[String]("kafkaBootstrapServers") |@|
       config.extract[GenericStreamDataSinkConfiguration] |@|
       config.extract[Option[String]]("topic") |@|
-      config.extract[Option[String]]("checkpointLocation") apply
+      config.extract[Option[String]]("checkpointLocation") |@|
+      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) apply
       KafkaStreamDataSinkConfiguration.apply
   }
 }

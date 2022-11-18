@@ -53,7 +53,8 @@ object KafkaStreamDataSourceConfigurator extends Configurator[KafkaStreamDataSou
           config.extract[Option[Int]]("fetchOffset.numRetries") |@|
           config.extract[Option[Long]]("fetchOffset.retryIntervalMs") |@|
           config.extract[Option[Long]]("maxOffsetsPerTrigger") |@|
-          config.extract[Option[StructType]]("schema") apply
+          config.extract[Option[StructType]]("schema") |@|
+          config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) apply
           KafkaStreamDataSourceConfiguration.apply
       case scalaz.Failure(e) =>
         scalaz.Failure[NonEmptyList[Throwable]](e)

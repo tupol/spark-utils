@@ -37,7 +37,7 @@ object FileStreamDataSinkConfigurator extends Configurator[FileStreamDataSinkCon
   def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSinkConfiguration] = {
 
     val format = config.extract[FormatType]("format").ensure(
-      new IllegalArgumentException(s"The provided format is unsupported for a file data source. " +
+      new IllegalArgumentException(s"The provided format is unsupported for a file data sink. " +
         s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f =>
         FormatType.AcceptableFileFormats.contains(f))
 

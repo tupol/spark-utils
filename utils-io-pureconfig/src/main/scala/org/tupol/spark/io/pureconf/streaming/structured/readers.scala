@@ -73,9 +73,8 @@ object readers {
         "partition", "outputMode")(GenericStreamDataSinkConfiguration(_, _, _, _, _, _))
       .ensure(conf => FormatType.AcceptableStreamingFormats.contains(conf.format),
         conf =>
-          s"The provided format '${conf.format}' is unsupported for a file data source. " +
+          s"The provided format '${conf.format}' is unsupported for a file data sink. " +
             s"Supported formats are: ${FormatType.AcceptableStreamingFormats.mkString("'", "', '", "'")}"
-
       )
   }
 
@@ -117,10 +116,11 @@ object readers {
         maxOffsetsPerTrigger <- ConfigReader[Option[Long]].from(objCur.atKeyOrUndefined("maxOffsetsPerTrigger"))
         schema <- ConfigReader[Option[StructType]].from(objCur.atKeyOrUndefined("schema"))
         subscription <- KafkaSubscriptionReader.from(objCur.atKeyOrUndefined("subscription"))
+        options <- ConfigReader[Option[Map[String, String]]].from(objCur.atKeyOrUndefined("options"))
       } yield KafkaStreamDataSourceConfiguration(
         kafkaBootstrapServers, subscription, startingOffsets, endingOffsets, failOnDataLoss,
         kafkaConsumerPollTimeoutMs, fetchOffsetNumRetries, fetchOffsetRetryIntervalMs,
-        maxOffsetsPerTrigger, schema
+        maxOffsetsPerTrigger, schema, options.getOrElse(Map())
       )
     }
   }

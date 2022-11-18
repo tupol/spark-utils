@@ -6,11 +6,6 @@
 
 _Soon to a repo near you_ :)
 
-### 1.0.0-RC2
-
-- `DataSink` and `DataAwareSink` expose `writer` in addition to `write`
-- Documentation improvements
-
 ### 1.0.0-RC1
 
 **Major Library Redesign**
@@ -133,10 +128,3 @@ instead of
  - Added `JdbcDataSource` and `JdbcDataSink` IO frameworks
  - Moved all useful implicit conversions into `org.tupol.spark.implicits`
  - Added testing utilities under `org.tupol.spark.testing`
-
-
-
-
-
-
-[PureConfig]: https://pureconfig.github.io/
