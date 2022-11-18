@@ -34,9 +34,8 @@ import scala.util.Try
 
 case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfiguration) extends DataSource[KafkaStreamDataSourceConfiguration] with Logging {
 
-  val genericConfiguration = GenericStreamDataSourceConfiguration(configuration.format, configuration.options, configuration.schema)
   /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  override def read(implicit spark: SparkSession): Try[DataFrame] = GenericStreamDataSource(genericConfiguration).read
+  override def read(implicit spark: SparkSession): Try[DataFrame] = GenericStreamDataSource(configuration.generic).read
 }
 
 /**
@@ -52,7 +51,8 @@ case class KafkaStreamDataSourceConfiguration(
   fetchOffsetNumRetries: Option[Int] = None,
   fetchOffsetRetryIntervalMs: Option[Long] = None,
   maxOffsetsPerTrigger: Option[Long] = None,
-  schema: Option[StructType] = None)
+  schema: Option[StructType] = None,
+  options: Map[String, String] = Map())
   extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = Kafka
@@ -67,6 +67,8 @@ case class KafkaStreamDataSourceConfiguration(
       "fetchOffset.numRetries" -> fetchOffsetNumRetries,
       "fetchOffset.retryIntervalMs" -> fetchOffsetRetryIntervalMs,
       "maxOffsetsPerTrigger" -> maxOffsetsPerTrigger)
-  val options: Map[String, String] = internalOptions.collect { case (key, Some(value)) => (key, value.toString) }
-
+      .collect { case (key, Some(value)) => (key, value.toString) }
+    val generic = GenericStreamDataSourceConfiguration(format, options ++ internalOptions, schema)
 }
+
+

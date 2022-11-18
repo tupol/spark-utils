@@ -209,7 +209,7 @@ object readers {
     deriveReader[FileSinkConfiguration]
       .ensure(conf => FormatType.AcceptableFileFormats.contains(conf.format),
         conf =>
-          s"The provided format is unsupported for a file data source. " +
+          s"The provided format is unsupported for a file data sink. " +
             s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}"
 
       )

@@ -34,7 +34,7 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
 
     val configStr =
       """
-        |input.format="delta"
+        |input.format="my-format"
         |input.options={
         |  path: "INPUT_PATH"
         |}
@@ -42,7 +42,7 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
     val config = ConfigFactory.parseString(configStr)
 
     val expected = GenericSourceConfiguration(
-      FormatType.Custom("delta"),
+      FormatType.Custom("my-format"),
       options = Map("path" -> "INPUT_PATH"),
       schema = None)
 

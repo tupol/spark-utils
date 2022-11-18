@@ -58,12 +58,17 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
         |input.kafkaBootstrapServers="my_server"
         |input.subscription.type="subscribePattern"
         |input.subscription.value="topic_*"
+        |input.options {
+        |   key1: val1
+        |   key2: val2
+        |}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
     val expected = KafkaStreamDataSourceConfiguration(
       kafkaBootstrapServers = "my_server",
-      subscription = KafkaSubscription("subscribePattern", "topic_*"))
+      subscription = KafkaSubscription("subscribePattern", "topic_*"),
+      options = Map("key1" -> "val1", "key2" -> "val2"))
     val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected

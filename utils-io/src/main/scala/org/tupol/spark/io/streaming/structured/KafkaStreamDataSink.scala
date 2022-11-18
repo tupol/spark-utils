@@ -30,7 +30,6 @@ import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.{ DataAwareSink, DataSink }
 
 
-
 import scala.util.Try
 
 case class KafkaStreamDataSink(configuration: KafkaStreamDataSinkConfiguration)
@@ -48,18 +47,18 @@ case class KafkaStreamDataAwareSink(configuration: KafkaStreamDataSinkConfigurat
 }
 
 case class KafkaStreamDataSinkConfiguration(
-  private val kafkaBootstrapServers: String,
-  private val genericConfig: GenericStreamDataSinkConfiguration,
-  private val topic: Option[String] = None,
-  private val checkpointLocation: Option[String] = None)
+  kafkaBootstrapServers: String,
+  genericConfig: GenericStreamDataSinkConfiguration,
+  topic: Option[String] = None,
+  checkpointLocation: Option[String] = None,
+  options: Map[String, String] = Map())
   extends FormatAwareStreamingSinkConfiguration {
   val format = Kafka
-  private val options =
+  private val internalOptions =
     Map(
       "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),
       "topic" -> topic,
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
-  val generic = genericConfig.addOptions(options = options)
-  def resolve: KafkaStreamDataSinkConfiguration = this.copy(genericConfig = generic)
+  val generic = genericConfig.addOptions(options = options ++ internalOptions)
 }

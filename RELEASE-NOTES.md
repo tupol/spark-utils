@@ -4,18 +4,27 @@
 
 ## 1.0
 
+_Soon to a repo near you_ :)
+
 ### 1.0.0-RC1
 
-**Major library redesign**
+**Major Library Redesign**
 
-- split configuration into different module for ScalaZ based configz
-- added configuration module based on Pureconfig
+The project was split into different configuration modules
+- `spark-utils-io-pureconfig` for the new [PureConfig] implementation
+- `spark-utils-io-configz` for the legacy ConfigZ implementation
 
 #### Migration notes
 
 ##### Dependencies
 
+It is best to import either one of the following 
+- `"org.tupol" %% "spark-utils-io-configz"    % sparkUtilsVersion`
+- `"org.tupol" %% "spark-utils-io-pureconfig" % sparkUtilsVersion`
 
+instead of
+
+- `"org.tupol" %% "spark-utils"               % sparkUtilsVersion`
 
 ##### Configuration parameters
 - `kafka.bootstrap.servers` was renamed to `kafkaBootstrapServers` in Kafka sources and sinks configuration
@@ -119,3 +128,10 @@
  - Added `JdbcDataSource` and `JdbcDataSink` IO frameworks
  - Moved all useful implicit conversions into `org.tupol.spark.implicits`
  - Added testing utilities under `org.tupol.spark.testing`
+
+
+
+
+
+
+[PureConfig]: https://pureconfig.github.io/

@@ -5,7 +5,7 @@ object Dependencies {
   object Versions {
     val scala = "2.12.12"
     val crossScala = Seq(scala)
-    val scalaUtils = "1.1.0"
+    val scalaUtils = "1.1.2"
     val scalaz = "7.2.26"
     val scalatest = "3.1.1"
     val scalacheck = "1.15.1"
