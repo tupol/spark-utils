@@ -19,31 +19,31 @@ provide some backward compatibility: `def optionalSaveMode: Option[String] = mod
 #### `def withColumnDataset[U: Encoder](column: Column): Dataset[(T, U)]`
 
 ```scala
-import nl.rabobank.datalake.common.spark.implicits._
+import org.tupol.spark.implicits._
 import org.apache.spark.sql.functions.lit
 import org.apache.spark.sql.Dataset
-...
-val dataset: Dataset[MyClass] = ...
+
+val dataset: Dataset[MyClass] = ???
 val datasetWithCol: Dataset[(MyClass, String)] = dataset.withColumnDataset[String](lit("some text"))
 ```
 
 #### `def mapValues[U: Encoder](f: V => U): Dataset[(K, U)]`
 
 ```scala
-import nl.rabobank.datalake.common.spark.implicits._
+import org.tupol.spark.implicits._
 import org.apache.spark.sql.Dataset
 
-val dataset: Dataset[(String, Int)] = ...
+val dataset: Dataset[(String, Int)] = ???
 val result: Dataset[(String, Int)]  = dataset.mapValues(_ * 10)
 ```
 
 #### `def flatMapValues[U: Encoder](f: V => TraversableOnce[U]): Dataset[(K, U)]`
 
 ```scala
-import nl.rabobank.datalake.common.spark.implicits._
+import org.tupol.spark.implicits._
 import org.apache.spark.sql.Dataset
 
-val dataset: Dataset[(String, Int)] = ...
+val dataset: Dataset[(String, Int)] = ???
 val result: Dataset[(String, Int)]  = dataset.flatMapValues(Seq(1, 2, 3))
 ```
 
@@ -80,8 +80,8 @@ Of course, there is an implicit decorator provided for `DataFrame`s, which allow
 ```scala
 import org.tupol.spark.testing._
 ...
-val thisDataFrame: DataFrame = ...
-val thatDataFrame: DataFrame = ...
+val thisDataFrame: DataFrame = ???
+val thatDataFrame: DataFrame = ???
 ...
 thisDataFrame.compareWith(thatDataFrame, Seq("common_id_column")).areEqual
 ```

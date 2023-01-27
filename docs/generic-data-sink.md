@@ -15,8 +15,9 @@ This framework supports different save modes like `overwrite` or `append`, as we
 partitioning parameters like columns.
 
 The framework is composed of two classes:
-- `GenericDataSink`, which is created based on a `GenericSinkConfiguration` class and provides one main function:
+- `GenericDataSink`, which is created based on a `GenericSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataFrameWriter[Row]]
     def write(data: DataFrame): Try[DataFrame]
     ```
 - `GenericSinkConfiguration`: the necessary configuration parameters
@@ -24,24 +25,22 @@ The framework is composed of two classes:
 **Sample code**
 
 ```scala
-    import org.tupol.spark.io.{configz, _}
+import org.tupol.spark.io.{ pureconf, _ }
 
-...
-val sinkConfiguration = configz.GenericSinkConfiguration(format, optionalSaveMode,
-  partitionColumns, optionalBuckets, options)
+val sinkConfiguration: GenericSinkConfiguration = ???
 GenericDataSink(sinkConfiguration).write(dataframe)
 ```
 
-Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 
 ```scala
-    import org.tupol.spark.io.{configz, _}
+import org.tupol.spark.io.{ pureconf, _ }
+import org.tupol.spark.io.implicits._
 
-...
-val sinkConfiguration = configz.GenericSinkConfiguration(format, optionalSaveMode,
-  partitionColumns, optionalBuckets, options)
+val sinkConfiguration: GenericSinkConfiguration = ???
+
 dataframe.sink(sinkConfiguration).write
 ```
 

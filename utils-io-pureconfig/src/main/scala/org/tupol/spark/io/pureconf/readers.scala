@@ -25,6 +25,7 @@ package org.tupol.spark.io.pureconf
 
 import com.typesafe.config.ConfigRenderOptions
 import org.apache.spark.sql.types.StructType
+import org.tupol.spark.io.pureconf.errors.CanNotLoadResource
 import org.tupol.spark.io.sources.{JdbcSourceConfiguration, _}
 import org.tupol.spark.io.{BucketsConfiguration, DataSinkConfiguration, FileSinkConfiguration, FileSourceConfiguration, FormatAwareDataSinkConfiguration, FormatAwareDataSourceConfiguration, FormatType, GenericSinkConfiguration, JdbcSinkConfiguration, PartitionsConfiguration}
 import org.tupol.spark.sql.loadSchemaFromString
@@ -39,10 +40,6 @@ import pureconfig.generic.semiauto.deriveReader
 object readers {
 
   implicit def hint[A] = ProductHint[A](ConfigFieldMapping(CamelCase, CamelCase))
-
-  final case class CanNotLoadResource(path: String, cause: Throwable) extends FailureReason {
-    def description = s"Cannot load '$path': ${cause.getMessage}"
-  }
 
   private def readerFailure(cursor: ConfigCursor, reason: FailureReason) =
     ConfigReaderFailures(cursor.failureFor(reason))

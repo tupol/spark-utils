@@ -6,6 +6,11 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC2
+
+- `DataSink` and `DataAwareSink` expose `writer` in addition to `write`
+- Documentation improvements
+
 ### 1.0.0-RC1
 
 **Major Library Redesign**

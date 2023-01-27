@@ -17,7 +17,7 @@ object dataset {
      *
      * Sample usage:
      * {{{
-     *   import nl.rabobank.datalake.common.spark.implicits._
+     *   import org.tupol.spark.implicits._
      *   import org.apache.spark.sql.functions.lit
      *   import org.apache.spark.sql.Dataset
      *
@@ -52,7 +52,7 @@ object dataset {
      *
      * Sample usage:
      * {{{
-     *   import nl.rabobank.datalake.common.spark.implicits._
+     *   import org.tupol.spark.implicits._
      *   import org.apache.spark.sql.Dataset
      *
      *   val dataset: Dataset[(String, Int)] = ...
@@ -69,7 +69,7 @@ object dataset {
      *
      * Sample usage:
      * {{{
-     *   import nl.rabobank.datalake.common.spark.implicits._
+     *   import org.tupol.spark.implicits._
      *   import org.apache.spark.sql.Dataset
      *
      *   val dataset: Dataset[(String, Int)] = ...

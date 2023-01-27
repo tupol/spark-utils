@@ -6,7 +6,7 @@
 The `DataSource` framework is a utility framework that helps configuring and reading `DataFrame`s.
 
 This framework provides for reading from a given path with the specified format like 
-`avro`, `parquet`, `orc`, `json`, `csv`, `jdbc`...
+`avro`, `parquet`, `orc`, `json`, `csv`, `jdbc`, `delta`...
 
 The framework is composed of two main traits:
 - `DataSource`, which is created based on a `DataSourceConfiguration` class and provides one main function:

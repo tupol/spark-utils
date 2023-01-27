@@ -35,11 +35,13 @@ trait DataSink[Config <: DataSinkConfiguration, Writer, WriteOut] {
 }
 
 /** Common trait for writing an already defined data DataFrame to an external resource */
-trait DataAwareSink[Config <: DataSinkConfiguration, Writer, WriteOut] {
+trait DataAwareSink[Config <: DataSinkConfiguration, Writer, WriteOut] extends DataSink[Config, Writer, WriteOut] {
   def data: DataFrame
   def sink: DataSink[Config, Writer, WriteOut]
-  def writer: Try[Writer] = sink.writer(data)
-  def write: Try[WriteOut] = sink.write(data)
+  def writer(data: DataFrame): Try[Writer] = sink.writer(data)
+  def writer: Try[Writer] = writer(data)
+  def write(data: DataFrame): Try[WriteOut] = sink.write(data)
+  def write: Try[WriteOut] = write(data)
 }
 
 /** Factory trait for DataAwareSinkFactory */

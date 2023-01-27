@@ -6,30 +6,31 @@
 The `GenericStreamDataSink` framework is a utility framework that helps configuring and writing `DataFrame`s to streams.
 
 The framework is composed of two classes:
-- `GenericStreamDataSink`, which is created based on a `GenericStreamDataSinkConfiguration` class and provides one main function:
+- `GenericStreamDataSink`, which is created based on a `GenericStreamDataSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataStreamWriter[Row]]
     def write(implicit spark: SparkSession): Try[StreamingQuery]
     ```
 - `GenericStreamDataSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    ...
-    implicit val sparkSession = ...
-    val sourceConfiguration = GenericStreamDataSinkConfiguration(...)
-    val dataframe = GenericStreamDataSink(sourceConfiguration).write(data)
+import org.tupol.spark.io._
+
+implicit val sparkSession: SparkSession = ???
+val sourceConfiguration: GenericStreamDataSinkConfiguration = ???
+val dataframe = GenericStreamDataSink(sourceConfiguration).write(data)
 ```
 
-Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
 ```scala
-    import org.tupol.spark.io._
-    import org.tupol.spark.io.implicits._
-    ...
-    val sourceConfiguration = GenericStreamDataSinkConfiguration(...)
-    val dataframe = data.streamingSink(sourceConfiguration).write
+import org.tupol.spark.io._
+import org.tupol.spark.io.implicits._
+
+val sourceConfiguration: GenericStreamDataSinkConfiguration = ???
+val dataframe = data.streamingSink(sourceConfiguration).write
 ```
 
 
