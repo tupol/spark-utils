@@ -30,13 +30,13 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 /**  FileDataSink trait */
-case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[FileSinkConfiguration, DataFrame] with Logging {
+case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] with Logging {
 
   /**
    * Configure a `writer` for the given `DataFrame` using the given `FileSinkConfiguration`,
    * setting up the partitions, partitions number, save mode and format
    */
-  private def configureWriter(data: DataFrame, configuration: FileSinkConfiguration): DataFrameWriter[Row] = {
+  def writer(data: DataFrame): Try[DataFrameWriter[Row]] = Try {
     val writer = configuration.partition.flatMap(_.number) match {
       case Some(partsNo) =>
         logDebug(s"Initializing the DataFrameWriter after repartitioning data to $partsNo partitions.")
@@ -77,16 +77,15 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
   /** Try to write the data according to the given configuration and return the same data or a failure */
   def write(data: DataFrame): Try[DataFrame] = {
 
-    val writer = configureWriter(data, configuration)
-    Try {
+    writer(data).flatMap { writer =>
       configuration.buckets match {
         case Some(bc) =>
           logInfo(s"Writing data to Hive as '${configuration.format}' in the '${configuration.path}' table due to the buckets configuration: $bc. " +
             s"Notice that the path parameter is used as a table name in this case.")
-          writer.saveAsTable(configuration.path)
+          Try(writer.saveAsTable(configuration.path))
         case None =>
           logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
-          writer.save(configuration.path)
+          Try(writer.save(configuration.path))
       }
     }
       .map(_ => data)
@@ -99,8 +98,8 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
 }
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFrame) extends DataAwareSink[FileSinkConfiguration, DataFrame] {
-  override def sink: DataSink[FileSinkConfiguration, DataFrame] = FileDataSink(configuration)
+case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFrame) extends DataAwareSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] {
+  override def sink: DataSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] = FileDataSink(configuration)
 }
 
 /**

@@ -3,6 +3,7 @@ import sbt._
 object Dependencies {
 
   object Versions {
+    val jvm = "1.8"
     val scala = "2.12.12"
     val crossScala = Seq(scala)
     val scalaUtils = "1.1.2"
@@ -20,6 +21,7 @@ object Dependencies {
     val sparkXml = "0.13.0"
     val fasterxml = "2.10.0"
     val embeddedKafka = "3.0.0"
+    val snappy = "1.1.8.4"
   }
 
   val CoreTestDependencies: Seq[ModuleID] = Seq(
@@ -28,7 +30,8 @@ object Dependencies {
     "org.mockito" %% "mockito-scala" % Versions.mockito % Test cross CrossVersion.binary,
     "org.apache.spark" %% "spark-avro" % Versions.spark % Test cross CrossVersion.binary,
     "com.databricks" %% "spark-xml" % Versions.sparkXml % Test cross CrossVersion.binary,
-    "com.h2database" % "h2" % Versions.h2database % Test
+    "com.h2database" % "h2" % Versions.h2database % Test,
+    "org.xerial.snappy" % "snappy-java" % Versions.snappy % Test
   )
 
   val IoTestDependencies: Seq[ModuleID] = Seq(

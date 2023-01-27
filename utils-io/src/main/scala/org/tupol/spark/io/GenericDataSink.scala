@@ -30,10 +30,10 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 /**  GenericDataSink trait */
-case class GenericDataSink(configuration: GenericSinkConfiguration) extends DataSink[GenericSinkConfiguration, DataFrame] with Logging {
+case class GenericDataSink(configuration: GenericSinkConfiguration) extends DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] with Logging {
 
   /** Configure a `writer` for the given `DataFrame` based on the given `GenericSinkConfiguration` */
-  private def configureWriter(data: DataFrame, configuration: GenericSinkConfiguration): DataFrameWriter[Row] = {
+  def writer(data: DataFrame): Try[DataFrameWriter[Row]] = Try{
     val basicWriter = data.write
       .format(configuration.format.toString)
       .mode(configuration.saveMode)
@@ -51,7 +51,8 @@ case class GenericDataSink(configuration: GenericSinkConfiguration) extends Data
   /** Try to write the data according to the given configuration and return the same data or a failure */
   override def write(data: DataFrame): Try[DataFrame] = {
     logInfo(s"Writing data as '${configuration.format}' to '${configuration}'.")
-    Try(configureWriter(data, configuration).save())
+    writer(data)
+      .map(_.save())
       .map(_ => data)
       .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' to '${configuration}').", _))
       .logSuccess(_ => logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration}'."))
@@ -60,8 +61,8 @@ case class GenericDataSink(configuration: GenericSinkConfiguration) extends Data
 }
 
 /** GenericDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: DataFrame) extends DataAwareSink[GenericSinkConfiguration, DataFrame] {
-  override def sink: DataSink[GenericSinkConfiguration, DataFrame] = GenericDataSink(configuration)
+case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: DataFrame) extends DataAwareSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] {
+  override def sink: DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] = GenericDataSink(configuration)
 }
 
 /**

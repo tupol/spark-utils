@@ -13,7 +13,8 @@ lazy val basicSettings = Seq(
     "-feature",
     "-deprecation",
     "-unchecked",
-    "-Ywarn-unused-import"
+    "-Ywarn-unused-import",
+    s"-target:jvm-${Versions.jvm}",
   ),
   updateOptions := updateOptions.value.withCachedResolution(true),
   libraryDependencies ++= CoreTestDependencies,

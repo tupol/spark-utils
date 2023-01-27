@@ -5,6 +5,7 @@ resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repos
 
 addSbtPlugin("org.xerial.sbt"   % "sbt-sonatype" % "2.0")
 addSbtPlugin("com.github.sbt"   % "sbt-release"  % "1.1.0")
+addSbtPlugin("com.github.sbt"   % "sbt-pgp" % "2.1.2")
 
 addSbtPlugin("org.scoverage"    % "sbt-scoverage"        % "1.9.3")
 addSbtPlugin("com.eed3si9n"     % "sbt-assembly"         % "0.14.6")
