@@ -52,22 +52,22 @@ package object io {
 
   implicit val DataAwareSinkFactory =
     new DataAwareSinkFactory {
-      override def apply[C <: DataSinkConfiguration, WO](configuration: C, data: DataFrame): DataAwareSink[C, WO] =
+      override def apply[C <: DataSinkConfiguration, WR, WO](configuration: C, data: DataFrame): DataAwareSink[C, WR, WO] =
         data.isStreaming match {
           case false =>
             configuration match {
               //TODO There must be a better way to use the type system without the type cast
-              case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: GenericSinkConfiguration => GenericDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case c: FileSinkConfiguration => FileDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WR, WO]]
+              case c: JdbcSinkConfiguration => JdbcDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WR, WO]]
+              case c: GenericSinkConfiguration => GenericDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WR, WO]]
               case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
             }
           case true =>
             configuration match {
               //TODO There must be a better way to use the type system without the type cast
-              case c: FileStreamDataSinkConfiguration => FileStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: KafkaStreamDataSinkConfiguration => KafkaStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
-              case c: GenericStreamDataSinkConfiguration => GenericStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WO]]
+              case c: FileStreamDataSinkConfiguration => FileStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WR, WO]]
+              case c: KafkaStreamDataSinkConfiguration => KafkaStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WR, WO]]
+              case c: GenericStreamDataSinkConfiguration => GenericStreamDataAwareSink(c, data).asInstanceOf[DataAwareSink[C, WR, WO]]
               case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
             }
         }

@@ -33,9 +33,9 @@ import org.tupol.utils.CollectionOps._
 import scala.util.Try
 
 case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfiguration)
-  extends DataSink[GenericStreamDataSinkConfiguration, StreamingQuery] with Logging {
+  extends DataSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
 
-  private def configureWriter(data: DataFrame, configuration: GenericStreamDataSinkConfiguration): DataStreamWriter[Row] = {
+  def writer(data: DataFrame): Try[DataStreamWriter[Row]] = Try {
     val basicWriter = data.writeStream
       .format(configuration.format.toString)
       .options(configuration.options.getOrElse(Map()))
@@ -53,7 +53,7 @@ case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfigurati
   /** Try to write the data according to the given configuration and return the same data or a failure */
   override def write(data: DataFrame): Try[StreamingQuery] = {
     logInfo(s"Writing data to { $configuration }.")
-    Try(configureWriter(data, configuration).start())
+    Try(writer(data).map(_.start())).flatten
       .mapFailure(DataSinkException(s"Failed writing the data to { $configuration }.", _))
       .logSuccess(_ => logInfo(s"Successfully writing the data to { $configuration }."))
       .logFailure(logError)
@@ -62,8 +62,8 @@ case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfigurati
 
 /** GenericStreamDataAwareSink is "data aware", so it can perform a write call with no arguments */
 case class GenericStreamDataAwareSink(configuration: GenericStreamDataSinkConfiguration, data: DataFrame)
-  extends DataAwareSink[GenericStreamDataSinkConfiguration, StreamingQuery] {
-  override def sink: DataSink[GenericStreamDataSinkConfiguration, StreamingQuery] = GenericStreamDataSink(configuration)
+  extends DataAwareSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
+  override def sink: DataSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] = GenericStreamDataSink(configuration)
 }
 
 case class GenericStreamDataSinkConfiguration(format: FormatType, options: Option[Map[String, String]],

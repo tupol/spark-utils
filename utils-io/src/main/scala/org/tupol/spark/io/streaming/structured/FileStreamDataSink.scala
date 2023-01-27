@@ -23,21 +23,22 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.streaming.StreamingQuery
+import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery}
 import org.tupol.spark.Logging
-import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
-
-
+import org.tupol.spark.io.{DataAwareSink, DataSink, FormatType}
 
 import scala.util.Try
 
 case class FileStreamDataSink(configuration: FileStreamDataSinkConfiguration)
-  extends DataSink[FileStreamDataSinkConfiguration, StreamingQuery] with Logging {
+  extends DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
+
+  override def writer(data: DataFrame): Try[DataStreamWriter[Row]] = GenericStreamDataSink(configuration.generic).writer(data)
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
   override def write(data: DataFrame): Try[StreamingQuery] =
     GenericStreamDataSink(configuration.generic).write(data)
+
 }
 
 object FileStreamDataSink {
@@ -50,8 +51,8 @@ object FileStreamDataSink {
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
 case class FileStreamDataAwareSink(configuration: FileStreamDataSinkConfiguration, data: DataFrame)
-  extends DataAwareSink[FileStreamDataSinkConfiguration, StreamingQuery] {
-  override def sink: DataSink[FileStreamDataSinkConfiguration, StreamingQuery] = FileStreamDataSink(configuration)
+  extends DataAwareSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
+  override def sink: DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] = FileStreamDataSink(configuration)
 }
 
 case class FileStreamDataSinkConfiguration(
