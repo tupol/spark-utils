@@ -23,17 +23,14 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming.structured
 
-import com.typesafe.config.Config
+
 import org.apache.spark.sql.streaming.DataStreamReader
-import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.tupol.spark.Logging
-import org.tupol.spark.io.FormatType._
-import org.tupol.spark.io.sources.{ ColumnNameOfCorruptRecord, SourceConfiguration }
-import org.tupol.spark.io.{ DataSource, DataSourceException, FormatType }
-import org.tupol.configz.Configurator
+import org.tupol.spark.io.sources.SourceConfiguration
+import org.tupol.spark.io.{DataSource, DataSourceException, FormatType}
 import org.tupol.utils.implicits._
-import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.Try
 
@@ -47,15 +44,9 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
       .format(dataFormat)
       .options(sourceConfiguration.options)
 
-    sourceConfiguration.schema match {
-      case Some(inputSchema) =>
-        logDebug(s"Initializing the '$dataFormat' DataStreamReader using the specified schema.")
-        val schema = sourceConfiguration.columnNameOfCorruptRecord
-          .map { columnNameOfCorruptRecord =>
-            logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; adding column '$columnNameOfCorruptRecord' to the input schema.")
-            inputSchema.add(columnNameOfCorruptRecord, StringType)
-          }
-          .getOrElse(inputSchema)
+    sourceConfiguration.schemaWithCorruptRecord match {
+      case Some(schema) =>
+        logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
         basicReader.schema(schema)
       case None =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader inferring the schema.")
@@ -78,25 +69,15 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
   extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
-  override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"
+  override def toString: String = s"path: '$path', $sourceConfiguration"
+
+  /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
+  override def options: Map[String, String] = sourceConfiguration.options
+
+  /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
+  override def schema: Option[StructType] = sourceConfiguration.schema
 }
-object FileStreamDataSourceConfiguration extends Configurator[FileStreamDataSourceConfiguration] {
+object FileStreamDataSourceConfiguration {
+  import org.tupol.spark.io.FormatType._
   val AcceptableFileFormats = Seq(Csv, Json, Parquet, Orc, Text)
-  override def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSourceConfiguration] = {
-    import org.tupol.configz._
-    import scalaz.syntax.applicative._
-
-    val format = config.extract[FormatType]("format").ensure(
-      new IllegalArgumentException(s"The provided format is unsupported for a file data source. " +
-        s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f => FormatType.AcceptableFileFormats.contains(f))
-
-    format match {
-      case scalaz.Success(_) =>
-        config.extract[String]("path") |@|
-          SourceConfiguration.validationNel(config) apply
-          FileStreamDataSourceConfiguration.apply
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
-  }
 }

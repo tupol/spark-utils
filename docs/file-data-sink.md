@@ -13,28 +13,45 @@ This framework supports different save modes like `overwrite` or `append`, as we
 columns and number of partition files.
 
 The framework is composed of two classes:
-- `FileDataSink`, which is created based on a `FileSinkConfiguration` class and provides one main function:
+- `FileDataSink`, which is created based on a `FileSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataFrameWriter[Row]]
     def write(data: DataFrame): Try[DataFrame]
     ```
 - `FileSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = FileSinkConfiguration(outputPath, format)
-    FileDataSink(sinkConfiguration).write(dataframe)
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.DataFrame
+import com.typesafe.config.Config
+
+
+import org.tupol.spark.io.{ pureconf, _ }
+
+val dataframe: DataFrame = ???
+
+val sinkConfiguration: FileSinkConfiguration = ???
+FileDataSink(sinkConfiguration).write(dataframe)
 ```
 
-Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = FileSinkConfiguration(outputPath, format)
-    dataframe.sink(sinkConfiguration).write
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.DataFrame
+import com.typesafe.config.Config
+
+val dataframe: DataFrame = ???
+
+import org.tupol.spark.io.{ pureconf, _ }
+import org.tupol.spark.io.implicits._
+
+val sinkConfiguration: FileSinkConfiguration = ???
+dataframe.sink(sinkConfiguration).write
 ```
 
 
@@ -51,7 +68,7 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
   - a sequence of columns that should be used for partitioning data on disk;
   - they should exist in the result of the given sql;
   - if empty no partitioning will be performed.
-- `partition.files` *Optional*
+- `partition.number` *Optional*
   - the number of partition files that will end up in each partition folder;
   - one can always look at the average size of the data inside partition folders and come up 
     with a number that is appropriate for the application;
@@ -64,7 +81,7 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
   - the used output function is `saveAsTable` using the `path` parameter as the table name
   - `number` **Required** 
     - the number of buckets
-  - `bucketColumns` **Required** 
+  - `columns` **Required** 
     - columns used for bucketing
   - `sortByColumns` *Optional*
     - sort columns

@@ -4,7 +4,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.implicits._
-import org.tupol.spark.io.sources.{ AvroSourceConfiguration, JsonSourceConfiguration }
+import org.tupol.spark.io.sources.{AvroSourceConfiguration, JsonSourceConfiguration}
 import org.tupol.spark.sql.loadSchemaFromFile
 
 class FileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {

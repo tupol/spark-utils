@@ -1,19 +1,20 @@
 package org.tupol.spark.io.streaming.structured
 
-import java.io.File
 import org.apache.commons.io.FileUtils
 import org.apache.spark.sql.functions.current_timestamp
 import org.apache.spark.sql.streaming.Trigger
-import org.scalatest.{ BeforeAndAfter, GivenWhenThen }
 import org.scalatest.concurrent.Eventually
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.time.{ Millis, Span }
+import org.scalatest.time.{Millis, Span}
+import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.implicits._
 import org.tupol.spark.io._
+import org.tupol.spark.io.implicits._
 import org.tupol.spark.testing.files.TestTempFilePath1
 
+import java.io.File
+import java.nio.charset.Charset
 import scala.util.Random
 
 class GenericFileStreamDataSourceSpec extends AnyFunSuite
@@ -64,7 +65,7 @@ class GenericFileStreamDataSourceSpec extends AnyFunSuite
 
   def addFile(text: String, parentFile: File): Unit = {
     val file = new File(parentFile, f"test-${math.abs(Random.nextLong())}%010d")
-    FileUtils.write(file, text)
+    FileUtils.write(file, text, Charset.defaultCharset())
   }
 
 }

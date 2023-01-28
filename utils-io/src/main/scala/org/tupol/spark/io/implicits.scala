@@ -23,33 +23,12 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.{Config, ConfigRenderOptions}
-import org.apache.spark.sql.streaming.StreamingQuery
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.tupol.configz.Extractor
+import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery}
+import org.apache.spark.sql.{DataFrame, DataFrameWriter, Dataset, Row, SparkSession}
 import org.tupol.spark.sql
-import org.tupol.spark.sql.loadSchemaFromString
-
-import scala.util.Try
 
 
 package object implicits {
-
-  /**
-   * Configuration extractor for Schemas.
-   *
-   * It can be used as
-   * `config.extract[Option[StructType]]("configuration_path_to_schema")` or as
-   * `config.extract[StructType]("configuration_path_to_schema")`
-   */
-  implicit val StructTypeExtractor = new Extractor[StructType] {
-    def extract(config: Config, path: String): Try[StructType] =
-      for {
-        schemaJson <- Try(config.getObject(path).render(ConfigRenderOptions.concise()))
-        schema <- loadSchemaFromString(schemaJson)
-      } yield schema
-  }
 
   /** SparkSession decorator. */
   implicit class SparkSessionOps(spark: SparkSession) {
@@ -69,12 +48,25 @@ package object implicits {
       sql.makeDataFrameAvroCompliant(dataFrame)
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrame] =
-      sinkFactory.apply[SC, DataFrame](configuration, dataFrame)
+    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrameWriter[Row], DataFrame] =
+      sinkFactory.apply[SC, DataFrameWriter[Row], DataFrame](configuration, dataFrame)
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, StreamingQuery] =
-      sinkFactory.apply[SC, StreamingQuery](configuration, dataFrame)
+    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataStreamWriter[Row], StreamingQuery] =
+      sinkFactory.apply[SC, DataStreamWriter[Row], StreamingQuery](configuration, dataFrame)
+
+  }
+
+  /** Dataset decorator. */
+  implicit class DatasetOps[T](val dataset: Dataset[T]) {
+
+    /** See [[org.tupol.spark.io.DataSink]] */
+    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrameWriter[Row], DataFrame] =
+      sinkFactory.apply[SC, DataFrameWriter[Row], DataFrame](configuration, dataset.toDF())
+
+    /** See [[org.tupol.spark.io.DataSink]] */
+    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataStreamWriter[Row], StreamingQuery] =
+      sinkFactory.apply[SC, DataStreamWriter[Row], StreamingQuery](configuration, dataset.toDF())
 
   }
 

@@ -3,9 +3,10 @@ import sbt._
 object Dependencies {
 
   object Versions {
+    val jvm = "1.8"
     val scala = "2.12.12"
     val crossScala = Seq(scala)
-    val scalaUtils = "1.1.0"
+    val scalaUtils = "1.1.2"
     val scalaz = "7.2.26"
     val scalatest = "3.1.1"
     val scalacheck = "1.15.1"
@@ -14,11 +15,13 @@ object Dependencies {
     val mockito = "1.14.4"
     val typesafe_config = "1.4.0"
     val h2database = "1.4.197"
+    val pureconfig = "0.17.1"
 
     val spark = "3.0.1"
     val sparkXml = "0.13.0"
     val fasterxml = "2.10.0"
     val embeddedKafka = "3.0.0"
+    val snappy = "1.1.8.4"
   }
 
   val CoreTestDependencies: Seq[ModuleID] = Seq(
@@ -27,7 +30,8 @@ object Dependencies {
     "org.mockito" %% "mockito-scala" % Versions.mockito % Test cross CrossVersion.binary,
     "org.apache.spark" %% "spark-avro" % Versions.spark % Test cross CrossVersion.binary,
     "com.databricks" %% "spark-xml" % Versions.sparkXml % Test cross CrossVersion.binary,
-    "com.h2database" % "h2" % Versions.h2database % Test
+    "com.h2database" % "h2" % Versions.h2database % Test,
+    "org.xerial.snappy" % "snappy-java" % Versions.snappy % Test
   )
 
   val IoTestDependencies: Seq[ModuleID] = Seq(
@@ -53,10 +57,13 @@ object Dependencies {
     "com.typesafe" % "config" % Versions.typesafe_config
   )
 
-  val IoDependencies: Seq[ModuleID] =  Seq(
+  val IoConfigzDependencies: Seq[ModuleID] =  Seq(
     "org.tupol" %% "scala-utils-config-z" % Versions.scalaUtils
-  ) ++ CoreDependencies
+  )
 
+  val IoPureconfigDependencies: Seq[ModuleID] =  Seq(
+    "com.github.pureconfig" %% "pureconfig" % Versions.pureconfig
+  )
 
   // Jackson dependencies over Spark and Kafka Versions can be tricky; for Spark 3.0.x we need this override
   val FasterXmlOverrides: Seq[ModuleID] = Seq(

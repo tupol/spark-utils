@@ -1,16 +1,16 @@
 package org.tupol.spark.io.streaming.structured
 
-import io.github.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
+import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
 import org.apache.spark.sql.execution.streaming.MemoryStream
 import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.time.{Seconds, Span}
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.implicits._
 import org.tupol.spark.io.DataSinkException
 import org.tupol.spark.io.FormatType.Kafka
+import org.tupol.spark.io.implicits._
 import org.tupol.spark.testing._
 import org.tupol.spark.testing.files.TestTempFilePath1
 

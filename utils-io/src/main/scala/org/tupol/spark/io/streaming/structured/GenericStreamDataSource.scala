@@ -25,12 +25,10 @@ package org.tupol.spark.io.streaming.structured
 
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.tupol.spark.Logging
 import org.tupol.spark.io._
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
-import scalaz.ValidationNel
 
 import scala.util.Try
 
@@ -43,9 +41,8 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
     val dataFormat = sourceConfiguration.format.toString
     val basicReader = spark.readStream
       .format(dataFormat)
-      .options(sourceConfiguration.options)
-
-    basicReader
+    val readerWithOptions = basicReader.options(sourceConfiguration.options)
+    readerWithOptions
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
@@ -58,23 +55,11 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
   }
 }
 
-case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),
-  schema: Option[StructType] = None) extends FormatAwareStreamingSourceConfiguration {
-  override def toString: String = {
-    val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
-    val schemaStr = schema.map(_.prettyJson).getOrElse("not specified")
-    s"format: '$format', options: {$optionsStr}, schema: $schemaStr"
-  }
-}
-object GenericStreamDataSourceConfiguration extends Configurator[GenericStreamDataSourceConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.syntax.applicative._
-
-  def validationNel(config: Config): ValidationNel[Throwable, GenericStreamDataSourceConfiguration] = {
-    config.extract[FormatType]("format") |@|
-      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map())) |@|
-      config.extract[Option[StructType]]("schema") apply
-      GenericStreamDataSourceConfiguration.apply
+case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
+  schema: Option[StructType]) extends FormatAwareStreamingSourceConfiguration
+object GenericStreamDataSourceConfiguration {
+  def apply(format: FormatType, options: Option[Map[String, String]] = None,
+            schema: Option[StructType] = None): GenericStreamDataSourceConfiguration = {
+    GenericStreamDataSourceConfiguration(format, options.getOrElse(Map()), schema)
   }
 }

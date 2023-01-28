@@ -23,70 +23,50 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.streaming.StreamingQuery
+import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery}
 import org.tupol.spark.Logging
-import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
-import org.tupol.configz.Configurator
-import scalaz.{ NonEmptyList, ValidationNel }
+import org.tupol.spark.io.{DataAwareSink, DataSink, FormatType}
 
 import scala.util.Try
 
 case class FileStreamDataSink(configuration: FileStreamDataSinkConfiguration)
-  extends DataSink[FileStreamDataSinkConfiguration, StreamingQuery] with Logging {
+  extends DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
+
+  override def writer(data: DataFrame): Try[DataStreamWriter[Row]] = GenericStreamDataSink(configuration.generic).writer(data)
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
   override def write(data: DataFrame): Try[StreamingQuery] =
     GenericStreamDataSink(configuration.generic).write(data)
+
+}
+
+object FileStreamDataSink {
+  def apply(
+             path: String,
+             genericConfig: GenericStreamDataSinkConfiguration,
+             checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
+    FileStreamDataSinkConfiguration(path, genericConfig, checkpointLocation)
 }
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
 case class FileStreamDataAwareSink(configuration: FileStreamDataSinkConfiguration, data: DataFrame)
-  extends DataAwareSink[FileStreamDataSinkConfiguration, StreamingQuery] {
-  override def sink: DataSink[FileStreamDataSinkConfiguration, StreamingQuery] = FileStreamDataSink(configuration)
+  extends DataAwareSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
+  override def sink: DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] = FileStreamDataSink(configuration)
 }
 
-case class FileStreamDataSinkConfiguration private (
-  format: FormatType,
-  private val path: String,
-  private val genericConfig: GenericStreamDataSinkConfiguration,
-  private val checkpointLocation: Option[String])
+case class FileStreamDataSinkConfiguration(
+  path: String,
+  genericConfig: GenericStreamDataSinkConfiguration,
+  checkpointLocation: Option[String])
   extends FormatAwareStreamingSinkConfiguration {
-  private val options = genericConfig.options ++
+  private val options =
     Map(
       "path" -> Some(path),
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
-  val generic = genericConfig.copy(options = options)
-  override def toString: String = generic.toString
+  val generic = genericConfig.addOptions(options)
+  def format: FormatType = generic.format
+  def resolve: FileStreamDataSinkConfiguration = this.copy(genericConfig = generic)
 }
-object FileStreamDataSinkConfiguration extends Configurator[FileStreamDataSinkConfiguration] {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.syntax.applicative._
 
-  def apply(
-    path: String,
-    genericConfig: GenericStreamDataSinkConfiguration,
-    checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
-    new FileStreamDataSinkConfiguration(genericConfig.format, path, genericConfig, checkpointLocation)
-
-  def validationNel(config: Config): ValidationNel[Throwable, FileStreamDataSinkConfiguration] = {
-
-    val format = config.extract[FormatType]("format").ensure(
-      new IllegalArgumentException(s"The provided format is unsupported for a file data source. " +
-        s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f =>
-        FormatType.AcceptableFileFormats.contains(f))
-
-    format match {
-      case scalaz.Success(_) =>
-        format |@|
-          config.extract[String]("path") |@|
-          GenericStreamDataSinkConfiguration.validationNel(config) |@|
-          config.extract[Option[String]]("checkpointLocation") apply
-          FileStreamDataSinkConfiguration.apply
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
-  }
-}

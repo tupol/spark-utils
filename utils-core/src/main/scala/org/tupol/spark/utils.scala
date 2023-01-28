@@ -24,49 +24,14 @@ SOFTWARE.
 package org.tupol.spark
 
 import java.net.{ URI, URL }
-import java.sql.Timestamp
-import java.time.LocalDateTime
-
-import org.json4s.JsonAST.JString
-import org.json4s.{ CustomSerializer, Serializer }
-
+import org.tupol.utils.Bracket
 import org.tupol.utils.implicits._
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
 import scala.util.{ Failure, Try }
 
 /** A few common functions that might be useful. */
 package object utils extends Logging {
-
-  /**
-   * This is a small and probably wrong conversion to JSON format.
-   *
-   * Besides the basic conversion, this also serializes the LocalDateFormat
-   *
-   * @param input input to be converted to JSON format
-   * @return
-   */
-  def toJson(input: AnyRef) = {
-    //TODO Find a nicer more comprehensive solution
-    import org.json4s.NoTypeHints
-    import org.json4s.jackson.Serialization
-
-    implicit val formats = Serialization.formats(NoTypeHints) ++ TimeSerializers
-    Serialization.write(input)
-  }
-
-  /** Serializers for Time types that use commonly */
-  val TimeSerializers: Seq[Serializer[_]] = {
-    /** Serializer / deserializer for LocalDateFormat */
-    case object LDTSerializer extends CustomSerializer[LocalDateTime](format => (
-      { case JString(s) => LocalDateTime.parse(s) },
-      { case ldt: LocalDateTime => JString(ldt.toString) }))
-    /** Serializer / deserializer for Timestamp */
-    case object SqlTimestampSerializer extends CustomSerializer[Timestamp](format => (
-      { case JString(ts) => Timestamp.valueOf(LocalDateTime.parse(ts)) },
-      { case ts: Timestamp => JString(ts.toLocalDateTime.toString) }))
-    Seq(LDTSerializer, SqlTimestampSerializer)
-  }
 
   /**
    * Try loading a text resource from a given path, whether it is local, from a given URL or URI or from the classpath.
@@ -77,7 +42,7 @@ package object utils extends Logging {
    */
   def fuzzyLoadTextResourceFile(path: String): Try[String] = {
 
-    val bufferedSource = if (path.trim.isEmpty)
+    def createBufferedSource: Try[BufferedSource] = if (path.trim.isEmpty)
       Failure(new IllegalArgumentException(s"Cannot load a text resource from an empty path."))
     else {
       Try {
@@ -107,7 +72,8 @@ package object utils extends Logging {
             .logSuccess(_ => logDebug(s"Successfully loaded text resource from classpath '$path'."))
         }
     }
-    bufferedSource.map(_.getLines.mkString("\n"))
+    Bracket.auto(createBufferedSource.get)(source => Try(source.getLines.mkString("\n")))
+      .flatten
       .logFailure(logError(s"Failed to load text resource from '$path'.", _))
   }
 

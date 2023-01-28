@@ -1,14 +1,14 @@
 package org.tupol.spark.io
 
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.implicits._
 import org.tupol.spark.io.sources.JsonSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-import scala.util.{ Failure, Try }
+import scala.util.{Failure, Try}
 
 class JsonFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 

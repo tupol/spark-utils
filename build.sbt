@@ -13,7 +13,8 @@ lazy val basicSettings = Seq(
     "-feature",
     "-deprecation",
     "-unchecked",
-    "-Ywarn-unused-import"
+    "-Ywarn-unused-import",
+    s"-target:jvm-${Versions.jvm}",
   ),
   updateOptions := updateOptions.value.withCachedResolution(true),
   libraryDependencies ++= CoreTestDependencies,
@@ -35,7 +36,7 @@ lazy val publishSettings = Seq(
   },
   publishArtifact in Test := true,
   publishMavenStyle := true,
-  pomIncludeRepository := { x => false },
+  pomIncludeRepository := { _ => false },
   licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/tupol/spark-utils")),
   scmInfo := Some(
@@ -102,15 +103,49 @@ lazy val io_utils = (project in file("utils-io"))
     buildInfoPackage := "org.tupol.spark.io.info",
     libraryDependencies ++= ProvidedSparkCoreDependencies,
     libraryDependencies ++= ProvidedSparkKafkaDependencies,
-    libraryDependencies ++= IoDependencies,
+    libraryDependencies ++= CoreDependencies,
     libraryDependencies ++= IoTestDependencies,
     publishArtifact in Test := true
   )
   .dependsOn(core_utils % "test->test;compile->compile")
 
+lazy val io_configz = (project in file("configz-io"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "spark-utils-io-configz",
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime, BuildInfoOption.ToMap, BuildInfoOption.ToJson),
+    buildInfoPackage := "org.tupol.spark.io.configz.info",
+    libraryDependencies ++= ProvidedSparkCoreDependencies,
+    libraryDependencies ++= ProvidedSparkKafkaDependencies,
+    libraryDependencies ++= CoreDependencies,
+    libraryDependencies ++= IoConfigzDependencies,
+    libraryDependencies ++= IoTestDependencies,
+    publishArtifact in Test := true
+  )
+  .dependsOn(io_utils % "test->test;compile->compile")
+
+lazy val io_pureconfig = (project in file("utils-io-pureconfig"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "spark-utils-io-pureconfig",
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime, BuildInfoOption.ToMap, BuildInfoOption.ToJson),
+    buildInfoPackage := "org.tupol.spark.io.pureconf.info",
+    libraryDependencies ++= ProvidedSparkCoreDependencies,
+    libraryDependencies ++= ProvidedSparkKafkaDependencies,
+    libraryDependencies ++= CoreDependencies,
+    libraryDependencies ++= IoPureconfigDependencies,
+    libraryDependencies ++= IoTestDependencies,
+    publishArtifact in Test := true
+  )
+  .dependsOn(io_utils % "test->test;compile->compile")
+
 lazy val scala_utils = Project(
   id = "scala-utils",
   base = file(".")
 ).settings(commonSettings: _*)
-  .dependsOn(core_utils % "test->test;compile->compile", io_utils)
-  .aggregate(core_utils, io_utils)
+  .dependsOn(core_utils % "test->test;compile->compile", io_utils, io_configz, io_pureconfig)
+  .aggregate(core_utils, io_utils, io_configz, io_pureconfig)

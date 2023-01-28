@@ -6,7 +6,6 @@ import org.tupol.spark.implicits.dataframe._
 import org.tupol.spark.implicits.dataset._
 import org.tupol.spark.implicits.schema._
 import org.tupol.spark.implicits.map._
-import org.tupol.spark.implicits.product._
 import org.tupol.spark.implicits.row._
 
 
@@ -15,8 +14,6 @@ package object implicits {
   implicit class RowOpsImplicits(override val row: Row) extends RowOps(row)
 
   implicit class MapOpsImplicits[K, V](override val map: Map[K, V]) extends MapOps[K, V](map)
-
-  implicit class ProductOpsImplicits(override val product: Product) extends ProductOps(product)
 
   implicit class SchemaOpsImplicits(override val schema: StructType) extends SchemaOps(schema)
 

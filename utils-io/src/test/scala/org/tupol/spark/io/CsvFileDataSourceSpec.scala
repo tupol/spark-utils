@@ -1,6 +1,6 @@
 package org.tupol.spark.io
 
-import org.apache.spark.sql.types.{ IntegerType, StringType, StructField, StructType }
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
@@ -8,7 +8,7 @@ import org.tupol.spark.io.implicits._
 import org.tupol.spark.io.sources.CsvSourceConfiguration
 import org.tupol.spark.testing._
 
-import scala.util.{ Failure, Try }
+import scala.util.{Failure, Try}
 
 class CsvFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 

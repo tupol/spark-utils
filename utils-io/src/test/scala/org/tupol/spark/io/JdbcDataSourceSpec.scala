@@ -11,6 +11,8 @@ import java.sql.{Connection, PreparedStatement}
 
 class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession with H2Database {
 
+  import spark.implicits._
+
   val TestTable = "test_table"
 
   val TestData = Seq(
@@ -18,8 +20,6 @@ class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSessi
     JdbcTestRecord("v2", 2, 2.2, false))
 
   test("Reading the input data yields the correct result") {
-
-    import spark.implicits._
 
     createTestTable(connection, TestData)
 

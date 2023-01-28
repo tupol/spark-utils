@@ -1,14 +1,15 @@
 package org.tupol.spark.io
 
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.implicits._
 import org.tupol.spark.io.sources.ParquetSourceConfiguration
 import org.tupol.spark.sql._
 import org.tupol.spark.testing._
 
-class ParquetFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
+class
+ParquetFileDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("The number of records in the file provided and the schema must match") {
 

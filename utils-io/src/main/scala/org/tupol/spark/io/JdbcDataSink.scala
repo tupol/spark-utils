@@ -23,21 +23,18 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.Config
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
-import scalaz.ValidationNel
 
 import scala.util.Try
 
 /**  JdbcDataSink trait */
-case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[JdbcSinkConfiguration, DataFrame] with Logging {
+case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[JdbcSinkConfiguration, DataFrameWriter[Row], DataFrame] with Logging {
 
   /** Configure a `writer` for the given `DataFrame` based on the given `JdbcDataSinkConfig` */
-  private def configureWriter(data: DataFrame, configuration: JdbcSinkConfiguration): DataFrameWriter[Row] = {
+  def writer(data: DataFrame): Try[DataFrameWriter[Row]] = Try {
     data.write.format(configuration.format.toString).mode(configuration.saveMode).options(configuration.writerOptions)
   }
 
@@ -46,7 +43,7 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
     logInfo(s"Writing data as '${configuration.format}' " +
       s"to the '${configuration.table}' table of '${configuration.url}'.")
     for {
-      writer <- Try(configureWriter(data, configuration))
+      writer <- writer(data)
         .mapFailure(DataSinkException(s"Failed to create a '${configuration.format}' data writer " +
           s"(Full configuration: ${configuration}).", _))
         .logFailure(logError)
@@ -60,8 +57,8 @@ case class JdbcDataSink(configuration: JdbcSinkConfiguration) extends DataSink[J
 }
 
 /** JdbcDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFrame) extends DataAwareSink[JdbcSinkConfiguration, DataFrame] {
-  override def sink: DataSink[JdbcSinkConfiguration, DataFrame] = JdbcDataSink(configuration)
+case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFrame) extends DataAwareSink[JdbcSinkConfiguration, DataFrameWriter[Row], DataFrame] {
+  override def sink: DataSink[JdbcSinkConfiguration, DataFrameWriter[Row], DataFrame] = JdbcDataSink(configuration)
 }
 
 /**
@@ -73,9 +70,10 @@ case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFra
  * @param driver
  */
 case class JdbcSinkConfiguration(url: String, table: String, user: Option[String], password: Option[String],
-  driver: Option[String], optionalSaveMode: Option[String], options: Map[String, String]) extends FormatAwareDataSinkConfiguration {
+  driver: Option[String], mode: Option[String], options: Map[String, String]) extends FormatAwareDataSinkConfiguration {
   val format = FormatType.Jdbc
-  def saveMode = optionalSaveMode.getOrElse("default")
+  def optionalSaveMode: Option[String] = mode
+  def saveMode = mode.getOrElse("default")
   def writerOptions: Map[String, String] = {
     val userOption = user.map(v => Map("user" -> v)).getOrElse(Nil)
     val passwordOption = password.map(v => Map("password" -> v)).getOrElse(Nil)
@@ -89,25 +87,11 @@ case class JdbcSinkConfiguration(url: String, table: String, user: Option[String
     s"url: '$url', table: '$table', connection properties: {$optionsStr}"
   }
 }
-object JdbcSinkConfiguration extends Configurator[JdbcSinkConfiguration] {
-
+object JdbcSinkConfiguration {
   def apply(url: String, table: String, user: String, password: String,
-    driver: String, saveMode: String, options: Map[String, String]): JdbcSinkConfiguration =
+            driver: String, saveMode: String, options: Map[String, String]): JdbcSinkConfiguration =
     new JdbcSinkConfiguration(url, table, Some(user), Some(password), Some(driver), Some(saveMode), options)
   def apply(url: String, table: String, user: String, password: String,
-    driver: String, saveMode: Option[String] = None, options: Map[String, String] = Map()): JdbcSinkConfiguration =
+            driver: String, saveMode: Option[String] = None, options: Map[String, String] = Map()): JdbcSinkConfiguration =
     new JdbcSinkConfiguration(url, table, Some(user), Some(password), Some(driver), saveMode, options)
-
-  override def validationNel(config: Config): ValidationNel[Throwable, JdbcSinkConfiguration] = {
-    import org.tupol.configz._
-    import scalaz.syntax.applicative._
-    config.extract[String]("url") |@|
-      config.extract[String]("table") |@|
-      config.extract[Option[String]]("user") |@|
-      config.extract[Option[String]]("password") |@|
-      config.extract[Option[String]]("driver") |@|
-      config.extract[Option[String]]("mode") |@|
-      config.extract[Map[String, String]]("options") apply
-      JdbcSinkConfiguration.apply
-  }
 }

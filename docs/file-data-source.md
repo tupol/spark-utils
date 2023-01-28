@@ -17,23 +17,36 @@ The framework is composed of two classes:
 - `FileSourceConfiguration`: the necessary configuration parameters
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    implicit val sparkSession = ...
-    val sourceConfiguration = FileSourceConfiguration(inputPath, parserConfig)
-    val dataframe = FileDataSource(sourceConfiguration).read
+import org.tupol.spark.io.FileDataSource
+import org.tupol.spark.io.implicits._
+import org.tupol.spark.io.pureconf._
+
+implicit val spark: org.apache.spark.sql.SparkSession = ???
+val config: com.typesafe.config.Config = ???
+
+for {
+  sourceConfiguration <- FileSourceConfigurator.extract(config)
+  dataframe           <- FileDataSource(sourceConfiguration).read
+} yield dataframe
 ```
 
-Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `SparkSession` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    import org.tupol.spark.io.implicits._
-    ...
-    val sourceConfiguration = FileSourceConfiguration(inputPath, parserConfig)
-    val dataframe = spark.source(sourceConfiguration).read
+import org.tupol.spark.io.implicits._
+import org.tupol.spark.io.pureconf._
+
+implicit val spark: org.apache.spark.sql.SparkSession = ???
+val config: com.typesafe.config.Config = ???
+
+for {
+  sourceConfiguration <- FileSourceConfigurator.extract(config)
+  dataframe           <- spark.source(sourceConfiguration).read
+} yield dataframe
 ```
 
 

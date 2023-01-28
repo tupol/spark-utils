@@ -23,60 +23,18 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming
 
-import com.typesafe.config.Config
-import org.apache.spark.sql.streaming.Trigger
-import org.tupol.spark.io.{ DataSourceConfiguration, FormatAware, FormatAwareDataSinkConfiguration }
-import org.tupol.configz._
-import scalaz.ValidationNel
-
-import scala.util.{ Failure, Success, Try }
+import org.tupol.spark.io.sources.SourceConfiguration
+import org.tupol.spark.io.{DataSourceConfiguration, FormatAwareDataSinkConfiguration}
 
 package object structured {
 
   trait StreamingConfiguration
   trait StreamingSourceConfiguration extends DataSourceConfiguration with StreamingConfiguration
 
-  trait FormatAwareStreamingSourceConfiguration extends StreamingSourceConfiguration with FormatAware
-  object FormatAwareStreamingSourceConfiguration extends Configurator[FormatAwareStreamingSourceConfiguration] {
-    override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareStreamingSourceConfiguration] =
-      config.extract[FileStreamDataSourceConfiguration] orElse
-        config.extract[KafkaStreamDataSourceConfiguration] orElse
-        config.extract[GenericStreamDataSourceConfiguration]
-  }
+  trait FormatAwareStreamingSourceConfiguration extends StreamingSourceConfiguration with SourceConfiguration
 
   /** Common marker trait for `DataSink` configuration that also knows the data format */
   trait FormatAwareStreamingSinkConfiguration extends FormatAwareDataSinkConfiguration with StreamingConfiguration
-  object FormatAwareStreamingSinkConfiguration extends Configurator[FormatAwareStreamingSinkConfiguration] {
-    override def validationNel(config: Config): ValidationNel[Throwable, FormatAwareStreamingSinkConfiguration] =
-      config.extract[FileStreamDataSinkConfiguration] orElse
-        config.extract[KafkaStreamDataSinkConfiguration] orElse
-        config.extract[GenericStreamDataSinkConfiguration]
-  }
-
-  implicit val TriggerExtractor = new Extractor[Trigger] {
-    val AcceptableValues = Seq("Continuous", "Once", "ProcessingTime")
-
-    override def extract(config: Config, path: String): Try[Trigger] =
-      for {
-        triggerType <- config.extract[String](s"$path.trigger.type")
-        interval <- config.extract[Option[String]](s"$path.trigger.interval")
-        trigger <- triggerType.trim.toLowerCase() match {
-          case "once" => Success(Trigger.Once())
-          case "continuous" =>
-            Try {
-              require(interval.isDefined, "The interval must be defined for Continuous triggers.")
-              Trigger.Continuous(interval.get)
-            }
-          case "processingtime" =>
-            Try {
-              require(interval.isDefined, "The interval must be defined for ProcessingTime triggers.")
-              Trigger.ProcessingTime(interval.get)
-            }
-          case tt => Failure(new IllegalArgumentException(s"The trigger.type '$tt' is not supported. " +
-            s"The supported values are ${AcceptableValues.mkString(",", "', '", ",")}."))
-        }
-      } yield trigger
-  }
 
   /**
    * A Kafka subscription is defined by it's type (e.g. subscribe or subscribe patterns) and the
@@ -85,14 +43,7 @@ package object structured {
    * @param subscription the topic name to subscribe to
    */
   case class KafkaSubscription(subscriptionType: String, subscription: String)
-  implicit val KafkaSubscriptionExtractor = new Extractor[KafkaSubscription] {
-    val AcceptableValues = Seq("assign", "subscribe", "subscribePattern")
-    override def extract(config: Config, path: String): Try[KafkaSubscription] =
-      for {
-        subscriptionType <- config.extract[String](s"$path.subscription.type").ensure(new IllegalArgumentException(s"The subscription.type is not supported. " +
-          s"The supported values are ${AcceptableValues.mkString(",", "', '", ",")}.").toNel)(st =>
-          AcceptableValues.map(_.toLowerCase()).contains(st.toLowerCase))
-        subscription <- config.extract[String](s"$path.subscription.value")
-      } yield KafkaSubscription(subscriptionType, subscription)
+  object KafkaSubscription{
+    val AcceptableTypes = Seq("assign", "subscribe", "subscribePattern")
   }
 }

@@ -15,30 +15,33 @@ This framework supports different save modes like `overwrite` or `append`, as we
 partitioning parameters like columns.
 
 The framework is composed of two classes:
-- `GenericDataSink`, which is created based on a `GenericSinkConfiguration` class and provides one main function:
+- `GenericDataSink`, which is created based on a `GenericSinkConfiguration` class and provides two main functions:
     ```scala
+    def writer(data: DataFrame): Try[DataFrameWriter[Row]]
     def write(data: DataFrame): Try[DataFrame]
     ```
 - `GenericSinkConfiguration`: the necessary configuration parameters
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = GenericSinkConfiguration(format, optionalSaveMode, 
-                                      partitionColumns, optionalBuckets, options)
-    GenericDataSink(sinkConfiguration).write(dataframe)
+import org.tupol.spark.io.{ pureconf, _ }
+
+val sinkConfiguration: GenericSinkConfiguration = ???
+GenericDataSink(sinkConfiguration).write(dataframe)
 ```
 
-Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io._`.
+Optionally, one can use the implicit decorator for the `DataFrame` available by importing `org.tupol.spark.io.implicits._`.
 
 **Sample code**
+
 ```scala
-    import org.tupol.spark.io._
-    ...
-    val sinkConfiguration = GenericSinkConfiguration(format, optionalSaveMode, 
-                                      partitionColumns, optionalBuckets, options)
-    dataframe.sink(sinkConfiguration).write
+import org.tupol.spark.io.{ pureconf, _ }
+import org.tupol.spark.io.implicits._
+
+val sinkConfiguration: GenericSinkConfiguration = ???
+
+dataframe.sink(sinkConfiguration).write
 ```
 
 
@@ -61,7 +64,7 @@ Optionally, one can use the implicit decorator for the `DataFrame` available by 
   - the used output function is `saveAsTable` using the `path` parameter as the table name
   - `number` **Required** 
     - the number of buckets
-  - `bucketColumns` **Required** 
+  - `columns` **Required** 
     - columns used for bucketing
   - `sortByColumns` *Optional*
     - sort columns

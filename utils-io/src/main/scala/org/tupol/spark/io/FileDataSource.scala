@@ -23,14 +23,10 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import com.typesafe.config.Config
-import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources._
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
-import scalaz.{ NonEmptyList, ValidationNel }
 
 import scala.util.Try
 
@@ -44,16 +40,9 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
       .format(dataFormat)
       .options(sourceConfiguration.options)
 
-    sourceConfiguration.schema match {
-      case Some(inputSchema) =>
+    sourceConfiguration.schemaWithCorruptRecord match {
+      case Some(schema) =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
-        val schema = sourceConfiguration.columnNameOfCorruptRecord
-          .map { columnNameOfCorruptRecord =>
-            logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; " +
-              s"adding column '$columnNameOfCorruptRecord' to the input schema.")
-            inputSchema.add(columnNameOfCorruptRecord, StringType)
-          }
-          .getOrElse(inputSchema)
         basicReader.schema(schema)
       case None =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader inferring the schema.")
@@ -82,23 +71,4 @@ case class FileSourceConfiguration(path: String, sourceConfiguration: SourceConf
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
   override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"
-}
-object FileSourceConfiguration extends Configurator[FileSourceConfiguration] {
-  override def validationNel(config: Config): ValidationNel[Throwable, FileSourceConfiguration] = {
-    import org.tupol.configz._
-    import scalaz.syntax.applicative._
-
-    val format = config.extract[FormatType]("format").ensure(
-      new IllegalArgumentException(s"The provided format is unsupported for a file data source. " +
-        s"Supported formats are: ${FormatType.AcceptableFileFormats.mkString("'", "', '", "'")}").toNel)(f => FormatType.AcceptableFileFormats.contains(f))
-
-    format match {
-      case scalaz.Success(_) =>
-        config.extract[String]("path") |@|
-          config.extract[SourceConfiguration] apply
-          FileSourceConfiguration.apply
-      case scalaz.Failure(e) =>
-        scalaz.Failure[NonEmptyList[Throwable]](e)
-    }
-  }
 }

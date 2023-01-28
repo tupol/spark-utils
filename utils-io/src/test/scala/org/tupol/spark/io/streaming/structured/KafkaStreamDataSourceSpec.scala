@@ -2,11 +2,11 @@ package org.tupol.spark.io.streaming.structured
 
 import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
 import org.apache.spark.sql.streaming.Trigger
-import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Seconds, Span}
+import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.implicits._
 

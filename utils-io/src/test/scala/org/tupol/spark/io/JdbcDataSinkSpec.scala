@@ -2,12 +2,11 @@ package org.tupol.spark.io
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-
-import java.sql.ResultSet
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.implicits._
 import org.tupol.spark.testing.H2Database
 
+import java.sql.ResultSet
 import scala.collection.mutable
 import scala.util.Success
 

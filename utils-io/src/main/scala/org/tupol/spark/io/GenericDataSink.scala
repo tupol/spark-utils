@@ -25,27 +25,34 @@ package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
 import org.tupol.spark.Logging
-import org.tupol.configz.Configurator
 import org.tupol.utils.implicits._
 
 import scala.util.Try
 
 /**  GenericDataSink trait */
-case class GenericDataSink(configuration: GenericSinkConfiguration) extends DataSink[GenericSinkConfiguration, DataFrame] with Logging {
+case class GenericDataSink(configuration: GenericSinkConfiguration) extends DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] with Logging {
 
-  /** Configure a `writer` for the given `DataFrame` based on the given `JdbcDataSinkConfig` */
-  private def configureWriter(data: DataFrame, configuration: GenericSinkConfiguration): DataFrameWriter[Row] = {
-    data.write
+  /** Configure a `writer` for the given `DataFrame` based on the given `GenericSinkConfiguration` */
+  def writer(data: DataFrame): Try[DataFrameWriter[Row]] = Try{
+    val basicWriter = data.write
       .format(configuration.format.toString)
       .mode(configuration.saveMode)
-      .options(configuration.options)
-      .partitionBy(configuration.partitionColumns: _*)
+    val writerWithPartitions = configuration.partition match {
+      case Some(partitions) => basicWriter.partitionBy(partitions.columns: _*)
+      case None => basicWriter
+    }
+    val writerWithOptions = configuration.options match {
+      case Some(options) => writerWithPartitions.options(options)
+      case None => writerWithPartitions
+    }
+    writerWithOptions
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
   override def write(data: DataFrame): Try[DataFrame] = {
     logInfo(s"Writing data as '${configuration.format}' to '${configuration}'.")
-    Try(configureWriter(data, configuration).save())
+    writer(data)
+      .map(_.save())
       .map(_ => data)
       .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' to '${configuration}').", _))
       .logSuccess(_ => logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration}'."))
@@ -54,8 +61,8 @@ case class GenericDataSink(configuration: GenericSinkConfiguration) extends Data
 }
 
 /** GenericDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: DataFrame) extends DataAwareSink[GenericSinkConfiguration, DataFrame] {
-  override def sink: DataSink[GenericSinkConfiguration, DataFrame] = GenericDataSink(configuration)
+case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: DataFrame) extends DataAwareSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] {
+  override def sink: DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] = GenericDataSink(configuration)
 }
 
 /**
@@ -69,37 +76,36 @@ case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: D
  * @param options other sink specific options
  *
  */
-case class GenericSinkConfiguration(format: FormatType, optionalSaveMode: Option[String] = None, partitionColumns: Seq[String] = Seq(),
-  buckets: Option[BucketsConfiguration] = None,
-  options: Map[String, String] = Map())
+case class GenericSinkConfiguration(format: FormatType, mode: Option[String], partition: Option[PartitionsConfiguration],
+  buckets: Option[BucketsConfiguration],
+  options: Option[Map[String, String]])
   extends FormatAwareDataSinkConfiguration {
+  def optionalSaveMode: Option[String] = mode
   def saveMode = optionalSaveMode.getOrElse("default")
   override def toString: String = {
-    val optionsStr = if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+    val optionsStr = options match {
+      case Some(options) => if(options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      case None => ""
+    }
     s"format: '$format', save mode: '$saveMode', " +
-      s"partition columns: [${partitionColumns.mkString(", ")}], " +
+      s"partitioning: [${partition.getOrElse("None")}], " +
       s"bucketing: ${buckets.getOrElse("None")}, " +
       s"options: {$optionsStr}"
   }
 }
 
-object GenericSinkConfiguration extends Configurator[GenericSinkConfiguration] with Logging {
-  import com.typesafe.config.Config
-  import org.tupol.configz._
-  import scalaz.ValidationNel
-  import scalaz.syntax.applicative._
-
-  implicit val bucketsExtractor = BucketsConfiguration
-
-  def validationNel(config: Config): ValidationNel[Throwable, GenericSinkConfiguration] = {
-    config.extract[FormatType]("format") |@|
-      config.extract[Option[String]]("mode") |@|
-      config.extract[Option[Seq[String]]]("partition.columns").map {
-        case (Some(partition_columns)) => partition_columns
-        case None => Seq[String]()
-      } |@|
-      config.extract[Option[BucketsConfiguration]]("buckets") |@|
-      config.extract[Option[Map[String, String]]]("options").map(_.getOrElse(Map[String, String]())) apply
-      GenericSinkConfiguration.apply
+object GenericSinkConfiguration {
+  def apply(format: FormatType, mode: Option[String] = None, partitionColumns: Seq[String] = Seq(),
+            buckets: Option[BucketsConfiguration] = None,
+            options: Map[String, String] = Map()): GenericSinkConfiguration = {
+    val partitions = partitionColumns match {
+      case Nil => None
+      case _ => Some(PartitionsConfiguration(None, partitionColumns))
+    }
+    val optionalOptions = options.toSeq match {
+      case Nil => None
+      case _ => Some(options)
+    }
+    new GenericSinkConfiguration(format, mode, partitions, buckets, optionalOptions)
   }
 }

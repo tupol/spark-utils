@@ -56,7 +56,7 @@ package object spark {
      * @param args application parameters
      * @return the application configuration object
      */
-    private[spark] def applicationConfiguration(implicit spark: SparkSession, args: Array[String]): Config = {
+    def getApplicationConfiguration(args: Array[String])(implicit spark: SparkSession): Config = {
 
       import java.io.File
 

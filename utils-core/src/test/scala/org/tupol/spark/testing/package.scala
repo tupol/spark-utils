@@ -28,7 +28,7 @@ import org.apache.spark.sql.functions.col
 
 package object testing {
 
-  case class DataFrameCompareResult(columnsOnlyInLeft: Seq[String], columnsOnlyInRight: Seq[String],
+  class DataFrameCompareResult private (columnsOnlyInLeft: Seq[String], columnsOnlyInRight: Seq[String],
     dataOnlyInLeft: DataFrame, dataOnlyInRight: DataFrame) {
 
     lazy val countOnlyInLeft = dataOnlyInLeft.count
@@ -61,30 +61,34 @@ package object testing {
         }
       }
   }
+  object DataFrameCompareResult {
+    def apply(left: DataFrame, right: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
+      val leftCols = left.columns
+      val rightCols = right.columns
+      val onlyLeftCols = leftCols.filterNot(rightCols.contains)
+      val onlyRightCols = rightCols.filterNot(leftCols.contains)
+      val joinCols = if (joinColumns.isEmpty) leftCols.toSeq else joinColumns
+
+      new DataFrameCompareResult(onlyLeftCols, onlyRightCols,
+        left.join(right, joinCols, "left")
+          .except(left.join(right, joinCols, "right")),
+        left.join(right, joinCols, "right")
+          .except(left.join(right, joinCols, "left")))
+    }
+
+  }
 
   /**
    * Naive comparison function for two data frames using the join columns.
    * The tests are superficial and do not go deep enough, but they will do for now.
    * In order to see the actual test results one needs to examine the output, [[DataFrameCompareResult]]
-   * @param left
-   * @param right
-   * @param joinColumns
-   * @return
+   * @param left `DataFrame`
+   * @param right `DataFrame`
+   * @param joinColumns the column names used to join the `left` and right` `DataFrame`s
+   * @return `DataFrameCompareResult`
    */
-  def compareDataFrames(left: DataFrame, right: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
-
-    val leftCols = left.columns
-    val rightCols = right.columns
-    val onlyLeftCols = leftCols.filterNot(rightCols.contains)
-    val onlyRightCols = rightCols.filterNot(leftCols.contains)
-    val joinCols = if (joinColumns.isEmpty) leftCols.toSeq else joinColumns
-
-    DataFrameCompareResult(onlyLeftCols, onlyRightCols,
-      left.join(right, joinCols, "left")
-        .except(left.join(right, joinCols, "right")),
-      left.join(right, joinCols, "right")
-        .except(left.join(right, joinCols, "left")))
-  }
+  def compareDataFrames(left: DataFrame, right: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult =
+    DataFrameCompareResult(left, right, joinColumns)
 
   implicit class DataFrameComparator(dataframe: DataFrame) {
     def compareWith(that: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
