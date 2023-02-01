@@ -33,22 +33,22 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfiguration)
-  extends DataSource[GenericStreamDataSourceConfiguration] with Logging {
+  extends DataSource[GenericStreamDataSourceConfiguration, DataStreamReader] with Logging {
 
   /** Create and configure a `DataStreamReader` based on the given `GenericStreamDataSourceConfiguration` */
-  private def createReader(sourceConfiguration: GenericStreamDataSourceConfiguration)(implicit spark: SparkSession): DataStreamReader = {
+  def reader(implicit spark: SparkSession): DataStreamReader = {
 
-    val dataFormat = sourceConfiguration.format.toString
+    val dataFormat = configuration.format.toString
     val basicReader = spark.readStream
       .format(dataFormat)
-    val readerWithOptions = basicReader.options(sourceConfiguration.options)
+    val readerWithOptions = basicReader.options(configuration.options)
     readerWithOptions
   }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' from '${configuration}'.")
-    Try(createReader(configuration).load())
+    Try(reader.load())
       .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _))
       .logSuccess(_ => logInfo(s"Successfully read the data as '${configuration.format}' from '${configuration}'"))
       .logFailure(logError)

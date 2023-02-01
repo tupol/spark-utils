@@ -23,9 +23,9 @@ SOFTWARE.
 */
 package org.tupol.spark
 
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, DataFrameReader}
 import org.tupol.spark.io.sources.{GenericSourceConfiguration, JdbcSourceConfiguration}
-import org.tupol.spark.io.streaming.structured.{FileStreamDataAwareSink, FileStreamDataSinkConfiguration, FileStreamDataSource, FileStreamDataSourceConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, GenericStreamDataSource, GenericStreamDataSourceConfiguration, KafkaStreamDataAwareSink, KafkaStreamDataSinkConfiguration, KafkaStreamDataSource, KafkaStreamDataSourceConfiguration}
+import org.tupol.spark.io.streaming.structured.{FileStreamDataAwareSink, FileStreamDataSinkConfiguration, GenericStreamDataAwareSink, GenericStreamDataSinkConfiguration, KafkaStreamDataAwareSink, KafkaStreamDataSinkConfiguration }
 
 /** Common IO utilities */
 package object io {
@@ -37,18 +37,16 @@ package object io {
 
   implicit val DataSourceFactory =
     new DataSourceFactory {
-      override def apply[C <: DataSourceConfiguration](configuration: C): DataSource[C] =
+      override def apply[C <: DataSourceConfiguration](configuration: C): DataSource[C, DataFrameReader] =
         configuration match {
           //TODO There must be a better way to use the type system without the type cast
-          case c: FileSourceConfiguration => FileDataSource(c).asInstanceOf[DataSource[C]]
-          case c: JdbcSourceConfiguration => JdbcDataSource(c).asInstanceOf[DataSource[C]]
-          case c: GenericSourceConfiguration => GenericDataSource(c).asInstanceOf[DataSource[C]]
-          case c: FileStreamDataSourceConfiguration => FileStreamDataSource(c).asInstanceOf[DataSource[C]]
-          case c: KafkaStreamDataSourceConfiguration => KafkaStreamDataSource(c).asInstanceOf[DataSource[C]]
-          case c: GenericStreamDataSourceConfiguration => GenericStreamDataSource(c).asInstanceOf[DataSource[C]]
+          case c: FileSourceConfiguration => FileDataSource(c).asInstanceOf[DataSource[C, DataFrameReader]]
+          case c: JdbcSourceConfiguration => JdbcDataSource(c).asInstanceOf[DataSource[C, DataFrameReader]]
+          case c: GenericSourceConfiguration => GenericDataSource(c).asInstanceOf[DataSource[C, DataFrameReader]]
           case u => throw new IllegalArgumentException(s"Unsupported configuration type ${u.getClass}.")
         }
     }
+
 
   implicit val DataAwareSinkFactory =
     new DataAwareSinkFactory {

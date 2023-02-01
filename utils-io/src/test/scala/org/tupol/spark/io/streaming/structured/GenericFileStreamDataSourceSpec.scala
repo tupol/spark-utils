@@ -33,7 +33,7 @@ class GenericFileStreamDataSourceSpec extends AnyFunSuite
 
     val inputConfig = GenericStreamDataSourceConfiguration(FormatType.Text, options, None)
 
-    val data = spark.source(inputConfig).read.get
+    val data = spark.streamingSource(inputConfig).read.get
       .withColumn("timestamp", current_timestamp())
 
     val streamingQuery = data.writeStream

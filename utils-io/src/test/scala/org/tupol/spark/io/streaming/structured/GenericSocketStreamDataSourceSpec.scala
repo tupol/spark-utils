@@ -28,7 +28,7 @@ class GenericSocketStreamDataSourceSpec extends AnyFunSuite
 
     import spark.implicits._
 
-    val data = spark.source(TestConfig).read.get
+    val data = spark.streamingSource(TestConfig).read.get
       .withColumn("timestamp", current_timestamp())
 
     val streamingQuery = data.writeStream
