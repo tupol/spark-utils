@@ -35,13 +35,13 @@ import scala.util.Try
 
 case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfiguration) extends DataSource[KafkaStreamDataSourceConfiguration, DataStreamReader] with Logging {
 
-  private val genericSource = GenericStreamDataSource(configuration.generic)
+  private val innerSource = GenericStreamDataSource(configuration.generic)
 
   /** Create a `DataFrameReader` using the given configuration and the `spark` session available. */
-  override def reader(implicit spark: SparkSession): DataStreamReader = genericSource.reader
+  override def reader(implicit spark: SparkSession): DataStreamReader = innerSource.reader
 
   /** Read a `DataFrame` using the given configuration and the `spark` session available. */
-  override def read(implicit spark: SparkSession): Try[DataFrame] = genericSource.read
+  override def read(implicit spark: SparkSession): Try[DataFrame] = innerSource.read
 
 }
 

@@ -24,7 +24,6 @@ SOFTWARE.
 package org.tupol.spark
 
 import com.typesafe.config.Config
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.tupol.utils.implicits._
 
@@ -72,19 +71,10 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
       .logSuccess(_ => log.info(s"$appName: Job successfully completed."))
       .logFailure(t => log.error(s"$appName: Job failed.", t))
 
-    // Close the session so the application can exit
-    Try(spark.close)
-      .logSuccess(_ => log.info(s"$appName: Spark session closed."))
-      .logFailure(t => log.error(s"$appName: Failed to close the spark session.", t))
-
     // If the application failed we exit with an exception
     outcome.get
   }
 
-  protected def createSparkSession(runnerName: String) = {
-    val defSparkConf = new SparkConf(true)
-    val sparkConf = defSparkConf.setAppName(runnerName).
-      setMaster(defSparkConf.get("spark.master", "local[*]"))
-    SparkSession.builder.config(sparkConf).getOrCreate()
-  }
+  protected def createSparkSession(runnerName: String) =
+    SparkSession.builder.appName(runnerName).getOrCreate()
 }
