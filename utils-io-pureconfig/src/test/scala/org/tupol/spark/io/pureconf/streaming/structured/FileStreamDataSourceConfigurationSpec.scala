@@ -3,7 +3,6 @@ package org.tupol.spark.io.pureconf.streaming.structured
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.tupol.spark.io.FileSourceConfiguration
 import org.tupol.spark.io.pureconf.config.ConfigOps
 import org.tupol.spark.io.sources.{CsvSourceConfiguration, TextSourceConfiguration}
 import org.tupol.spark.io.streaming.structured.FileStreamDataSourceConfiguration

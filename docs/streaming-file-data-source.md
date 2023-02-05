@@ -33,7 +33,7 @@ import org.tupol.spark.io.implicits._
 import org.tupol.spark.io.streaming.structured._
 
 val sourceConfiguration: FileStreamDataSourceConfiguration = ???
-val dataframe = spark.source(sourceConfiguration).read
+val dataframe = spark.streamingSource(sourceConfiguration).read
 ```
 
 

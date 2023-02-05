@@ -1,12 +1,11 @@
 package org.tupol.spark.io.pureconf.streaming.structured
 
 import com.typesafe.config.ConfigFactory
-import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.pureconf.config.ConfigOps
-import org.tupol.spark.io.streaming.structured.{GenericStreamDataSinkConfiguration, GenericStreamDataSourceConfiguration, KafkaStreamDataSinkConfiguration, KafkaStreamDataSourceConfiguration, KafkaSubscription}
+import org.tupol.spark.io.streaming.structured.{ GenericStreamDataSourceConfiguration, KafkaStreamDataSourceConfiguration, KafkaSubscription}
 
 import scala.util.Failure
 

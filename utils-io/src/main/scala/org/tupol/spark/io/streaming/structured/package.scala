@@ -23,10 +23,27 @@ SOFTWARE.
 */
 package org.tupol.spark.io.streaming
 
+import org.apache.spark.sql.streaming.DataStreamReader
 import org.tupol.spark.io.sources.SourceConfiguration
-import org.tupol.spark.io.{DataSourceConfiguration, FormatAwareDataSinkConfiguration}
+import org.tupol.spark.io.{DataSource, DataSourceConfiguration, FormatAwareDataSinkConfiguration}
 
 package object structured {
+
+  implicit val StreamingSourceFactory =
+    new StreamingSourceFactory {
+      override def apply[C <: DataSourceConfiguration](configuration: C): DataSource[C, DataStreamReader] =
+        configuration match {
+          //TODO There must be a better way to use the type system without the type cast
+          case c: FileStreamDataSourceConfiguration => FileStreamDataSource(c).asInstanceOf[DataSource[C, DataStreamReader]]
+          case c: KafkaStreamDataSourceConfiguration => KafkaStreamDataSource(c).asInstanceOf[DataSource[C, DataStreamReader]]
+          case c: GenericStreamDataSourceConfiguration => GenericStreamDataSource(c).asInstanceOf[DataSource[C, DataStreamReader]]
+          case u => throw new IllegalArgumentException(s"Unsupported streaming configuration type ${u.getClass}.")
+        }
+    }
+
+  trait StreamingSourceFactory {
+    def apply[Config <: DataSourceConfiguration](configuration: Config): DataSource[Config, DataStreamReader]
+  }
 
   trait StreamingConfiguration
   trait StreamingSourceConfiguration extends DataSourceConfiguration with StreamingConfiguration

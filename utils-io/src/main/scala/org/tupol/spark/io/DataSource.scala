@@ -23,21 +23,24 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.{ DataFrame, SparkSession }
+import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
 
 import scala.util.Try
 
 /** Common trait for reading a DataFrame from an external resource */
-trait DataSource[Config <: DataSourceConfiguration] {
+trait DataSource[Config <: DataSourceConfiguration, Reader] {
   /** `DataSource` configuration */
   def configuration: Config
+
+  /** Create a `DataFrameReader` using the given configuration and the `spark` session available. */
+  def reader(implicit spark: SparkSession): Reader
   /** Read a `DataFrame` using the given configuration and the `spark` session available. */
   def read(implicit spark: SparkSession): Try[DataFrame]
 }
 
 /** Factory trait for DataSourceFactory */
 trait DataSourceFactory {
-  def apply[Config <: DataSourceConfiguration](configuration: Config): DataSource[Config]
+  def apply[Config <: DataSourceConfiguration](configuration: Config): DataSource[Config, DataFrameReader]
 }
 
 /** Common marker trait for `DataSource` configuration that also knows the data format  */

@@ -11,6 +11,7 @@ This framework provides for reading from a given path with the specified format 
 The framework is composed of two main traits:
 - `DataSource`, which is created based on a `DataSourceConfiguration` class and provides one main function:
   ```scala 
+  override def reader(implicit spark: SparkSession): Reader
   override def read(implicit spark: SparkSession): Try[DataFrame]
   ```
 - `DataSourceConfiguration`: a marker trait to define `DataSource` configuration classes
@@ -59,7 +60,18 @@ import org.tupol.spark.io.implicits._
 
 def spark: SparkSession = ???
 def dataSourceConfiguration: DataSourceConfiguration = ???
-val dataSource: DataSource = spark.source(dataSourceConfiguration)
+val dataSource = spark.source(dataSourceConfiguration)
+```
+
+For streaming sources:
+
+```scala
+import org.tupol.spark.io._
+import org.tupol.spark.io.implicits._
+
+def spark: SparkSession = ???
+def dataSourceConfiguration: DataSourceConfiguration = ???
+val dataSource = spark.streamingSource(dataSourceConfiguration)
 ```
 
 

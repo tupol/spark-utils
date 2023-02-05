@@ -33,11 +33,12 @@ import scala.util.Try
 case class FileStreamDataSink(configuration: FileStreamDataSinkConfiguration)
   extends DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
 
-  override def writer(data: DataFrame): Try[DataStreamWriter[Row]] = GenericStreamDataSink(configuration.generic).writer(data)
+  private val innerSink = GenericStreamDataSink(configuration.generic)
+
+  override def writer(data: DataFrame): Try[DataStreamWriter[Row]] = innerSink.writer(data)
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  override def write(data: DataFrame): Try[StreamingQuery] =
-    GenericStreamDataSink(configuration.generic).write(data)
+  override def write(data: DataFrame): Try[StreamingQuery] = innerSink.write(data)
 
 }
 
@@ -57,7 +58,7 @@ case class FileStreamDataAwareSink(configuration: FileStreamDataSinkConfiguratio
 
 case class FileStreamDataSinkConfiguration(
   path: String,
-  genericConfig: GenericStreamDataSinkConfiguration,
+  private val genericConfig: GenericStreamDataSinkConfiguration,
   checkpointLocation: Option[String])
   extends FormatAwareStreamingSinkConfiguration {
   private val options =

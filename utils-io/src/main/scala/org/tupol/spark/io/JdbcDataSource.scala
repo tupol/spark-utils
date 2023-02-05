@@ -30,10 +30,10 @@ import org.tupol.utils.implicits._
 
 import scala.util.Try
 
-case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSource[JdbcSourceConfiguration] with Logging {
+case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSource[JdbcSourceConfiguration, DataFrameReader] with Logging {
 
   /** Create and configure a `DataFrameReader` based on the given `JdbcDataSourceConfig` */
-  private def createReader(configuration: JdbcSourceConfiguration)(implicit spark: SparkSession): DataFrameReader = {
+  def reader(implicit spark: SparkSession): DataFrameReader = {
     spark.read.format(configuration.format.toString).options(configuration.options)
   }
 
@@ -41,7 +41,7 @@ case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSo
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' " +
       s"from the '${configuration.table}' table of '${configuration.url}'.")
-    Try(createReader(configuration).load())
+    Try(reader.load())
       .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from " +
         s"the '${configuration.table}' table of '${configuration.url}' (Full configuration: ${configuration})", _))
       .logFailure(logError)

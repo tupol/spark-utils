@@ -23,8 +23,9 @@ SOFTWARE.
 */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery}
-import org.apache.spark.sql.{DataFrame, DataFrameWriter, Dataset, Row, SparkSession}
+import org.apache.spark.sql.streaming.{DataStreamReader, DataStreamWriter, StreamingQuery}
+import org.apache.spark.sql.{DataFrame, DataFrameReader, DataFrameWriter, Dataset, Row, SparkSession}
+import org.tupol.spark.io.streaming.structured.StreamingSourceFactory
 import org.tupol.spark.sql
 
 
@@ -33,7 +34,11 @@ package object implicits {
   /** SparkSession decorator. */
   implicit class SparkSessionOps(spark: SparkSession) {
     /** See [[org.tupol.spark.io.DataSource]] */
-    def source[SC <: DataSourceConfiguration](configuration: SC)(implicit sourceFactory: DataSourceFactory): DataSource[SC] =
+    def source[SC <: DataSourceConfiguration](configuration: SC)(implicit sourceFactory: DataSourceFactory): DataSource[SC, DataFrameReader] =
+      sourceFactory(configuration)
+
+    /** See [[org.tupol.spark.io.DataSource]] */
+    def streamingSource[SC <: DataSourceConfiguration](configuration: SC)(implicit sourceFactory: StreamingSourceFactory): DataSource[SC, DataStreamReader] =
       sourceFactory(configuration)
   }
 

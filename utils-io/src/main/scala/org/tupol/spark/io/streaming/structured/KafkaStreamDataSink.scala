@@ -34,11 +34,11 @@ import scala.util.Try
 case class KafkaStreamDataSink(configuration: KafkaStreamDataSinkConfiguration)
   extends DataSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
 
-  override def writer(data: DataFrame): Try[DataStreamWriter[Row]] =
-    GenericStreamDataSink(configuration.generic).writer(data)
+  private val innerSink = GenericStreamDataSink(configuration.generic)
+
+  override def writer(data: DataFrame): Try[DataStreamWriter[Row]] = innerSink.writer(data)
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  override def write(data: DataFrame): Try[StreamingQuery] =
-    GenericStreamDataSink(configuration.generic).write(data)
+  override def write(data: DataFrame): Try[StreamingQuery] = innerSink.write(data)
 
 }
 
@@ -50,7 +50,7 @@ case class KafkaStreamDataAwareSink(configuration: KafkaStreamDataSinkConfigurat
 
 case class KafkaStreamDataSinkConfiguration(
   kafkaBootstrapServers: String,
-  genericConfig: GenericStreamDataSinkConfiguration,
+  private val genericConfig: GenericStreamDataSinkConfiguration,
   topic: Option[String] = None,
   checkpointLocation: Option[String] = None,
   options: Map[String, String] = Map())
