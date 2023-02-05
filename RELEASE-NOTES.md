@@ -6,6 +6,11 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC3
+
+- `DataSource` exposes `reader` in addition to `read`
+- Added `SparkSessionOps.streamingSource`
+
 ### 1.0.0-RC2
 
 - `DataSink` and `DataAwareSink` expose `writer` in addition to `write`
