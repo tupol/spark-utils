@@ -43,22 +43,24 @@ val dataframe = spark.streamingSource(sourceConfiguration).read
 
 - `format` **Required**
   - the type of the input file and the corresponding source / parser
-  - possible values are `xml`, `csv`, `json`, `parquet`, `avro`, `orc` and `text`
+  - possible values are `xml`, `csv`, `json`, `parquet`, `avro`, `orc`, `text`, `delta`
 - `path` **Required**
   - the input file(s) path
   - it can be a local file or an hdfs file or an hdfs compatible file (like s3 or wasb)
   - it accepts patterns like `hdfs://some/path/2018-01-*/hours=0*/*`
-- `schema` **Required**
-  - this is a parameter that represents the json Apache Spark schema that should be enforced on 
-    the input data
+- `schema` *Optional*
+  - this is an optional parameter that represents the json Apache Spark schema that should be
+    enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-  - due to it's complex structure, this parameter can not be passed as a command line argument, 
+  - due to its complex structure, this parameter can not be passed as a command line argument,
     but it can only be passed through the `application.conf` file
+  - the schema is applied on read only on file streams; for other streams the developer has to
+    find a way to apply it.
   - `schema.path` *Optional*
-    - this is an optional parameter that represents local path or the class path to the json 
+    - this is an optional parameter that represents local path or the class path to the json
       Apache Spark schema that should be enforced on the input data
     - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
-    - if this parameter is found the schema will be loaded from the given file, otherwise, 
+    - if this parameter is found the schema will be loaded from the given file, otherwise,
       the `schema` parameter is tried
 
 ### Format Specific Parameters

@@ -54,7 +54,7 @@ package object structured {
   trait FormatAwareStreamingSinkConfiguration extends FormatAwareDataSinkConfiguration with StreamingConfiguration
 
   /**
-   * A Kafka subscription is defined by it's type (e.g. subscribe or subscribe patterns) and the
+   * A Kafka subscription is defined by its type (e.g. subscribe or subscribe patterns) and the
    * subscription itself (e.g. the actual topic name that this subscription is defining).
    * @param subscriptionType the type of the subscription (e.g. assign, subscribe or subscribe patterns)
    * @param subscription the topic name to subscribe to

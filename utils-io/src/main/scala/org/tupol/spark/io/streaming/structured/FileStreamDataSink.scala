@@ -66,8 +66,12 @@ case class FileStreamDataSinkConfiguration(
       "path" -> Some(path),
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
+
+  /** The generic configuration of this data sink; this is used to build the actual writer */
   val generic = genericConfig.addOptions(options)
   def format: FormatType = generic.format
   def resolve: FileStreamDataSinkConfiguration = this.copy(genericConfig = generic)
+
+  override def toString: String = s"path: '$path', $generic"
 }
 

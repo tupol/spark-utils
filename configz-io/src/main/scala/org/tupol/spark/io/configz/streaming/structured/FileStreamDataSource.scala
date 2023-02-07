@@ -26,9 +26,9 @@ package org.tupol.spark.io.configz.streaming.structured
 import com.typesafe.config.Config
 import org.tupol.configz.Configurator
 import org.tupol.spark.io.FormatType
+import org.tupol.spark.io.FormatType.AcceptableFileFormats
 import org.tupol.spark.io.configz._
 import org.tupol.spark.io.configz.sources.SourceConfigurator
-import org.tupol.spark.io.streaming.structured.FileStreamDataSourceConfiguration.AcceptableFileFormats
 import org.tupol.spark.io.streaming.structured._
 import scalaz.{NonEmptyList, ValidationNel}
 

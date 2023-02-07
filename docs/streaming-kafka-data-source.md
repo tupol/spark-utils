@@ -60,7 +60,7 @@ val dataframe = spark.streamingSource(sourceConfiguration).read
   - for more details please check [Structured Streaming + Kafka Integration Guide][SSKIG]
 
 - `schema` *Optional*
-  - this is an optional parameter that represents the json Apache Spark schema that should be 
+  - this is an optional parameter that represents the json Apache Spark schema that should be
     enforced on the input data
   - this schema can be easily obtained from a `DataFrame` by calling the `prettyJson` function
   - due to it's complex structure, this parameter can not be passed as a command line argument,

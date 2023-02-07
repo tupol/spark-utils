@@ -62,5 +62,9 @@ case class KafkaStreamDataSinkConfiguration(
       "topic" -> topic,
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
+
+  /** The generic configuration of this data sink; this is used to build the actual writer */
   val generic = genericConfig.addOptions(options = options ++ internalOptions)
+
+  override def toString: String = generic.toString
 }

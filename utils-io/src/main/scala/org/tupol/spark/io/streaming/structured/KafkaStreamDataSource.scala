@@ -75,7 +75,11 @@ case class KafkaStreamDataSourceConfiguration(
       "fetchOffset.retryIntervalMs" -> fetchOffsetRetryIntervalMs,
       "maxOffsetsPerTrigger" -> maxOffsetsPerTrigger)
       .collect { case (key, Some(value)) => (key, value.toString) }
+
+    /** The generic configuration of this data source; this is used to build the actual reader */
     val generic = GenericStreamDataSourceConfiguration(format, options ++ internalOptions, schema)
+
+  override def toString: String = generic.toString
 }
 
 

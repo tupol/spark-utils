@@ -76,8 +76,5 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
 
   /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
   override def schema: Option[StructType] = sourceConfiguration.schema
-}
-object FileStreamDataSourceConfiguration {
-  import org.tupol.spark.io.FormatType._
-  val AcceptableFileFormats = Seq(Csv, Json, Parquet, Orc, Text)
+
 }
