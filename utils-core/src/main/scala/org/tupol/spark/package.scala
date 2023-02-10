@@ -27,7 +27,7 @@ import org.tupol.utils.implicits._
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.spark.SparkFiles
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
-import org.apache.spark.sql.{ Encoder, SparkSession }
+import org.apache.spark.sql.Encoder
 
 import scala.util.Try
 
@@ -56,11 +56,9 @@ package object spark {
      * @param args application parameters
      * @return the application configuration object
      */
-    def getApplicationConfiguration(args: Array[String])(implicit spark: SparkSession): Config = {
+    def getApplicationConfiguration(args: Array[String], configurationFileName: String = "application.conf"): Try[Config] = Try {
 
       import java.io.File
-
-      val CONFIGURATION_FILENAME = "application.conf"
 
       log.info(s"$appName: Application Parameters:\n${args.mkString("\n")}")
 
@@ -76,7 +74,7 @@ package object spark {
       // In standalone mode the reverse is true.
       // We might be able to come to the bottom of this, but it looks like a rabbit hole not worth exploring at the moment.
       val sparkConfiguration: Option[Config] = {
-        val file = new File(SparkFiles.get(CONFIGURATION_FILENAME))
+        val file = new File(SparkFiles.get(configurationFileName))
         val available = file.exists && file.canRead && file.isFile
         log.info(s"$appName: SparkFiles configuration file: ${file.getAbsolutePath} " +
           s"is ${if (!available) "not " else ""}available.")
@@ -89,7 +87,7 @@ package object spark {
       }
 
       val localConfiguration: Option[Config] = {
-        val file = new File(CONFIGURATION_FILENAME)
+        val file = new File(configurationFileName)
         val available = file.exists && file.canRead && file.isFile
         log.info(s"$appName: Local configuration file: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available.")
         if (available) {
@@ -101,7 +99,7 @@ package object spark {
       }
 
       val classpathConfiguration: Option[Config] = {
-        val resourcePath = s"/$CONFIGURATION_FILENAME"
+        val resourcePath = s"/$configurationFileName"
         Try(ConfigFactory.parseResources(resourcePath))
           .logSuccess(_ => log.info(s"Successfully parsed the classpath configuration at '$resourcePath'"))
           .logFailure(t => log.error(s"Failed to parse classpath configuration at '$resourcePath'", t))
