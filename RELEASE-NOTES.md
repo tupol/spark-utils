@@ -6,6 +6,12 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC4
+
+- `TypesafeConfigBuilder.getApplicationConfiguration` requires an application configuration file name parameter
+- `TypesafeConfigBuilder.getApplicationConfiguration` no longer requires an `implicit` `SparkContext`
+- `SparkApp.main` refactored
+
 ### 1.0.0-RC3
 
 - `DataSource` exposes `reader` in addition to `read`

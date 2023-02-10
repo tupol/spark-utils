@@ -46,6 +46,10 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
    */
   def appName: String = getClass.getSimpleName.replaceAll("\\$", "")
 
+  /** The configuration file that the application will look for in order to resolve the configuration.
+   * This will be further used by the `getApplicationConfiguration` method */
+  def configurationFileName = "application.conf"
+
   /**
    * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
@@ -59,10 +63,9 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
    */
   def main(implicit args: Array[String]): Unit = {
     log.info(s"Running $appName")
-    implicit val spark = createSparkSession(appName)
-    implicit val conf = getApplicationConfiguration(args)
-
     val outcome = for {
+      conf <- getApplicationConfiguration(args, configurationFileName)
+      spark = createSparkSession(appName)
       context <- createContext(conf)
       result <- run(spark, context)
     } yield result

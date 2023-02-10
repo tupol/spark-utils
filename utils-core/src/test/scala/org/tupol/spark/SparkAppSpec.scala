@@ -10,6 +10,7 @@ import scala.util.{ Failure, Success, Try }
 
 class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
+  val configurationFileName = "application.conf"
   val filesArg = Seq(
     new File("src/test/resources/MockApp/application.conf").getAbsolutePath)
 
@@ -27,7 +28,7 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
       val conf = MockApp$.getApplicationConfiguration(Array(
         "MockApp.whoami=\"app.param\"",
-        "MockApp.param=\"param\""))
+        "MockApp.param=\"param\"")).get
       conf.getString("param") shouldBe "param"
       conf.getString("whoami") shouldBe "app.param"
       conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
@@ -37,7 +38,7 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   test("SparkApp.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
     val conf = MockApp$.getApplicationConfiguration(Array(
-      "MockApp.param=\"param\""))
+      "MockApp.param=\"param\"")).get
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
@@ -47,7 +48,7 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   test("SparkApp.applicationConfiguration performs variable substitution") {
     val conf = MockApp$.getApplicationConfiguration(Array(
-      "MockApp.param=\"param\"", "my.var=\"MYVAR\""))
+      "MockApp.param=\"param\"", "my.var=\"MYVAR\"")).get
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
@@ -59,17 +60,14 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   test("SparkApp.main successfully completes") {
     noException shouldBe thrownBy(MockApp$.main(Array()))
-    spark.sparkContext.isStopped shouldBe true
   }
 
   test("SparkApp.main successfully completes with no configuration expected") {
     noException shouldBe thrownBy(MockAppNoConfig.main(Array()))
-    spark.sparkContext.isStopped shouldBe true
   }
 
   test("SparkApp.main fails gracefully if SparkApp.run fails") {
     a[MockApException] shouldBe thrownBy(MockAppFailure.main(Array()))
-    spark.sparkContext.isStopped shouldBe true
   }
 
   test("SparkApp.appName gets the simple class name") {

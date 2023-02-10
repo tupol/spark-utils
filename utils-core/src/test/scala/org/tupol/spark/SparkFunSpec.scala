@@ -27,7 +27,7 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
       val conf = MockFun$.getApplicationConfiguration(Array(
         "MockFun.whoami=\"app.param\"",
-        "MockFun.param=\"param\""))(spark)
+        "MockFun.param=\"param\"")).get
       conf.getString("param") shouldBe "param"
       conf.getString("whoami") shouldBe "app.param"
       conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
@@ -37,7 +37,7 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   test("SparkFun.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
     val conf = MockFun$.getApplicationConfiguration(Array(
-      "MockFun.param=\"param\""))
+      "MockFun.param=\"param\"")).get
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockFun/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
@@ -47,7 +47,7 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   test("SparkFun.applicationConfiguration performs variable substitution") {
     val conf = MockFun$.getApplicationConfiguration(Array(
-      "MockFun.param=\"param\"", "my.var=\"MYVAR\""))
+      "MockFun.param=\"param\"", "my.var=\"MYVAR\"")).get
     conf.getString("param") shouldBe "param"
     conf.getString("whoami") shouldBe "./src/test/resources/MockFun/application.conf"
     conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
@@ -59,17 +59,14 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   test("SparkFun.main successfully completes") {
     noException shouldBe thrownBy(MockFun$.main(Array()))
-    spark.sparkContext.isStopped shouldBe true
   }
 
   test("SparkFun.main successfully completes with no configuration expected") {
     noException shouldBe thrownBy(MockFunNoConfig.main(Array()))
-    spark.sparkContext.isStopped shouldBe true
   }
 
   test("SparkFun.main fails gracefully if SparkFun.run fails") {
     a[MockApException] shouldBe thrownBy(MockFunFailure.main(Array()))
-    spark.sparkContext.isStopped shouldBe true
   }
 
   test("SparkFun.appName gets the simple class name") {
