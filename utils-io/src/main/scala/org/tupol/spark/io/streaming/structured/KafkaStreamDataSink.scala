@@ -56,6 +56,10 @@ case class KafkaStreamDataSinkConfiguration(
   options: Map[String, String] = Map())
   extends FormatAwareStreamingSinkConfiguration {
   val format = Kafka
+  def addOptions(extraOptions: Map[String, String]): KafkaStreamDataSinkConfiguration = {
+    val extraOpts = options ++ extraOptions
+    this.copy(options = extraOpts, genericConfig = genericConfig.addOptions(extraOpts))
+  }
   private val internalOptions =
     Map(
       "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),
@@ -64,7 +68,7 @@ case class KafkaStreamDataSinkConfiguration(
     .collect { case (key, Some(value)) => (key, value) }
 
   /** The generic configuration of this data sink; this is used to build the actual writer */
-  val generic = genericConfig.addOptions(options = options ++ internalOptions)
+  val generic = genericConfig.addOptions(options ++ internalOptions)
 
   override def toString: String = generic.toString
 }

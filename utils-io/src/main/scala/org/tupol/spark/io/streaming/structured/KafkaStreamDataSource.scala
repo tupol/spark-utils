@@ -63,6 +63,11 @@ case class KafkaStreamDataSourceConfiguration(
   extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = Kafka
+  override def addOptions(extraOptions: Map[String, String]): KafkaStreamDataSourceConfiguration =
+    this.copy(options =  this.options ++ extraOptions)
+  override def withSchema(schema: Option[StructType]): KafkaStreamDataSourceConfiguration =
+    this.copy(schema = schema)
+
   private val internalOptions =
     Map(
       "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),

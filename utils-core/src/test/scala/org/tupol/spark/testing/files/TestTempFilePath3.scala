@@ -7,9 +7,7 @@ import org.scalatest.{ BeforeAndAfterEach, Suite }
 
 import scala.util.Try
 
-/**
- * Simple trait that generates a temporary test file path before each test and removes it after
- */
+/** Simple trait that generates a temporary test file path before each test and removes it after */
 trait TestTempFilePath3 extends BeforeAndAfterEach {
   this: Suite =>
 
@@ -21,7 +19,7 @@ trait TestTempFilePath3 extends BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    _tempFile = new java.io.File(s"$tempDir/spark_utils_${UUID.randomUUID().toString}.temp")
+    _tempFile = new java.io.File(s"$tempDir/spark_tests_${UUID.randomUUID().toString}.temp")
   }
 
   override def afterEach(): Unit = {

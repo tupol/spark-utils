@@ -1,6 +1,5 @@
 package org.tupol.spark
 
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.scalatest.Suite
 
@@ -10,7 +9,8 @@ import org.scalatest.Suite
 trait SharedSparkHiveSession extends SharedSparkSession {
   this: Suite =>
 
-  override def createSparkSession(conf: SparkConf): SparkSession =
-    SparkSession.builder.config(conf).enableHiveSupport().getOrCreate()
+  override def sparkSessionBuilder: SparkSession.Builder = super.sparkSessionBuilder
+    .enableHiveSupport()
+    .config("spark.sql.warehouse.dir", warehouseDirPath)
 
 }

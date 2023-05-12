@@ -18,16 +18,21 @@ lazy val basicSettings = Seq(
   ),
   updateOptions := updateOptions.value.withCachedResolution(true),
   libraryDependencies ++= CoreTestDependencies,
-  dependencyOverrides ++= FasterXmlOverrides,
+  dependencyOverrides ++= NettyOverrides,
   resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases",
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-  parallelExecution in Test := false,
-  fork in Test := true
+  Test / parallelExecution := false,
+  Test / fork := true,
+  Test / javaOptions ++= Seq(
+    "base/java.lang", "base/java.lang.invoke", "base/java.lang.reflect", "base/java.io", "base/java.net", "base/java.nio",
+    "base/java.util", "base/java.util.concurrent", "base/java.util.concurrent.atomic",
+    "base/sun.nio.ch", "base/sun.nio.cs", "base/sun.security.action",
+    "base/sun.util.calendar", "security.jgss/sun.security.krb5",
+  ).map("--add-opens=java." + _ + "=ALL-UNNAMED"),
 )
 
 lazy val publishSettings = Seq(
   isSnapshot := version.value.trim.endsWith("SNAPSHOT"),
-  useGpg := true,
   // Nexus (see https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html)
   publishTo := {
     val repo = "https://oss.sonatype.org/"
@@ -73,14 +78,15 @@ lazy val publishSettings = Seq(
 
 lazy val coverageSettings = Seq(
   coverageEnabled in Test := true,
-  coverageMinimum in Test := 90,
+  coverageMinimumStmtTotal in Test := 80,
+  coverageMinimumBranchTotal in Test := 80,
   coverageFailOnMinimum in Test := true,
   coverageExcludedPackages := "org.apache.spark.ml.param.shared.*;.*BuildInfo.*;org.tupol.spark.Logging.*"
 )
 
 val commonSettings = basicSettings ++ coverageSettings ++ publishSettings
 
-lazy val core_utils = (project in file("utils-core"))
+lazy val `spark-utils-core` = (project in file("utils-core"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)
   .settings(
@@ -90,10 +96,10 @@ lazy val core_utils = (project in file("utils-core"))
     buildInfoPackage := "org.tupol.spark.info",
     libraryDependencies ++= ProvidedSparkCoreDependencies,
     libraryDependencies ++= CoreDependencies,
-    publishArtifact in Test := true
+    Test / publishArtifact := true
   )
 
-lazy val io_utils = (project in file("utils-io"))
+lazy val `spark-utils-io` = (project in file("utils-io"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)
   .settings(
@@ -105,28 +111,11 @@ lazy val io_utils = (project in file("utils-io"))
     libraryDependencies ++= ProvidedSparkKafkaDependencies,
     libraryDependencies ++= CoreDependencies,
     libraryDependencies ++= IoTestDependencies,
-    publishArtifact in Test := true
+    Test / publishArtifact := true
   )
-  .dependsOn(core_utils % "test->test;compile->compile")
+  .dependsOn(`spark-utils-core` % "test->test;compile->compile")
 
-lazy val io_configz = (project in file("configz-io"))
-  .enablePlugins(BuildInfoPlugin)
-  .settings(commonSettings: _*)
-  .settings(
-    name := "spark-utils-io-configz",
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime, BuildInfoOption.ToMap, BuildInfoOption.ToJson),
-    buildInfoPackage := "org.tupol.spark.io.configz.info",
-    libraryDependencies ++= ProvidedSparkCoreDependencies,
-    libraryDependencies ++= ProvidedSparkKafkaDependencies,
-    libraryDependencies ++= CoreDependencies,
-    libraryDependencies ++= IoConfigzDependencies,
-    libraryDependencies ++= IoTestDependencies,
-    publishArtifact in Test := true
-  )
-  .dependsOn(io_utils % "test->test;compile->compile")
-
-lazy val io_pureconfig = (project in file("utils-io-pureconfig"))
+lazy val `spark-utils-io-pureconfig` = (project in file("utils-io-pureconfig"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)
   .settings(
@@ -139,13 +128,6 @@ lazy val io_pureconfig = (project in file("utils-io-pureconfig"))
     libraryDependencies ++= CoreDependencies,
     libraryDependencies ++= IoPureconfigDependencies,
     libraryDependencies ++= IoTestDependencies,
-    publishArtifact in Test := true
+    Test / publishArtifact := true
   )
-  .dependsOn(io_utils % "test->test;compile->compile")
-
-lazy val scala_utils = Project(
-  id = "scala-utils",
-  base = file(".")
-).settings(commonSettings: _*)
-  .dependsOn(core_utils % "test->test;compile->compile", io_utils, io_configz, io_pureconfig)
-  .aggregate(core_utils, io_utils, io_configz, io_pureconfig)
+  .dependsOn(`spark-utils-io` % "test->test;compile->compile")

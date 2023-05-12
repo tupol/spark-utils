@@ -56,7 +56,12 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
 }
 
 case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
-  schema: Option[StructType]) extends FormatAwareStreamingSourceConfiguration
+  schema: Option[StructType]) extends FormatAwareStreamingSourceConfiguration {
+  override def addOptions(extraOptions: Map[String, String]): GenericStreamDataSourceConfiguration =
+    this.copy(options =  this.options ++ extraOptions)
+  override def withSchema(schema: Option[StructType]): GenericStreamDataSourceConfiguration =
+    this.copy(schema = schema)
+}
 object GenericStreamDataSourceConfiguration {
   def apply(format: FormatType, options: Option[Map[String, String]] = None,
             schema: Option[StructType] = None): GenericStreamDataSourceConfiguration = {

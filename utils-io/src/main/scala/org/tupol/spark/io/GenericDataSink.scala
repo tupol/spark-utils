@@ -80,6 +80,8 @@ case class GenericSinkConfiguration(format: FormatType, mode: Option[String], pa
   buckets: Option[BucketsConfiguration],
   options: Option[Map[String, String]])
   extends FormatAwareDataSinkConfiguration {
+  def addOptions(extraOptions: Map[String, String]): GenericSinkConfiguration =
+    this.copy(options = Some(this.options.getOrElse(Map()) ++ extraOptions))
   def optionalSaveMode: Option[String] = mode
   def saveMode = optionalSaveMode.getOrElse("default")
   override def toString: String = {

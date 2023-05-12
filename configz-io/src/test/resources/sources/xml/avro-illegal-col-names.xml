@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<custom-root>
-    <node.name illegal-attr-name="NetworkRegionalisationAddIn">
-        <good_node_name>
-            <_other_good_node_name>1000</_other_good_node_name>
-            <_other_good_node_name>2000</_other_good_node_name>
-        </good_node_name>
-    </node.name>
-</custom-root>

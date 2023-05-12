@@ -38,7 +38,7 @@
     "nullable" : true,
     "metadata" : { }
   }, {
-    "name" : "other-string",
+    "name" : "other_string",
     "type" : "string",
     "nullable" : true,
     "metadata" : { }

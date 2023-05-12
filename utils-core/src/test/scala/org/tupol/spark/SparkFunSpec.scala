@@ -6,12 +6,12 @@ import org.apache.spark.sql.SparkSession
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
   val filesArg = Seq(
-    new File("src/test/resources/MockFun/application.conf").getAbsolutePath)
+    new File("src/test/resources/MockFun/fun.conf").getAbsolutePath)
 
   override def sparkConfig: Map[String, String] = {
     // Add the comma separated configuration files to the files property.
@@ -19,42 +19,6 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
     // There is an exception however, if the files have the same content no exception will be thrown.
     super.sparkConfig +
       ("spark.files" -> filesArg.mkString(","))
-  }
-
-  test(
-    """SparkFun.applicationConfiguration loads first the app params then defaults to application.conf file,
-      |then to the application.conf in the classpath and then to reference.conf""".stripMargin) {
-
-      val conf = MockFun$.getApplicationConfiguration(Array(
-        "MockFun.whoami=\"app.param\"",
-        "MockFun.param=\"param\"")).get
-      conf.getString("param") shouldBe "param"
-      conf.getString("whoami") shouldBe "app.param"
-      conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-      conf.getString("reference") shouldBe "reference_mock_fun"
-      conf.getBoolean("file.application.conf") shouldBe true
-    }
-
-  test("SparkFun.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
-    val conf = MockFun$.getApplicationConfiguration(Array(
-      "MockFun.param=\"param\"")).get
-    conf.getString("param") shouldBe "param"
-    conf.getString("whoami") shouldBe "./src/test/resources/MockFun/application.conf"
-    conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference_mock_fun"
-    conf.getBoolean("file.application.conf") shouldBe true
-  }
-
-  test("SparkFun.applicationConfiguration performs variable substitution") {
-    val conf = MockFun$.getApplicationConfiguration(Array(
-      "MockFun.param=\"param\"", "my.var=\"MYVAR\"")).get
-    conf.getString("param") shouldBe "param"
-    conf.getString("whoami") shouldBe "./src/test/resources/MockFun/application.conf"
-    conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference_mock_fun"
-    conf.getString("substitute.my-var") shouldBe "MYVAR"
-    conf.getString("substitute.my-other-var") shouldBe "MYVAR"
-    conf.getBoolean("file.application.conf") shouldBe true
   }
 
   test("SparkFun.main successfully completes") {

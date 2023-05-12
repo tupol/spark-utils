@@ -57,7 +57,7 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
   /** Try to read the data according to the given configuration and return the read data or a failure */
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
-    Try(reader.load(configuration.path))
+    Try(configuration.options.get("path").map(_ => reader.load()).getOrElse(reader.load(configuration.path)))
       .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'", _))
       .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
         s"from '${configuration.path}'"))
@@ -69,6 +69,10 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
   extends FormatAwareStreamingSourceConfiguration {
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
+  override def addOptions(extraOptions: Map[String, String]): FileStreamDataSourceConfiguration =
+    this.copy(sourceConfiguration = sourceConfiguration.addOptions(extraOptions))
+  override def withSchema(schema: Option[StructType]): FileStreamDataSourceConfiguration =
+    this.copy(sourceConfiguration = sourceConfiguration.withSchema(schema))
   override def toString: String = s"path: '$path', $sourceConfiguration"
 
   /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */

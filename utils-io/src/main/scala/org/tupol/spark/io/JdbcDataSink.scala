@@ -72,6 +72,9 @@ case class JdbcDataAwareSink(configuration: JdbcSinkConfiguration, data: DataFra
 case class JdbcSinkConfiguration(url: String, table: String, user: Option[String], password: Option[String],
   driver: Option[String], mode: Option[String], options: Map[String, String]) extends FormatAwareDataSinkConfiguration {
   val format = FormatType.Jdbc
+  def addOptions(extraOptions: Map[String, String]): JdbcSinkConfiguration = {
+    this.copy(options =  this.options ++ extraOptions)
+  }
   def optionalSaveMode: Option[String] = mode
   def saveMode = mode.getOrElse("default")
   def writerOptions: Map[String, String] = {

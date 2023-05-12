@@ -1,5 +1,12 @@
 # Development Notes and Hints
 
+## Testing Individual Modules
+
+```
+sbt "project spark-utils-core; clean; test"
+sbt "project spark-utils-io; clean; test"
+sbt "project spark-utils-io-pureconfig; clean; test"
+```
 
 ## Test Coverage
 
@@ -21,4 +28,26 @@ results as well as the location of the generated detailed reports.
 [info] Branch coverage....: 79.17%
 [info] Coverage reports completed
 [info] All done. Coverage was [88.51%]
+```
+
+## Running Unit Tests
+
+The following options will help running the tests:
+
+
+```
+--add-opens=java.base/java.lang=ALL-UNNAMED, 
+--add-opens=java.base/java.lang.invoke=ALL-UNNAMED, 
+--add-opens=java.base/java.lang.reflect=ALL-UNNAMED, 
+--add-opens=java.base/java.io=ALL-UNNAMED, 
+--add-opens=java.base/java.net=ALL-UNNAMED, 
+--add-opens=java.base/java.nio=ALL-UNNAMED, 
+--add-opens=java.base/java.util=ALL-UNNAMED, 
+--add-opens=java.base/java.util.concurrent=ALL-UNNAMED, 
+--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED, 
+--add-opens=java.base/sun.nio.ch=ALL-UNNAMED, 
+--add-opens=java.base/sun.nio.cs=ALL-UNNAMED, 
+--add-opens=java.base/sun.security.action=ALL-UNNAMED, 
+--add-opens=java.base/sun.util.calendar=ALL-UNNAMED, 
+--add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED)
 ```

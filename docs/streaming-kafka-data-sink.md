@@ -43,8 +43,8 @@ val dataframe = data.streamingSink(sourceConfiguration).write
 - `kafkaBootstrapServers` **Required** 
 - `topic` **Required** 
 - `trigger` *Optional*
-   - `type`: possible values: "Continuous", "Once", "ProcessingTime" 
-   - `interval`: mandatory for "Continuous", "ProcessingTime" 
+   - `type`: possible values: "continuous", "once", "processing-time" 
+   - `interval`: mandatory for "continuous", "processing-time" 
 - `queryName` *Optional*
 - `partition.columns` *Optional*
 - `outputMode` *Optional*

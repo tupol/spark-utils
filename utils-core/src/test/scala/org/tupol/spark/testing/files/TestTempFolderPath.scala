@@ -1,14 +1,13 @@
 package org.tupol.spark.testing.files
 
-import java.util.UUID
-
 import org.apache.commons.io.FileUtils
-import org.scalatest.{ BeforeAndAfterEach, Suite }
+import org.scalatest.{BeforeAndAfterEach, Suite}
 
+import java.util.UUID
 import scala.util.Try
 
-/** Simple trait that generates a temporary test file path before each test and removes it after */
-trait TestTempFilePath1 extends BeforeAndAfterEach {
+/** Simple trait that generates a temporary test folder path before each test and removes it after */
+trait TestTempFolderPath extends BeforeAndAfterEach {
   this: Suite =>
 
   private val tempDir = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")

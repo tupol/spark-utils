@@ -38,8 +38,9 @@ class UtilsSpec extends AnyFunSuite with Matchers {
   }
 
   test("fuzzyLoadTextResourceFile successfully loads a text from the URL") {
-    val path = "http://dns.org"
+    val path = "http://info.cern.ch"
     val result = fuzzyLoadTextResourceFile(path).get
+    // If this test fails it's probably because one of the oldest websites retreated into darkness. May that never happen :)
     result.size should be > 10
   }
 
