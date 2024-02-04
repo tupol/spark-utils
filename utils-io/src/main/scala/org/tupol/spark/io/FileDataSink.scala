@@ -85,7 +85,8 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
           Try(writer.saveAsTable(configuration.path))
         case None =>
           logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
-          Try(writer.save(configuration.path))
+          Try(configuration.options.flatMap(_.get("path"))
+            .map(_ => writer.save()).getOrElse(writer.save(configuration.path)))
       }
     }
       .map(_ => data)
@@ -121,6 +122,8 @@ case class FileSinkConfiguration(path: String, format: FormatType, mode: Option[
   buckets: Option[BucketsConfiguration],
   options: Option[Map[String, String]])
   extends FormatAwareDataSinkConfiguration {
+  def addOptions(extraOptions: Map[String, String]): FileSinkConfiguration =
+    this.copy(options = Some(this.options.getOrElse(Map()) ++ extraOptions))
   def saveMode = mode.getOrElse("default")
   override def toString: String = {
     val optionsStr = options match {

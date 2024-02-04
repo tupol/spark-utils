@@ -53,7 +53,8 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
   /** Try to read the data according to the given configuration and return the read data or a failure */
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
-    Try(reader.load(configuration.path))
+    Try(configuration.sourceConfiguration.options.get("path")
+      .map(_ => reader.load()).getOrElse(reader.load(configuration.path)))
       .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'", _))
       .logFailure(logError)
       .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +

@@ -70,10 +70,8 @@ case class GenericStreamDataSinkConfiguration(format: FormatType, options: Optio
                                               queryName: Option[String], trigger: Option[Trigger],
                                               partition: Option[PartitionsConfiguration], outputMode: Option[String])
   extends FormatAwareStreamingSinkConfiguration {
-  def addOptions(options: Map[String, String]): GenericStreamDataSinkConfiguration = {
-    val newOptions = Option(this.options.map(_ ++ options).getOrElse(options))
-    this.copy(options = newOptions)
-  }
+  def addOptions(extraOptions: Map[String, String]): GenericStreamDataSinkConfiguration =
+    this.copy(options = Some(this.options.getOrElse(Map()) ++ extraOptions))
   override def toString: String = {
     val optionsStr = options.map(options => if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")).getOrElse("")
     val partitionColsStr = partition.map(_.columns.mkString(", ")).getOrElse("")

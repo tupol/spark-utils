@@ -71,4 +71,12 @@ package object io {
         }
     }
 
+  private [io] def appendOptionalMaps[K, V](map1: Option[Map[K, V]], map2: Option[Map[K, V]]): Option[Map[K, V]] =
+    (map1, map2) match {
+      case (Some(o1), Some(o2)) => Some(o1 ++ o2)
+      case ((Some(o1)), None) => Some(o1)
+      case (None, Some(o2)) => Some(o2)
+      case _ => None
+    }
+
 }

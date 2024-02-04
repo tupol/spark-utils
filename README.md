@@ -32,14 +32,16 @@ At the moment there are a lot of changes happening to the `spark-utils` project,
 The latest stable versions, available through Maven Central are
 - Spark 2.4: `0.4.2`
 - Spark 3.0: `0.6.2`
+- Spark 3.5: `1.0.0`
 
-The development version is `1.0.0-RC3` which is bringing a clean separation between configuration implementation and the
+The development version is `1.0.0-R5` which is bringing a clean separation between configuration implementation and the
 core, and additionally the [PureConfig] based configuration module that brings the power and features of [PureConfig]
 to increase productivity even further and allowing for a more mature configuration framework.
 
 The new modules are:
 - `spark-utils-io-pureconfig` for the new [PureConfig] implementation
-- `spark-utils-io-configz` for the legacy ConfigZ implementation
+
+We completely removed the legacy scalaz based configuration framework.
 
 We suggest to start considering the new for the future `spark-utils-io-pureconfig`.
 
@@ -116,24 +118,6 @@ object FormatConverterContext {
 }
 ```
 
-#### Configuration creation based on ConfigZ
-
-```scala
-import org.tupol.configz._
-
-object FormatConverterContext extends Configurator[FormatConverterContext] {
-  import com.typesafe.config.Config
-  import scalaz.ValidationNel
-
-  def validationNel(config: Config): ValidationNel[Throwable, FormatConverterContext] = {
-    import scalaz.syntax.applicative._
-    config.extract[FormatAwareDataSourceConfiguration]("input") |@|
-      config.extract[FormatAwareDataSinkConfiguration]("output") apply
-      FormatConverterContext.apply
-  }
-}
-```
-
 ### Streaming Application
 
 For structured streaming applications the format converter might look like this:
@@ -168,18 +152,6 @@ object StreamingFormatConverterContext {
   import org.tupol.spark.io.pureconf._
   import org.tupol.spark.io.pureconf.streaming.structured._
   def extract(config: Config): Try[StreamingFormatConverterContext] = config.extract[StreamingFormatConverterContext]
-}
-```
-
-#### Configuration creation based on ConfigZ
-
-```scala
-object StreamingFormatConverterContext extends Configurator[StreamingFormatConverterContext] {
-  def validationNel(config: Config): ValidationNel[Throwable, StreamingFormatConverterContext] = {
-    config.extract[FormatAwareStreamingSourceConfiguration]("input") |@|
-      config.extract[FormatAwareStreamingSinkConfiguration]("output") apply
-      StreamingFormatConverterContext.apply
-  }
 }
 ```
 
@@ -281,16 +253,20 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-
 **1.0.0-RCX**
 
 Major library redesign
-- Split configuration into different module for ScalaZ based configz
+- Building with JDK 17 targeting Java 8
+- Added test java options to handle the JDK 17
+- Build with Spark 3.2.x
+- Removed the `spark-utils-io-pureconfig` module
 - Added configuration module based on [PureConfig]
 - `DataSource` exposes `reader` in addition to `read`
-- Added `SparkSessionOps.streamingSource`
 - `DataSink` and `DataAwareSink` expose `writer` in addition to `write`
-- Documentation improvements 
+- Added `SparkSessionOps.streamingSource`
+- Refactored `TypesafeConfigBuilder`, which has two implementations now: `SimpleTypesafeConfigBuilder` and `FuzzyTypesafeConfigBuilder`
+- Small improvements to `SharedSparkSession`
+- Documentation improvements  
 
 
 **0.6.2**

@@ -6,6 +6,16 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC5
+
+- Building with JDK 17 targeting Java 8
+- Added test java options to handle the JDK 17
+- Build with Spark 3.2.x
+- Removed the `spark-utils-io-pureconfig` module
+- Refactored `TypesafeConfigBuilder`, which has two implementations now: `SimpleTypesafeConfigBuilder` and `FuzzyTypesafeConfigBuilder`
+- Small improvements to `SharedSparkSession`
+- Documentation updates
+
 ### 1.0.0-RC4
 
 - `TypesafeConfigBuilder.getApplicationConfiguration` requires an application configuration file name parameter

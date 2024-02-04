@@ -1,3 +1,0 @@
-{"array":[1,2,3],"dict":{"key":"value1"},"int":1,"string":"string1"}
-{"array":[2,4,6],"dict":{"key":"value2"},"int":2,"string":"string2"}
-{"array":[3,6,9],"dict":{"extra_key":"extra_value3","key":"value3"},"int":3,"string":"string3"}

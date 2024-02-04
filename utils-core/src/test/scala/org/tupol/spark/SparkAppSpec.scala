@@ -5,14 +5,15 @@ import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import org.tupol.spark.config.FuzzyTypesafeConfigBuilder
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
-  val configurationFileName = "application.conf"
+  val configurationFileName = "app.conf"
   val filesArg = Seq(
-    new File("src/test/resources/MockApp/application.conf").getAbsolutePath)
+    new File("src/test/resources/MockApp/app.conf").getAbsolutePath)
 
   override def sparkConfig: Map[String, String] = {
     // Add the comma separated configuration files to the files property.
@@ -20,42 +21,6 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
     // There is an exception however, if the files have the same content no exception will be thrown.
     super.sparkConfig +
       ("spark.files" -> filesArg.mkString(","))
-  }
-
-  test(
-    """SparkApp.applicationConfiguration loads first the app params then defaults to application.conf file,
-      |then to the application.conf in the classpath and then to reference.conf""".stripMargin) {
-
-      val conf = MockApp$.getApplicationConfiguration(Array(
-        "MockApp.whoami=\"app.param\"",
-        "MockApp.param=\"param\"")).get
-      conf.getString("param") shouldBe "param"
-      conf.getString("whoami") shouldBe "app.param"
-      conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-      conf.getString("reference") shouldBe "reference_mock_app"
-      conf.getBoolean("file.application.conf") shouldBe true
-    }
-
-  test("SparkApp.applicationConfiguration loads first the application.conf then defaults to reference.conf") {
-    val conf = MockApp$.getApplicationConfiguration(Array(
-      "MockApp.param=\"param\"")).get
-    conf.getString("param") shouldBe "param"
-    conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
-    conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference_mock_app"
-    conf.getBoolean("file.application.conf") shouldBe true
-  }
-
-  test("SparkApp.applicationConfiguration performs variable substitution") {
-    val conf = MockApp$.getApplicationConfiguration(Array(
-      "MockApp.param=\"param\"", "my.var=\"MYVAR\"")).get
-    conf.getString("param") shouldBe "param"
-    conf.getString("whoami") shouldBe "./src/test/resources/MockApp/application.conf"
-    conf.getStringList("some.list").toArray shouldBe Seq("a", "b", "c")
-    conf.getString("reference") shouldBe "reference_mock_app"
-    conf.getString("substitute.my-var") shouldBe "MYVAR"
-    conf.getString("substitute.my-other-var") shouldBe "MYVAR"
-    conf.getBoolean("file.application.conf") shouldBe true
   }
 
   test("SparkApp.main successfully completes") {
@@ -83,6 +48,9 @@ class SparkAppSpec extends AnyFunSuite with Matchers with LocalSparkSession {
   object MockAppNoConfig extends SparkApp[String, Unit] {
     def createContext(config: Config): Try[String] = Success("Hello")
     override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
+
+    override def loadConfiguration(args: Seq[String], configurationFileName: String): Try[Config] =
+      FuzzyTypesafeConfigBuilder.loadConfiguration(args: Seq[String], configurationFileName: String)
   }
 
   object MockAppFailure extends SparkApp[String, Unit] {

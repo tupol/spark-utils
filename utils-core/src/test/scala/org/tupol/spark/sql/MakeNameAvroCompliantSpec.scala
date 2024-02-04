@@ -80,8 +80,8 @@ class MakeNameAvroCompliantSpec extends AnyFunSuite with Matchers with SharedSpa
 
 }
 
-case class BadAvroTest0(`good_name`: Int, `0_bad_name`: Int, `bad.name`: Int, `another@bad$name`: Int, `more%bad+names`: Option[BadAvroTest1] = None)
-case class BadAvroTest1(`good_name_123`: Int, `01_bad_name`: Int, `bad name`: Int, `another#bad&name`: Int, `more^bad*names`: Int)
+case class BadAvroTest0(`good_name`: Int, `_0_bad_name`: Int, `bad.name`: Int, `another@bad$name`: Int, `more%bad+names`: Option[BadAvroTest1] = None)
+case class BadAvroTest1(`good_name_123`: Int, `_01_bad_name`: Int, `bad name`: Int, `another#bad&name`: Int, `more^bad*names`: Int)
 
 case class GoodAvroTest0(`good_name`: Int, `__bad_name`: Int, `bad.name`: Int, `another@bad$name`: Int, `more%bad+names`: Option[GoodAvroTest1] = None)
 case class GoodAvroTest1(`good_name_123`: Int, `_1_bad_name`: Int, `bad_name`: Int, `another_bad_name`: Int, `more_bad_names`: Int)

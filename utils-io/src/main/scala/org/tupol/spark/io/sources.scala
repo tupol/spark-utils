@@ -37,8 +37,12 @@ package object sources {
   trait SourceConfiguration extends FormatAwareDataSourceConfiguration with Logging {
     /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
     def options: Map[String, String]
+    /** Add extra options and overwrites existing ones */
+    def addOptions(extraOptions: Map[String, String]): SourceConfiguration
     /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
     def schema: Option[StructType]
+    /** Set schema */
+    def withSchema(schema: Option[StructType]): SourceConfiguration
     /** If the schema and columnNameOfCorruptRecord are defined add the columnNameOfCorruptRecord column to the schema */
     final def schemaWithCorruptRecord: Option[StructType] =
       (for {
@@ -60,6 +64,10 @@ package object sources {
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Csv
+    override def addOptions(extraOptions: Map[String, String]): CsvSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): CsvSourceConfiguration =
+      this.copy(schema = schema)
     /** The csv parser does not support this feature */
     override val columnNameOfCorruptRecord = None
   }
@@ -74,6 +82,10 @@ package object sources {
   case class XmlSourceConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None)
     extends SourceConfiguration {
     val format = FormatType.Xml
+    override def addOptions(extraOptions: Map[String, String]): XmlSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): XmlSourceConfiguration =
+      this.copy(schema = schema)
   }
   object XmlSourceConfiguration {
     def apply(options: Map[String, String], inputSchema: Option[StructType], rowTag: String): XmlSourceConfiguration =
@@ -86,6 +98,10 @@ package object sources {
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Json
+    override def addOptions(extraOptions: Map[String, String]): JsonSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): JsonSourceConfiguration =
+      this.copy(schema = schema)
   }
   object JsonSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
@@ -96,6 +112,10 @@ package object sources {
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Parquet
+    override def addOptions(extraOptions: Map[String, String]): ParquetSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): ParquetSourceConfiguration =
+      this.copy(schema = schema)
   }
   object ParquetSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
@@ -107,6 +127,10 @@ package object sources {
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Orc
+    override def addOptions(extraOptions: Map[String, String]): OrcSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): OrcSourceConfiguration =
+      this.copy(schema = schema)
   }
   object OrcSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
@@ -117,6 +141,10 @@ package object sources {
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Avro
+    override def addOptions(extraOptions: Map[String, String]): AvroSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): AvroSourceConfiguration =
+      this.copy(schema = schema)
   }
   object AvroSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
@@ -127,6 +155,10 @@ package object sources {
     options: Map[String, String] = Map(),
     schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Text
+    override def addOptions(extraOptions: Map[String, String]): TextSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): TextSourceConfiguration =
+      this.copy(schema = schema)
   }
   object TextSourceConfiguration {
     def apply(basicConfig: GenericSourceConfiguration) =
@@ -144,6 +176,10 @@ package object sources {
    */
   case class JdbcSourceConfiguration(options: Map[String, String] = Map(), schema: Option[StructType] = None) extends SourceConfiguration {
     val format = FormatType.Jdbc
+    override def addOptions(extraOptions: Map[String, String]): JdbcSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): JdbcSourceConfiguration =
+      this.copy(schema = schema)
 
     def table: String = options.get(JDBCOptions.JDBC_TABLE_NAME).getOrElse("")
     def url: String = options.get(JDBCOptions.JDBC_URL).getOrElse("")
@@ -178,5 +214,10 @@ package object sources {
   }
 
   case class GenericSourceConfiguration(format: FormatType, options: Map[String, String] = Map(),
-    schema: Option[StructType] = None) extends SourceConfiguration
+    schema: Option[StructType] = None) extends SourceConfiguration {
+    override def addOptions(extraOptions: Map[String, String]): GenericSourceConfiguration =
+      this.copy(options =  this.options ++ extraOptions)
+    override def withSchema(schema: Option[StructType]): GenericSourceConfiguration =
+      this.copy(schema = schema)
+  }
 }

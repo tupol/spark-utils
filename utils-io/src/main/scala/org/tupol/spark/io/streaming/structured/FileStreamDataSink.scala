@@ -61,14 +61,16 @@ case class FileStreamDataSinkConfiguration(
   private val genericConfig: GenericStreamDataSinkConfiguration,
   checkpointLocation: Option[String])
   extends FormatAwareStreamingSinkConfiguration {
-  private val options =
+  def addOptions(extraOptions: Map[String, String]): FileStreamDataSinkConfiguration =
+    this.copy(genericConfig = genericConfig.addOptions(internalOptions ++ extraOptions))
+  private val internalOptions =
     Map(
       "path" -> Some(path),
       "checkpointLocation" -> checkpointLocation)
     .collect { case (key, Some(value)) => (key, value) }
-
+  def options(): Map[String, String] = genericConfig.options.getOrElse(Map())
   /** The generic configuration of this data sink; this is used to build the actual writer */
-  val generic = genericConfig.addOptions(options)
+  val generic = genericConfig.addOptions(internalOptions)
   def format: FormatType = generic.format
   def resolve: FileStreamDataSinkConfiguration = this.copy(genericConfig = generic)
 

@@ -14,7 +14,7 @@ a Spark application.
  * @tparam Result The output type of the run function.
  *
  */
-trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
+trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with TypesafeConfigBuilder with Logging {
 
   /**
    * This is the key for basically choosing a certain app and it should have
@@ -30,7 +30,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logg
    */
   def createContext(config: Config): Try[Context]
 
-.
+
 }
 ```
  
@@ -60,8 +60,8 @@ an actual Spark application. The following steps will be performed:
 The `SparkApp` configuration is done through the `config: Config` parameter of the `run()` function.
 
 The `SparkApp` also has a `main()` function, which can be used to pass application parameters.
-Using the `main()` function, configuration is passed in the following ways, in the order 
-specified bellow:
+By default `SparkApp` is using the `FuzzyTypesafeConfigBuilder` so when using the `main()` function, the configuration 
+is passed in the following ways, in the order specified bellow:
 
 1. Application parameters; they are passed in a properties style, separated by whitespaces, like
    `app.name.param1=param1value app.name.param2=param2value`.
@@ -69,7 +69,7 @@ specified bellow:
 3. Configuration file `application.conf`, if available in the classpath.
 4. Reference configuration file; sometimes available in the application jar itself as `reference.conf`.
 
-The order is important because the a parameter defined in the application parameters overwrites 
+The order is important because a parameter defined in the application parameters overwrites 
 the parameter with the same name defined in the application.conf, which in turn overwrites the
 parameter with the same name from the `reference.conf`.
 
@@ -77,6 +77,14 @@ The `application.conf` and the `reference.conf` are acceptable in Java propertie
 formats.
 See also the [Typesafe Config](https://github.com/typesafehub/config) project for more details.
 
+The way the configuration is loaded can be changed, by changing the implementation of the `getConfiguration` method.
+
+```scala
+override def getConfiguration(args: Array[String], configurationFileName: String): Try[Config]
+```
+
+For example, it can be overwritten to use the `SimpleTypesafeConfigBuilder` implementation or any other custom 
+implementation.
 
 ## Logging
 
