@@ -20,20 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
+import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
 
 import scala.util.Try
 
 /** Common trait for reading a DataFrame from an external resource */
 trait DataSource[Config <: DataSourceConfiguration, Reader] {
+
   /** `DataSource` configuration */
   def configuration: Config
 
   /** Create a `DataFrameReader` using the given configuration and the `spark` session available. */
   def reader(implicit spark: SparkSession): Reader
+
   /** Read a `DataFrame` using the given configuration and the `spark` session available. */
   def read(implicit spark: SparkSession): Try[DataFrame]
 }
@@ -50,5 +52,4 @@ trait FormatAwareDataSourceConfiguration extends DataSourceConfiguration with Fo
 trait DataSourceConfiguration
 
 case class DataSourceException(private val message: String = "", private val cause: Throwable = None.orNull)
-  extends Exception(message, cause)
-
+    extends Exception(message, cause)

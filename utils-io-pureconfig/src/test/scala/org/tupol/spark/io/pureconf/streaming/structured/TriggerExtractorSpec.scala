@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf._
 
 import scala.concurrent.duration.DurationInt
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 class TriggerExtractorSpec extends AnyFunSuite with Matchers {
 
@@ -30,7 +30,7 @@ class TriggerExtractorSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[Trigger] shouldBe a [Failure[_]]
+    config.extract[Trigger] shouldBe a[Failure[_]]
 
   }
 
@@ -52,7 +52,7 @@ class TriggerExtractorSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[Trigger]("trigger") shouldBe a [Failure[_]]
+    config.extract[Trigger]("trigger") shouldBe a[Failure[_]]
   }
 
   test("TriggerExtractor -> Trigger.ProcessingTime()") {
@@ -72,7 +72,7 @@ class TriggerExtractorSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[Trigger]("trigger") shouldBe a [Failure[_]]
+    config.extract[Trigger]("trigger") shouldBe a[Failure[_]]
   }
 
   test("TriggerExtractor Fails on empty") {
@@ -81,7 +81,7 @@ class TriggerExtractorSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[Trigger] shouldBe a [Failure[_]]
+    config.extract[Trigger] shouldBe a[Failure[_]]
   }
 
 }

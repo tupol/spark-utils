@@ -5,7 +5,11 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.FormatType.Kafka
 import org.tupol.spark.io.pureconf.config.ConfigOps
-import org.tupol.spark.io.streaming.structured.{ GenericStreamDataSourceConfiguration, KafkaStreamDataSourceConfiguration, KafkaSubscription}
+import org.tupol.spark.io.streaming.structured.{
+  GenericStreamDataSourceConfiguration,
+  KafkaStreamDataSourceConfiguration,
+  KafkaSubscription
+}
 
 import scala.util.Failure
 
@@ -25,7 +29,8 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = KafkaStreamDataSourceConfiguration(
       kafkaBootstrapServers = "server",
-      subscription = KafkaSubscription("subscribePattern", "topic_*"))
+      subscription = KafkaSubscription("subscribePattern", "topic_*")
+    )
     val result = config.extract[KafkaStreamDataSourceConfiguration]
 
     result.get shouldBe expected
@@ -59,12 +64,12 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
       fetchOffsetNumRetries = Some(12),
       fetchOffsetRetryIntervalMs = Some(100),
       maxOffsetsPerTrigger = Some(111),
-      schema = None)
+      schema = None
+    )
     val result = config.extract[KafkaStreamDataSourceConfiguration]("input")
 
     result.get shouldBe expected
   }
-
 
   test("KafkaStreamDataSourceConfiguration required params overwrite the extra options when overlapping") {
 
@@ -101,7 +106,12 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
       fetchOffsetRetryIntervalMs = Some(100),
       maxOffsetsPerTrigger = Some(111),
       schema = None,
-      options = Map("kafka.bootstrap.servers" -> "other-server", "startingOffsets" -> "random", "key1" -> "val1", "key2" -> "val2")
+      options = Map(
+        "kafka.bootstrap.servers" -> "other-server",
+        "startingOffsets"         -> "random",
+        "key1"                    -> "val1",
+        "key2"                    -> "val2"
+      )
     )
     val result = config.extract[KafkaStreamDataSourceConfiguration]("input")
 
@@ -109,22 +119,25 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expectedGeneric = GenericStreamDataSourceConfiguration(
       Kafka,
-      Some(Map(
-        "kafka.bootstrap.servers" -> "test_server",
-        "kafkaConsumer.pollTimeoutMs" -> "512",
-        "subscribe" -> "my_topic",
-        "fetchOffset.numRetries" -> "12",
-        "fetchOffset.retryIntervalMs" -> "100",
-        "failOnDataLoss" -> "true",
-        "startingOffsets" -> "earliest",
-        "endingOffsets" -> "latest",
-        "maxOffsetsPerTrigger" -> "111",
-        "key1" -> "val1", "key2" -> "val2"
-      )))
+      Some(
+        Map(
+          "kafka.bootstrap.servers"     -> "test_server",
+          "kafkaConsumer.pollTimeoutMs" -> "512",
+          "subscribe"                   -> "my_topic",
+          "fetchOffset.numRetries"      -> "12",
+          "fetchOffset.retryIntervalMs" -> "100",
+          "failOnDataLoss"              -> "true",
+          "startingOffsets"             -> "earliest",
+          "endingOffsets"               -> "latest",
+          "maxOffsetsPerTrigger"        -> "111",
+          "key1"                        -> "val1",
+          "key2"                        -> "val2"
+        )
+      )
+    )
 
     result.get.generic shouldBe expectedGeneric
   }
-
 
   test("Failed to extract KafkaStreamDataSourceConfiguration if 'kafkaBootstrapServers' is not defined") {
 
@@ -174,9 +187,9 @@ class KafkaStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract KafkaStreamDataSourceConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
-    config.extract[KafkaStreamDataSourceConfiguration] shouldBe a [Failure[_]]
+    config.extract[KafkaStreamDataSourceConfiguration] shouldBe a[Failure[_]]
   }
 
 }

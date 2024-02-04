@@ -10,7 +10,7 @@ import scala.util.Try
 trait LocalSparkSession extends BeforeAndAfterEach {
   this: Suite =>
 
-  def master = "local[2]"
+  def master  = "local[2]"
   def appName = this.getClass.getSimpleName
 
   @transient private var _spark: SparkSession = _
@@ -21,10 +21,11 @@ trait LocalSparkSession extends BeforeAndAfterEach {
 
   implicit lazy val sqlContext: SQLContext = spark.sqlContext
 
-  def sparkConfig: Map[String, String] = Map("spark.driver.host" -> "localhost") //See https://issues.apache.org/jira/browse/SPARK-19394
+  def sparkConfig: Map[String, String] =
+    Map("spark.driver.host" -> "localhost") //See https://issues.apache.org/jira/browse/SPARK-19394
 
   def createSparkSession(conf: SparkConf): SparkSession =
-    SparkSession.builder.config(conf).getOrCreate()
+    SparkSession.builder().config(conf).getOrCreate()
 
   override def beforeEach(): Unit = {
     System.clearProperty("spark.driver.port")
@@ -42,7 +43,7 @@ trait LocalSparkSession extends BeforeAndAfterEach {
 
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       if (_spark != null) {
         Try(_spark.close())
@@ -53,6 +54,5 @@ trait LocalSparkSession extends BeforeAndAfterEach {
       System.clearProperty("spark.driver.port")
       System.clearProperty("spark.hostPort")
     }
-  }
 
 }

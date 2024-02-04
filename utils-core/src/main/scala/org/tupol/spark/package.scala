@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol
 
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
@@ -33,7 +33,7 @@ package object spark {
   object encoders {
 
     /**
-     * This code is taken from [[org.apache.spark.sql.catalyst.encoders]] to work around a Databricks runtime issue.
+     * This code is taken from `org.apache.spark.sql.catalyst.encoders` to work around a Databricks runtime issue.
      *
      * Returns an internal encoder object that can be used to serialize / deserialize JVM objects
      * into Spark SQL rows.  The implicit encoder should always be unresolved (i.e. have no attribute

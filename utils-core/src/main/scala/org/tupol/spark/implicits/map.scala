@@ -11,7 +11,8 @@ object map {
     // Primitive conversion from Map to a Row using a schema
     // TODO: Deal with inner maps
     def toRow(schema: StructType): Row = {
-      val values = schema.fieldNames.map(fieldName => map.map { case (k, v) => (k.toString(), v) }.get(fieldName).getOrElse(null))
+      val values =
+        schema.fieldNames.map(fieldName => map.map { case (k, v) => (k.toString(), v) }.get(fieldName).getOrElse(null))
       new GenericRowWithSchema(values, schema)
     }
   }

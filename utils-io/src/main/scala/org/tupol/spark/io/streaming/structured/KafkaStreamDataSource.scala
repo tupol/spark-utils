@@ -20,20 +20,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.streaming.structured
-
 
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType._
-import org.tupol.spark.io.{DataSource, FormatType}
+import org.tupol.spark.io.{ DataSource, FormatType }
 
 import scala.util.Try
 
-case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfiguration) extends DataSource[KafkaStreamDataSourceConfiguration, DataStreamReader] with Logging {
+case class KafkaStreamDataSource(configuration: KafkaStreamDataSourceConfiguration)
+    extends DataSource[KafkaStreamDataSourceConfiguration, DataStreamReader]
+    with Logging {
 
   private val innerSource = GenericStreamDataSource(configuration.generic)
 
@@ -59,32 +60,31 @@ case class KafkaStreamDataSourceConfiguration(
   fetchOffsetRetryIntervalMs: Option[Long] = None,
   maxOffsetsPerTrigger: Option[Long] = None,
   schema: Option[StructType] = None,
-  options: Map[String, String] = Map())
-  extends FormatAwareStreamingSourceConfiguration {
+  options: Map[String, String] = Map()
+) extends FormatAwareStreamingSourceConfiguration {
+
   /** Get the format type of the input file. */
   def format: FormatType = Kafka
   override def addOptions(extraOptions: Map[String, String]): KafkaStreamDataSourceConfiguration =
-    this.copy(options =  this.options ++ extraOptions)
+    this.copy(options = this.options ++ extraOptions)
   override def withSchema(schema: Option[StructType]): KafkaStreamDataSourceConfiguration =
     this.copy(schema = schema)
 
   private val internalOptions =
     Map(
-      "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),
+      "kafka.bootstrap.servers"     -> Some(kafkaBootstrapServers),
       subscription.subscriptionType -> Some(subscription.subscription),
-      "startingOffsets" -> startingOffsets,
-      "endingOffsets" -> endingOffsets,
-      "failOnDataLoss" -> failOnDataLoss,
+      "startingOffsets"             -> startingOffsets,
+      "endingOffsets"               -> endingOffsets,
+      "failOnDataLoss"              -> failOnDataLoss,
       "kafkaConsumer.pollTimeoutMs" -> kafkaConsumerPollTimeoutMs,
-      "fetchOffset.numRetries" -> fetchOffsetNumRetries,
+      "fetchOffset.numRetries"      -> fetchOffsetNumRetries,
       "fetchOffset.retryIntervalMs" -> fetchOffsetRetryIntervalMs,
-      "maxOffsetsPerTrigger" -> maxOffsetsPerTrigger)
-      .collect { case (key, Some(value)) => (key, value.toString) }
+      "maxOffsetsPerTrigger"        -> maxOffsetsPerTrigger
+    ).collect { case (key, Some(value)) => (key, value.toString) }
 
-    /** The generic configuration of this data source; this is used to build the actual reader */
-    val generic = GenericStreamDataSourceConfiguration(format, options ++ internalOptions, schema)
+  /** The generic configuration of this data source; this is used to build the actual reader */
+  val generic = GenericStreamDataSourceConfiguration(format, options ++ internalOptions, schema)
 
   override def toString: String = generic.toString
 }
-
-

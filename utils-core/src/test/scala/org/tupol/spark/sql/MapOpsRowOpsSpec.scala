@@ -9,7 +9,7 @@ import org.tupol.spark.implicits._
 class MapOpsRowOpsSpec extends AnyFunSuite with Matchers with SharedSparkSession {
 
   test("Converting a map to a row and the conversion back from a row to a map") {
-    val mapValue = Map("a" -> 1, "b" -> 2)
+    val mapValue  = Map("a" -> 1, "b" -> 2)
     val deepValue = DeepClass(Seq((2, 2.2), (3, 3.3)))
 
     val data = Map("mapValue" -> mapValue, "deepValue" -> deepValue)

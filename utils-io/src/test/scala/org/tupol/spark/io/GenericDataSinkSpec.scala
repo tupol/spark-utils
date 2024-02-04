@@ -18,10 +18,10 @@ class GenericDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSess
 
   test("Saving the input data results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
 
-    val options = Map[String, String]("path" -> testPath1)
+    val options    = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(), None, options)
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
@@ -31,10 +31,10 @@ class GenericDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSess
 
   test("Saving the input data can fail if the mode is default and the target file already exists") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
 
-    val options = Map[String, String]("path" -> testPath1)
+    val options    = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(), None, options)
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
@@ -43,12 +43,12 @@ class GenericDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSess
 
   test("Saving the input partitioned results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
-    val rootPartition = "int"
-    val childPartition = "string"
+    val rootPartition        = "int"
+    val childPartition       = "string"
 
-    val options = Map[String, String]("path" -> testPath1)
+    val options    = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(rootPartition, "string"), None, options)
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
@@ -64,12 +64,12 @@ class GenericDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSess
 
   test("Saving the input partitioned with a partition number specified results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
-    val rootPartition = "int"
-    val childPartition = "string"
+    val rootPartition        = "int"
+    val childPartition       = "string"
 
-    val options = Map[String, String]("path" -> testPath1)
+    val options    = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(rootPartition, "string"), None, options)
     inputData.sink(sinkConfig).write
 
@@ -85,11 +85,11 @@ class GenericDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSess
 
   test("Saving the input bucketed results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
-    val buckets = BucketsConfiguration(1, Seq("int", "string"), Seq("int", "string"))
+    val buckets              = BucketsConfiguration(1, Seq("int", "string"), Seq("int", "string"))
 
-    val options = Map[String, String]("path" -> testPath1)
+    val options    = Map[String, String]("path" -> testPath1)
     val sinkConfig = GenericSinkConfiguration(CustomFormat, None, Seq(), Some(buckets), options)
     inputData.sink(sinkConfig).write
 

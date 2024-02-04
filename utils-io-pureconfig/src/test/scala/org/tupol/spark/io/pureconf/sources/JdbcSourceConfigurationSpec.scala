@@ -27,17 +27,17 @@ class JdbcSourceConfigurationSpec extends AnyFunSuite with Matchers {
                       | option2: option_2_value
                       |}
                     """.stripMargin
-    val config = ConfigFactory.parseString(configStr)
-    val result = SourceConfigurator.extract(config)
+    val config    = ConfigFactory.parseString(configStr)
+    val result    = SourceConfigurator.extract(config)
 
     val expectedOptions = Map(
-        "url" -> "OUTPUT_URL",
-        "dbtable" -> "SOURCE_TABLE",
-        "user" -> "test_user",
-        "password" -> "some_pass",
-        "driver" -> "jdbc.driver",
-        "option1" -> "option_1_value",
-        "option2" -> "option_2_value"
+      "url"      -> "OUTPUT_URL",
+      "dbtable"  -> "SOURCE_TABLE",
+      "user"     -> "test_user",
+      "password" -> "some_pass",
+      "driver"   -> "jdbc.driver",
+      "option1"  -> "option_1_value",
+      "option2"  -> "option_2_value"
     )
 
     val expected = JdbcSourceConfiguration(expectedOptions, None)
@@ -60,17 +60,17 @@ class JdbcSourceConfigurationSpec extends AnyFunSuite with Matchers {
                       |}
                       |schema.path: "sources/avro/sample_schema.json"
                     """.stripMargin
-    val config = ConfigFactory.parseString(configStr)
-    val result = SourceConfigurator.extract(config)
+    val config    = ConfigFactory.parseString(configStr)
+    val result    = SourceConfigurator.extract(config)
 
     val expectedOptions = Map(
-      "url" -> "OUTPUT_URL",
-      "dbtable" -> "SOURCE_TABLE",
-      "user" -> "test_user",
+      "url"      -> "OUTPUT_URL",
+      "dbtable"  -> "SOURCE_TABLE",
+      "user"     -> "test_user",
       "password" -> "some_pass",
-      "driver" -> "jdbc.driver",
-      "option1" -> "option_1_value",
-      "option2" -> "option_2_value"
+      "driver"   -> "jdbc.driver",
+      "option1"  -> "option_1_value",
+      "option2"  -> "option_2_value"
     )
 
     val expected = JdbcSourceConfiguration(expectedOptions, Some(ReferenceSchema))
@@ -81,29 +81,29 @@ class JdbcSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration with explicit schema") {
 
     val configStr = s"""
-                      |format="jdbc"
-                      |url="OUTPUT_URL"
-                      |table="SOURCE_TABLE"
-                      |user=test_user
-                      |password="some_pass"
-                      |driver=jdbc.driver
-                      |options: {
-                      | option1: option_1_value
-                      | option2: option_2_value
-                      |}
-                      |schema: ${ReferenceSchema.prettyJson}
+                       |format="jdbc"
+                       |url="OUTPUT_URL"
+                       |table="SOURCE_TABLE"
+                       |user=test_user
+                       |password="some_pass"
+                       |driver=jdbc.driver
+                       |options: {
+                       | option1: option_1_value
+                       | option2: option_2_value
+                       |}
+                       |schema: ${ReferenceSchema.prettyJson}
                     """.stripMargin
-    val config = ConfigFactory.parseString(configStr)
-    val result = SourceConfigurator.extract(config)
+    val config    = ConfigFactory.parseString(configStr)
+    val result    = SourceConfigurator.extract(config)
 
     val expectedOptions = Map(
-      "url" -> "OUTPUT_URL",
-      "dbtable" -> "SOURCE_TABLE",
-      "user" -> "test_user",
+      "url"      -> "OUTPUT_URL",
+      "dbtable"  -> "SOURCE_TABLE",
+      "user"     -> "test_user",
       "password" -> "some_pass",
-      "driver" -> "jdbc.driver",
-      "option1" -> "option_1_value",
-      "option2" -> "option_2_value"
+      "driver"   -> "jdbc.driver",
+      "option1"  -> "option_1_value",
+      "option2"  -> "option_2_value"
     )
 
     val expected = JdbcSourceConfiguration(expectedOptions, Some(ReferenceSchema))

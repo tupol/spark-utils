@@ -6,8 +6,8 @@ import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.concurrent.Eventually
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.time.{Millis, Span}
-import org.scalatest.{BeforeAndAfter, GivenWhenThen}
+import org.scalatest.time.{ Millis, Span }
+import org.scalatest.{ BeforeAndAfter, GivenWhenThen }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io._
 import org.tupol.spark.io.implicits._
@@ -17,11 +17,16 @@ import java.io.File
 import java.nio.charset.Charset
 import scala.util.Random
 
-class GenericFileStreamDataSourceSpec extends AnyFunSuite
-  with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
-  with SharedSparkSession with TestTempFilePath1 {
+class GenericFileStreamDataSourceSpec
+    extends AnyFunSuite
+    with Matchers
+    with GivenWhenThen
+    with Eventually
+    with BeforeAndAfter
+    with SharedSparkSession
+    with TestTempFilePath1 {
 
-  implicit override val patienceConfig = PatienceConfig(timeout = scaled(Span(10000, Millis)))
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(timeout = scaled(Span(10000, Millis)))
 
   test("String messages should be written to the file stream and read back using a GenericStreamDataSource") {
 
@@ -33,7 +38,10 @@ class GenericFileStreamDataSourceSpec extends AnyFunSuite
 
     val inputConfig = GenericStreamDataSourceConfiguration(FormatType.Text, options, None)
 
-    val data = spark.streamingSource(inputConfig).read.get
+    val data = spark
+      .streamingSource(inputConfig)
+      .read
+      .get
       .withColumn("timestamp", current_timestamp())
 
     val streamingQuery = data.writeStream
@@ -49,16 +57,22 @@ class GenericFileStreamDataSourceSpec extends AnyFunSuite
     testMessages.foreach { message =>
       addFile(message, testFile1)
       eventually {
-        val received = result.select("value", "timestamp").as[(String, Long)]
-          .collect().sortBy(_._2).reverse.headOption.map(_._1)
+        val received = result
+          .select("value", "timestamp")
+          .as[(String, Long)]
+          .collect()
+          .sortBy(_._2)
+          .reverse
+          .headOption
+          .map(_._1)
         received shouldBe Some(message)
       }
     }
-    streamingQuery.stop
+    streamingQuery.stop()
   }
 
   test("Fail gracefully") {
-    val options = Map[String, String]("path" -> testPath1)
+    val options     = Map[String, String]("path" -> testPath1)
     val inputConfig = GenericStreamDataSourceConfiguration(FormatType.Text, options, None)
     an[Exception] shouldBe thrownBy(spark.source(inputConfig).read.get)
   }

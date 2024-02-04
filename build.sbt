@@ -3,6 +3,7 @@ import sbt.Keys.{fork, resolvers}
 import sbt.url
 import sbtrelease.ReleaseStateTransformations.{checkSnapshotDependencies, commitNextVersion, commitReleaseVersion, inquireVersions, publishArtifacts, pushChanges, runClean, runTest, setNextVersion, setReleaseVersion, tagRelease}
 
+crossScalaVersions := Nil
 
 lazy val basicSettings = Seq(
   organization := "org.tupol",
@@ -13,7 +14,6 @@ lazy val basicSettings = Seq(
     "-feature",
     "-deprecation",
     "-unchecked",
-    "-Ywarn-unused-import",
     s"-target:jvm-${Versions.jvm}",
   ),
   updateOptions := updateOptions.value.withCachedResolution(true),

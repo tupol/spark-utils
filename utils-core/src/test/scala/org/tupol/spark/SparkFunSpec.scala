@@ -6,20 +6,18 @@ import org.apache.spark.sql.SparkSession
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
 
-  val filesArg = Seq(
-    new File("src/test/resources/MockFun/fun.conf").getAbsolutePath)
+  val filesArg = Seq(new File("src/test/resources/MockFun/fun.conf").getAbsolutePath)
 
-  override def sparkConfig: Map[String, String] = {
+  override def sparkConfig: Map[String, String] =
     // Add the comma separated configuration files to the files property.
     // There can be just one file with the same name, as they all end up at the same level in the same folder.
     // There is an exception however, if the files have the same content no exception will be thrown.
     super.sparkConfig +
       ("spark.files" -> filesArg.mkString(","))
-  }
 
   test("SparkFun.main successfully completes") {
     noException shouldBe thrownBy(MockFun$.main(Array()))

@@ -4,16 +4,14 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.FileSourceConfiguration
-import org.tupol.spark.io.sources.{CsvSourceConfiguration, TextSourceConfiguration}
+import org.tupol.spark.io.sources.{ CsvSourceConfiguration, TextSourceConfiguration }
 import org.tupol.spark.io.pureconf.readers._
 
 class FileSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Successfully extract a text FileSourceConfiguration out of a configuration string") {
 
-    val expected = FileSourceConfiguration(
-      path = "INPUT_PATH",
-      sourceConfiguration = TextSourceConfiguration())
+    val expected = FileSourceConfiguration(path = "INPUT_PATH", sourceConfiguration = TextSourceConfiguration())
 
     val configStr =
       """
@@ -30,8 +28,16 @@ class FileSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = FileSourceConfiguration(
       path = "INPUT_PATH",
-      sourceConfiguration = CsvSourceConfiguration(Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8",
-        "header" -> "true", "delimiter" -> "DELIMITER")))
+      sourceConfiguration = CsvSourceConfiguration(
+        Map(
+          "mode"          -> "PERMISSIVE",
+          "samplingRatio" -> "1",
+          "charset"       -> "UTF-8",
+          "header"        -> "true",
+          "delimiter"     -> "DELIMITER"
+        )
+      )
+    )
 
     val configStr =
       """

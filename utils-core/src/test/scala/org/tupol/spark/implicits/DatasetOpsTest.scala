@@ -1,7 +1,7 @@
 package org.tupol.spark.implicits
 
 import org.apache.spark.sql.functions.lit
-import org.apache.spark.sql.{AnalysisException, Dataset}
+import org.apache.spark.sql.{ AnalysisException, Dataset }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.tupol.spark.SharedSparkSession
@@ -34,7 +34,7 @@ class DatasetOpsTest extends AnyWordSpec with Matchers with SharedSparkSession {
     }
     "return an empty dataset for an empty dataset" in {
       val result: Dataset[(Test2Val, String)] = spark.emptyDataset[Test2Val].withColumnDataset[String](lit("test"))
-      result.count shouldBe 0
+      result.count() shouldBe 0
     }
     "fail if the specified column type does not match the actual column type" in {
       an[AnalysisException] shouldBe thrownBy(spark.emptyDataset[Test2Val].withColumnDataset[Int](lit("test")))

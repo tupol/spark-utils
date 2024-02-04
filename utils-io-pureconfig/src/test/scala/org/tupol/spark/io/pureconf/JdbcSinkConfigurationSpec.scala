@@ -5,7 +5,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.JdbcSinkConfiguration
 
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 class JdbcSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
@@ -35,7 +35,8 @@ class JdbcSinkConfigurationSpec extends AnyFunSuite with Matchers {
       password = Some("USER_PASS"),
       driver = Some("SOME_DRIVER"),
       mode = Some("SOME_MODE"),
-      options = Map("opt1" -> "val1"))
+      options = Map("opt1" -> "val1")
+    )
     val result = config.getConfig("output").extract[JdbcSinkConfiguration]
 
     result shouldBe Success(expected)
@@ -65,7 +66,7 @@ class JdbcSinkConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract JdbcSinkConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
     val result = config.extract[JdbcSinkConfiguration]
 

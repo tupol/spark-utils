@@ -14,9 +14,7 @@ class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
   val TestTable = "test_table"
 
-  val TestData = Seq(
-    JdbcTestRecord("v1", 1, 1.1, true),
-    JdbcTestRecord("v2", 2, 2.2, false))
+  val TestData = Seq(JdbcTestRecord("v1", 1, 1.1, true), JdbcTestRecord("v2", 2, 2.2, false))
 
   test("Saving the input data results in the same data") {
 
@@ -26,7 +24,7 @@ class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
     val resultSet: ResultSet = connection.createStatement.executeQuery(s"SELECT * FROM $TestTable")
-    val result = resultSetToJdbcTestRecords(resultSet)
+    val result               = resultSetToJdbcTestRecords(resultSet)
 
     result should contain theSameElementsAs (TestData)
   }
@@ -35,12 +33,13 @@ class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
     val inputData = spark.createDataFrame(TestData)
 
-    val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "overwrite", Map[String, String]())
+    val sinkConfig =
+      JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "overwrite", Map[String, String]())
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
     val resultSet: ResultSet = connection.createStatement().executeQuery(s"SELECT * FROM $TestTable")
-    val result = resultSetToJdbcTestRecords(resultSet)
+    val result               = resultSetToJdbcTestRecords(resultSet)
 
     result should contain theSameElementsAs (TestData)
   }
@@ -49,12 +48,13 @@ class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
     val inputData = spark.createDataFrame(TestData)
 
-    val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "append", Map[String, String]())
+    val sinkConfig =
+      JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "append", Map[String, String]())
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
 
     val resultSet: ResultSet = connection.createStatement().executeQuery(s"SELECT * FROM $TestTable")
-    val result = resultSetToJdbcTestRecords(resultSet)
+    val result               = resultSetToJdbcTestRecords(resultSet)
 
     result should contain theSameElementsAs (TestData ++ TestData)
   }
@@ -63,7 +63,8 @@ class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
     val inputData = spark.createDataFrame(TestData)
 
-    val sinkConfig = JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "default", Map[String, String]())
+    val sinkConfig =
+      JdbcSinkConfiguration(h2url, TestTable, h2user, h2password, h2driver, "default", Map[String, String]())
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
     inputData.sink(sinkConfig).write.failed.get shouldBe a[DataSinkException]
   }
@@ -75,7 +76,8 @@ class JdbcDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
         resultSet.getString("colString"),
         resultSet.getInt("colInt"),
         resultSet.getDouble("colDouble"),
-        resultSet.getBoolean("colBoolean"))
+        resultSet.getBoolean("colBoolean")
+      )
     }
     resultsBuffer
   }

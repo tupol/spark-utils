@@ -20,14 +20,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark
 
 import java.net.{ URI, URL }
 import org.tupol.utils.Bracket
 import org.tupol.utils.implicits._
 
-import scala.io.{BufferedSource, Source}
+import scala.io.{ BufferedSource, Source }
 import scala.util.{ Failure, Try }
 
 /** A few common functions that might be useful. */
@@ -42,37 +42,38 @@ package object utils extends Logging {
    */
   def fuzzyLoadTextResourceFile(path: String): Try[String] = {
 
-    def createBufferedSource: Try[BufferedSource] = if (path.trim.isEmpty)
-      Failure(new IllegalArgumentException(s"Cannot load a text resource from an empty path."))
-    else {
-      Try {
-        logDebug(s"Try loading text resource from local file '$path'.")
-        Source.fromFile(path)
-      }
-        .logSuccess(_ => logDebug(s"Successfully loaded resource from local path '$path'."))
-        .orElse {
-          logDebug(s"Try loading text resource from URI '$path'.")
-          Try(Source.fromURI(new URI(path)))
-            .logSuccess(_ => logDebug(s"Successfully loaded resource from URI '$path'."))
-        }
-        .orElse {
-          logDebug(s"Try loading text resource from URL '$path'.")
-          Try(Source.fromURL(new URL(path)))
-            .logSuccess(_ => logDebug(s"Successfully loaded resource from URL '$path'."))
-        }
-        .orElse {
-          logDebug(s"Try loading text resource from classpath '$path'.")
-          val bufferedSource =
-            Option(Thread.currentThread.getContextClassLoader.getResourceAsStream(path))
-              .orElse(Option(Thread.currentThread.getClass.getResourceAsStream(path))) match {
+    def createBufferedSource: Try[BufferedSource] =
+      if (path.trim.isEmpty)
+        Failure(new IllegalArgumentException(s"Cannot load a text resource from an empty path."))
+      else {
+        Try {
+          logDebug(s"Try loading text resource from local file '$path'.")
+          Source.fromFile(path)
+        }.logSuccess(_ => logDebug(s"Successfully loaded resource from local path '$path'."))
+          .orElse {
+            logDebug(s"Try loading text resource from URI '$path'.")
+            Try(Source.fromURI(new URI(path)))
+              .logSuccess(_ => logDebug(s"Successfully loaded resource from URI '$path'."))
+          }
+          .orElse {
+            logDebug(s"Try loading text resource from URL '$path'.")
+            Try(Source.fromURL(new URL(path)))
+              .logSuccess(_ => logDebug(s"Successfully loaded resource from URL '$path'."))
+          }
+          .orElse {
+            logDebug(s"Try loading text resource from classpath '$path'.")
+            val bufferedSource =
+              Option(Thread.currentThread.getContextClassLoader.getResourceAsStream(path))
+                .orElse(Option(Thread.currentThread.getClass.getResourceAsStream(path))) match {
                 case Some(inputStream) => Try(Source.fromInputStream(inputStream))
-                case None => Failure(new IllegalArgumentException(s"Unable to find '$path' in the classpath."))
+                case None              => Failure(new IllegalArgumentException(s"Unable to find '$path' in the classpath."))
               }
-          bufferedSource
-            .logSuccess(_ => logDebug(s"Successfully loaded text resource from classpath '$path'."))
-        }
-    }
-    Bracket.auto(createBufferedSource.get)(source => Try(source.getLines.mkString("\n")))
+            bufferedSource
+              .logSuccess(_ => logDebug(s"Successfully loaded text resource from classpath '$path'."))
+          }
+      }
+    Bracket
+      .auto(createBufferedSource.get)(source => Try(source.getLines().mkString("\n")))
       .flatten
       .logFailure(logError(s"Failed to load text resource from '$path'.", _))
   }

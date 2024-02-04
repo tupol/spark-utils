@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import org.apache.spark.sql.types.StringType
@@ -32,7 +32,8 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 case class GenericDataSource(configuration: GenericSourceConfiguration)
-  extends DataSource[GenericSourceConfiguration, DataFrameReader] with Logging {
+    extends DataSource[GenericSourceConfiguration, DataFrameReader]
+    with Logging {
 
   /** Create and configure a `DataFrameReader` based on the given `GenericDataSourceConfig` */
   def reader(implicit spark: SparkSession): DataFrameReader = {
@@ -44,13 +45,13 @@ case class GenericDataSource(configuration: GenericSourceConfiguration)
     configuration.schema match {
       case Some(inputSchema) =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader using the specified schema.")
-        val schema = configuration.columnNameOfCorruptRecord
-          .map { columnNameOfCorruptRecord =>
-            logDebug(s"The '$ColumnNameOfCorruptRecord' was specified; " +
-              s"adding column '$columnNameOfCorruptRecord' to the input schema.")
-            inputSchema.add(columnNameOfCorruptRecord, StringType)
-          }
-          .getOrElse(inputSchema)
+        val schema = configuration.columnNameOfCorruptRecord.map { columnNameOfCorruptRecord =>
+          logDebug(
+            s"The '$ColumnNameOfCorruptRecord' was specified; " +
+              s"adding column '$columnNameOfCorruptRecord' to the input schema."
+          )
+          inputSchema.add(columnNameOfCorruptRecord, StringType)
+        }.getOrElse(inputSchema)
         basicReader.schema(schema)
       case None =>
         logDebug(s"Initializing the '$dataFormat' DataFrame loader inferring the schema.")
@@ -62,10 +63,17 @@ case class GenericDataSource(configuration: GenericSourceConfiguration)
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' from '${configuration}'.")
     Try(reader.load())
-      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _))
+      .mapFailure(
+        DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _)
+      )
       .logFailure(logError)
-      .logSuccess(_ => logInfo(s"Successfully read the data " +
-        s"as '${configuration.format}' from '${configuration}"))
+      .logSuccess(
+        _ =>
+          logInfo(
+            s"Successfully read the data " +
+              s"as '${configuration.format}' from '${configuration}"
+          )
+      )
   }
 
 }

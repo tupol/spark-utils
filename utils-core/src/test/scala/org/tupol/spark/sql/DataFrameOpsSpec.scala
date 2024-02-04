@@ -21,7 +21,7 @@ class DataFrameOpsSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
     val expectedSchema = schemaFor[DummyUnnestedData]
 
-    val df = spark.createDataFrame(Seq[DummyNestedData]()).toDF
+    val df = spark.createDataFrame(Seq[DummyNestedData]()).toDF()
 
     flattenFields(df).schema shouldBe expectedSchema
 

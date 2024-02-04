@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
@@ -30,7 +30,9 @@ import org.tupol.utils.implicits._
 
 import scala.util.Try
 
-case class FileDataSource(configuration: FileSourceConfiguration) extends DataSource[FileSourceConfiguration, DataFrameReader] with Logging {
+case class FileDataSource(configuration: FileSourceConfiguration)
+    extends DataSource[FileSourceConfiguration, DataFrameReader]
+    with Logging {
 
   /** Create and configure a `DataFrameReader` based on the given `SourceConfiguration` */
   def reader(implicit spark: SparkSession): DataFrameReader = {
@@ -53,12 +55,25 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
   /** Try to read the data according to the given configuration and return the read data or a failure */
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
-    Try(configuration.sourceConfiguration.options.get("path")
-      .map(_ => reader.load()).getOrElse(reader.load(configuration.path)))
-      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'", _))
+    Try(
+      configuration.sourceConfiguration.options
+        .get("path")
+        .map(_ => reader.load())
+        .getOrElse(reader.load(configuration.path))
+    ).mapFailure(
+        DataSourceException(
+          s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'",
+          _
+        )
+      )
       .logFailure(logError)
-      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
-        s"from '${configuration.path}'"))
+      .logSuccess(
+        d =>
+          logInfo(
+            s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
+              s"from '${configuration.path}'"
+          )
+      )
   }
 
 }
@@ -68,8 +83,10 @@ case class FileDataSource(configuration: FileSourceConfiguration) extends DataSo
  * @param path
  * @param sourceConfiguration
  */
-case class FileSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration) extends FormatAwareDataSourceConfiguration {
+case class FileSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration)
+    extends FormatAwareDataSourceConfiguration {
+
   /** Get the format type of the input file. */
-  def format: FormatType = sourceConfiguration.format
+  def format: FormatType        = sourceConfiguration.format
   override def toString: String = s"path: '$path', source configuration: { $sourceConfiguration }"
 }

@@ -20,32 +20,36 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
-import org.apache.spark.sql.streaming.{DataStreamReader, DataStreamWriter, StreamingQuery}
-import org.apache.spark.sql.{DataFrame, DataFrameReader, DataFrameWriter, Dataset, Row, SparkSession}
+import org.apache.spark.sql.streaming.{ DataStreamReader, DataStreamWriter, StreamingQuery }
+import org.apache.spark.sql.{ DataFrame, DataFrameReader, DataFrameWriter, Dataset, Row, SparkSession }
 import org.tupol.spark.io.streaming.structured.StreamingSourceFactory
 import org.tupol.spark.sql
-
 
 package object implicits {
 
   /** SparkSession decorator. */
   implicit class SparkSessionOps(spark: SparkSession) {
+
     /** See [[org.tupol.spark.io.DataSource]] */
-    def source[SC <: DataSourceConfiguration](configuration: SC)(implicit sourceFactory: DataSourceFactory): DataSource[SC, DataFrameReader] =
+    def source[SC <: DataSourceConfiguration](
+      configuration: SC
+    )(implicit sourceFactory: DataSourceFactory): DataSource[SC, DataFrameReader] =
       sourceFactory(configuration)
 
     /** See [[org.tupol.spark.io.DataSource]] */
-    def streamingSource[SC <: DataSourceConfiguration](configuration: SC)(implicit sourceFactory: StreamingSourceFactory): DataSource[SC, DataStreamReader] =
+    def streamingSource[SC <: DataSourceConfiguration](
+      configuration: SC
+    )(implicit sourceFactory: StreamingSourceFactory): DataSource[SC, DataStreamReader] =
       sourceFactory(configuration)
   }
 
   /** DataFrame decorator. */
   implicit class DataFrameOps(val dataFrame: DataFrame) {
 
-    /** See [[org.tupol.spark.sql.flattenFields()]] */
+    /** See `org.tupol.spark.sql.flattenFields()` */
     def flattenFields: DataFrame = sql.flattenFields(dataFrame)
 
     /** Not all column names are compliant to the Avro format. This function renames to columns to be Avro compliant */
@@ -53,11 +57,15 @@ package object implicits {
       sql.makeDataFrameAvroCompliant(dataFrame)
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrameWriter[Row], DataFrame] =
+    def sink[SC <: DataSinkConfiguration](
+      configuration: SC
+    )(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrameWriter[Row], DataFrame] =
       sinkFactory.apply[SC, DataFrameWriter[Row], DataFrame](configuration, dataFrame)
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataStreamWriter[Row], StreamingQuery] =
+    def streamingSink[SC <: DataSinkConfiguration](
+      configuration: SC
+    )(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataStreamWriter[Row], StreamingQuery] =
       sinkFactory.apply[SC, DataStreamWriter[Row], StreamingQuery](configuration, dataFrame)
 
   }
@@ -66,11 +74,15 @@ package object implicits {
   implicit class DatasetOps[T](val dataset: Dataset[T]) {
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def sink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrameWriter[Row], DataFrame] =
+    def sink[SC <: DataSinkConfiguration](
+      configuration: SC
+    )(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataFrameWriter[Row], DataFrame] =
       sinkFactory.apply[SC, DataFrameWriter[Row], DataFrame](configuration, dataset.toDF())
 
     /** See [[org.tupol.spark.io.DataSink]] */
-    def streamingSink[SC <: DataSinkConfiguration](configuration: SC)(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataStreamWriter[Row], StreamingQuery] =
+    def streamingSink[SC <: DataSinkConfiguration](
+      configuration: SC
+    )(implicit sinkFactory: DataAwareSinkFactory): DataAwareSink[SC, DataStreamWriter[Row], StreamingQuery] =
       sinkFactory.apply[SC, DataStreamWriter[Row], StreamingQuery](configuration, dataset.toDF())
 
   }

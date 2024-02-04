@@ -44,8 +44,8 @@ class GenericStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers
   test("Failed to extract GenericStreamDataSourceConfiguration out of an empty string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
-    config.extract[GenericStreamDataSourceConfiguration] shouldBe a [Failure[_]]
+    config.extract[GenericStreamDataSourceConfiguration] shouldBe a[Failure[_]]
   }
 }

@@ -20,25 +20,25 @@ class UtilsSpec extends AnyFunSuite with Matchers {
   }
 
   test("fuzzyLoadTextResourceFile successfully loads a text from a local path") {
-    val path = "src/test/resources/utils/sample-text.resource"
+    val path   = "src/test/resources/utils/sample-text.resource"
     val result = fuzzyLoadTextResourceFile(path).get
     result shouldBe expectedText
   }
 
   test("fuzzyLoadTextResourceFile successfully loads a text from the class path") {
-    val path = "utils/sample-text.resource"
+    val path   = "utils/sample-text.resource"
     val result = fuzzyLoadTextResourceFile(path).get
     result shouldBe expectedText
   }
 
   test("fuzzyLoadTextResourceFile successfully loads a text from the URI") {
-    val path = new java.io.File("src/test/resources/utils/sample-text.resource").toURI.toASCIIString
+    val path   = new java.io.File("src/test/resources/utils/sample-text.resource").toURI.toASCIIString
     val result = fuzzyLoadTextResourceFile(path).get
     result shouldBe expectedText
   }
 
   test("fuzzyLoadTextResourceFile successfully loads a text from the URL") {
-    val path = "http://info.cern.ch"
+    val path   = "http://info.cern.ch"
     val result = fuzzyLoadTextResourceFile(path).get
     // If this test fails it's probably because one of the oldest websites retreated into darkness. May that never happen :)
     result.size should be > 10

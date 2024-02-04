@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameReader, SparkSession }
@@ -30,23 +30,36 @@ import org.tupol.utils.implicits._
 
 import scala.util.Try
 
-case class JdbcDataSource(configuration: JdbcSourceConfiguration) extends DataSource[JdbcSourceConfiguration, DataFrameReader] with Logging {
+case class JdbcDataSource(configuration: JdbcSourceConfiguration)
+    extends DataSource[JdbcSourceConfiguration, DataFrameReader]
+    with Logging {
 
   /** Create and configure a `DataFrameReader` based on the given `JdbcDataSourceConfig` */
-  def reader(implicit spark: SparkSession): DataFrameReader = {
+  def reader(implicit spark: SparkSession): DataFrameReader =
     spark.read.format(configuration.format.toString).options(configuration.options)
-  }
 
   /** Try to read the data according to the given configuration and return the read data or a failure */
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
-    logInfo(s"Reading data as '${configuration.format}' " +
-      s"from the '${configuration.table}' table of '${configuration.url}'.")
+    logInfo(
+      s"Reading data as '${configuration.format}' " +
+        s"from the '${configuration.table}' table of '${configuration.url}'."
+    )
     Try(reader.load())
-      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from " +
-        s"the '${configuration.table}' table of '${configuration.url}' (Full configuration: ${configuration})", _))
+      .mapFailure(
+        DataSourceException(
+          s"Failed to read the data as '${configuration.format}' from " +
+            s"the '${configuration.table}' table of '${configuration.url}' (Full configuration: ${configuration})",
+          _
+        )
+      )
       .logFailure(logError)
-      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.format}' from " +
-        s"the '${configuration.table}' table of '${configuration.url}'"))
+      .logSuccess(
+        d =>
+          logInfo(
+            s"Successfully read the data as '${configuration.format}' from " +
+              s"the '${configuration.table}' table of '${configuration.url}'"
+          )
+      )
   }
 
 }

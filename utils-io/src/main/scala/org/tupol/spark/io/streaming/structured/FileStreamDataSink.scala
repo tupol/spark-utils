@@ -20,18 +20,19 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery}
+import org.apache.spark.sql.{ DataFrame, Row }
+import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery }
 import org.tupol.spark.Logging
-import org.tupol.spark.io.{DataAwareSink, DataSink, FormatType}
+import org.tupol.spark.io.{ DataAwareSink, DataSink, FormatType }
 
 import scala.util.Try
 
 case class FileStreamDataSink(configuration: FileStreamDataSinkConfiguration)
-  extends DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
+    extends DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery]
+    with Logging {
 
   private val innerSink = GenericStreamDataSink(configuration.generic)
 
@@ -44,36 +45,37 @@ case class FileStreamDataSink(configuration: FileStreamDataSinkConfiguration)
 
 object FileStreamDataSink {
   def apply(
-             path: String,
-             genericConfig: GenericStreamDataSinkConfiguration,
-             checkpointLocation: Option[String] = None): FileStreamDataSinkConfiguration =
+    path: String,
+    genericConfig: GenericStreamDataSinkConfiguration,
+    checkpointLocation: Option[String] = None
+  ): FileStreamDataSinkConfiguration =
     FileStreamDataSinkConfiguration(path, genericConfig, checkpointLocation)
 }
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
 case class FileStreamDataAwareSink(configuration: FileStreamDataSinkConfiguration, data: DataFrame)
-  extends DataAwareSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
-  override def sink: DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] = FileStreamDataSink(configuration)
+    extends DataAwareSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
+  override def sink: DataSink[FileStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] =
+    FileStreamDataSink(configuration)
 }
 
 case class FileStreamDataSinkConfiguration(
   path: String,
   private val genericConfig: GenericStreamDataSinkConfiguration,
-  checkpointLocation: Option[String])
-  extends FormatAwareStreamingSinkConfiguration {
+  checkpointLocation: Option[String]
+) extends FormatAwareStreamingSinkConfiguration {
   def addOptions(extraOptions: Map[String, String]): FileStreamDataSinkConfiguration =
     this.copy(genericConfig = genericConfig.addOptions(internalOptions ++ extraOptions))
   private val internalOptions =
-    Map(
-      "path" -> Some(path),
-      "checkpointLocation" -> checkpointLocation)
-    .collect { case (key, Some(value)) => (key, value) }
+    Map("path" -> Some(path), "checkpointLocation" -> checkpointLocation).collect {
+      case (key, Some(value)) => (key, value)
+    }
   def options(): Map[String, String] = genericConfig.options.getOrElse(Map())
+
   /** The generic configuration of this data sink; this is used to build the actual writer */
-  val generic = genericConfig.addOptions(internalOptions)
-  def format: FormatType = generic.format
+  val generic                                  = genericConfig.addOptions(internalOptions)
+  def format: FormatType                       = generic.format
   def resolve: FileStreamDataSinkConfiguration = this.copy(genericConfig = generic)
 
   override def toString: String = s"path: '$path', $generic"
 }
-

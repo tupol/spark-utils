@@ -9,8 +9,9 @@ import org.scalatest.Suite
 trait SharedSparkHiveSession extends SharedSparkSession {
   this: Suite =>
 
-  override def sparkSessionBuilder: SparkSession.Builder = super.sparkSessionBuilder
-    .enableHiveSupport()
-    .config("spark.sql.warehouse.dir", warehouseDirPath)
+  override def sparkSessionBuilder: SparkSession.Builder =
+    super.sparkSessionBuilder
+      .enableHiveSupport()
+      .config("spark.sql.warehouse.dir", warehouseDirPath)
 
 }

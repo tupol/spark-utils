@@ -1,10 +1,9 @@
 package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.types.{ StringType, StructField, StructType }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.tupol.spark.io.FormatType
-
 
 class StreamingSinkConfigurationSpec extends AnyWordSpec with Matchers {
 
@@ -12,13 +11,12 @@ class StreamingSinkConfigurationSpec extends AnyWordSpec with Matchers {
 
   "addOptions" should {
 
-    val options = Map("prop1" -> "val1", "prop2" -> "val2")
-    val extraOptions = Map("prop2" -> "VAL2-CHANGED", "prop3" -> "val3")
-    val expectedOptions = Map("prop1" -> "val1", "prop2" -> "VAL2-CHANGED", "prop3" -> "val3")
-
+    val options         = Map("prop1" -> "val1", "prop2"         -> "val2")
+    val extraOptions    = Map("prop2" -> "VAL2-CHANGED", "prop3" -> "val3")
+    val expectedOptions = Map("prop1" -> "val1", "prop2"         -> "VAL2-CHANGED", "prop3" -> "val3")
 
     "overwrite existing options for GenericStreamDataSinkConfiguration" in {
-      val tested = GenericStreamDataSinkConfiguration(FormatType.Custom(""), options = options)
+      val tested          = GenericStreamDataSinkConfiguration(FormatType.Custom(""), options = options)
       val resultedOptions = tested.addOptions(extraOptions).options
       resultedOptions.get should contain theSameElementsAs expectedOptions
     }
@@ -39,7 +37,7 @@ class StreamingSinkConfigurationSpec extends AnyWordSpec with Matchers {
         genericConfig = GenericStreamDataSinkConfiguration(FormatType.Custom(""), options, None),
         options = options
       )
-      val result = tested.addOptions(extraOptions)
+      val result          = tested.addOptions(extraOptions)
       val resultedOptions = result.options
       resultedOptions should contain allElementsOf expectedOptions
       result.generic.options.get should contain allElementsOf expectedOptions

@@ -1,7 +1,7 @@
 package org.tupol.spark
 
 import org.tupol.utils.implicits._
-import com.typesafe.config.{Config, ConfigFactory, ConfigParseOptions, ConfigRenderOptions, ConfigResolveOptions}
+import com.typesafe.config.{ Config, ConfigFactory, ConfigParseOptions, ConfigRenderOptions, ConfigResolveOptions }
 import org.apache.spark.SparkFiles
 
 import scala.io.Source
@@ -9,8 +9,8 @@ import scala.util.Try
 
 object config {
 
-  def renderConfig(config: Config): String = config.root.render(ConfigRenderOptions.defaults().setComments(false).setOriginComments(false))
-
+  def renderConfig(config: Config): String =
+    config.root.render(ConfigRenderOptions.defaults().setComments(false).setOriginComments(false))
 
   /**
    * `TypesafeConfigBuilder` must be mixed in with a class or a trait that has an `appName` function
@@ -66,6 +66,7 @@ object config {
   }
 
   object FuzzyTypesafeConfigBuilder extends TypesafeConfigBuilder {
+
     /**
      * Extract and assemble a configuration object out of the application parameters and
      * configuration files, as described bellow.
@@ -107,7 +108,7 @@ object config {
       def configFromPath(path: String, label: Option[String] = None): Option[Config] = {
         val file      = new File(path)
         val available = file.exists && file.canRead && file.isFile
-        val lab = s"${label.getOrElse("Local file")}"
+        val lab       = s"${label.getOrElse("Local file")}"
         log.info(
           s"$lab: ${file.getAbsolutePath} is ${if (!available) "not " else ""}available."
         )
@@ -130,12 +131,12 @@ object config {
       val classpathConfiguration: Option[Config] =
         (
           for {
-            resource <- Try(Source.fromResource(configurationFileName))
-                        .recoverWith{case _ => Try(Source.fromResource(s"/$configurationFileName"))}
-            config   <- Try(ConfigFactory.parseString(resource.mkString))
+            resource <- Try(Source.fromResource(configurationFileName)).recoverWith {
+                         case _ => Try(Source.fromResource(s"/$configurationFileName"))
+                       }
+            config <- Try(ConfigFactory.parseString(resource.mkString))
           } yield config
-        )
-          .recoverWith { case _ => Try(ConfigFactory.load(s"/$configurationFileName")) }
+        ).recoverWith { case _ => Try(ConfigFactory.load(s"/$configurationFileName")) }
           .logSuccess(c => log.info(s"Successfully parsed the classpath configuration at '$configurationFileName'"))
           .logFailure(t => log.error(s"Failed to parse classpath configuration at '$configurationFileName'", t))
           .toOption
@@ -150,13 +151,14 @@ object config {
 
       val parametersConf = ConfigFactory.parseString(args.mkString("\n"))
 
-      val configurations = Seq(Some(parametersConf), localConfiguration, sparkConfiguration, classpathConfiguration, defaultConfig)
+      val configurations =
+        Seq(Some(parametersConf), localConfiguration, sparkConfiguration, classpathConfiguration, defaultConfig)
 
       val fullConfig =
-        configurations.collect { case Some(config) => 
-          config 
-        }
-          .reduce(_.withFallback(_))
+        configurations.collect {
+          case Some(config) =>
+            config
+        }.reduce(_.withFallback(_))
           .withFallback(ConfigFactory.defaultReference())
 
       val resolvedConfig = Try(fullConfig.resolve())

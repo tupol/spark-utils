@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf._
 import org.tupol.spark.io.streaming.structured.KafkaSubscription
 
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 class KafkaSubscriptionSpec extends AnyFunSuite with Matchers {
 

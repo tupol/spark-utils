@@ -3,7 +3,14 @@ package org.tupol.spark.io.pureconf
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.tupol.spark.io.{DataSinkConfiguration, FileSinkConfiguration, FormatType, GenericSinkConfiguration, JdbcSinkConfiguration, PartitionsConfiguration}
+import org.tupol.spark.io.{
+  DataSinkConfiguration,
+  FileSinkConfiguration,
+  FormatType,
+  GenericSinkConfiguration,
+  JdbcSinkConfiguration,
+  PartitionsConfiguration
+}
 
 class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
@@ -26,7 +33,8 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("COL1"),
-      partitionFilesNumber = Some(2))
+      partitionFilesNumber = Some(2)
+    )
 
     val result = config.extract[DataSinkConfiguration]("output")
 
@@ -49,7 +57,8 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("COL1", "COL2"),
-      partitionFilesNumber = None)
+      partitionFilesNumber = None
+    )
     val result = config.extract[DataSinkConfiguration]("output")
 
     result.get shouldBe expected
@@ -81,10 +90,8 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericSinkConfiguration(
-      FormatType.Custom("test"),
-      mode = Some("MODE"),
-      partitionColumns = Seq("COL1", "COL2"))
+    val expected =
+      GenericSinkConfiguration(FormatType.Custom("test"), mode = Some("MODE"), partitionColumns = Seq("COL1", "COL2"))
     val result = config.extract[DataSinkConfiguration]("output")
 
     result.get shouldBe expected
@@ -133,7 +140,7 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract FileSinkConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
     val result = config.extract[DataSinkConfiguration]
 
@@ -164,7 +171,8 @@ class DataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       password = Some("USER_PASS"),
       driver = Some("SOME_DRIVER"),
       mode = Some("SOME_MODE"),
-      options = Map("opt1" -> "val1"))
+      options = Map("opt1" -> "val1")
+    )
     val result = config.extract[DataSinkConfiguration]("output")
 
     result.get shouldBe expected

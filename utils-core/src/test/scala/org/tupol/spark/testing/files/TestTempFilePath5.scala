@@ -11,7 +11,7 @@ import scala.util.Try
 trait TestTempFilePath5 extends BeforeAndAfterEach {
   this: Suite =>
 
-  private val tempDir = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
+  private val tempDir                 = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
   private var _tempFile: java.io.File = _
 
   def testFile5 = _tempFile

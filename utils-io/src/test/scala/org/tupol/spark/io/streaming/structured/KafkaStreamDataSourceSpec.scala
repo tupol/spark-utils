@@ -1,25 +1,31 @@
 package org.tupol.spark.io.streaming.structured
 
-import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
+import io.github.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
 import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.concurrent.Eventually
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.time.{Seconds, Span}
-import org.scalatest.{BeforeAndAfter, GivenWhenThen}
+import org.scalatest.time.{ Seconds, Span }
+import org.scalatest.{ BeforeAndAfter, GivenWhenThen }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.implicits._
 
-class KafkaStreamDataSourceSpec extends AnyFunSuite
-  with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
-  with SharedSparkSession with EmbeddedKafka {
+class KafkaStreamDataSourceSpec
+    extends AnyFunSuite
+    with Matchers
+    with GivenWhenThen
+    with Eventually
+    with BeforeAndAfter
+    with SharedSparkSession
+    with EmbeddedKafka {
 
-  implicit override val patienceConfig = PatienceConfig(timeout = scaled(Span(10, Seconds)))
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(timeout = scaled(Span(10, Seconds)))
 
-  implicit val config = EmbeddedKafkaConfig()
-  val topic = "testTopic"
+  implicit val config: EmbeddedKafkaConfig = EmbeddedKafkaConfig()
+  val topic                                = "testTopic"
 
-  val TestConfig = KafkaStreamDataSourceConfiguration(s":${config.kafkaPort}", KafkaSubscription("subscribe", topic), Some("earliest"))
+  val TestConfig =
+    KafkaStreamDataSourceConfiguration(s":${config.kafkaPort}", KafkaSubscription("subscribe", topic), Some("earliest"))
 
   test("String messages should be written to the kafka stream and read back") {
 
@@ -42,19 +48,27 @@ class KafkaStreamDataSourceSpec extends AnyFunSuite
       testMessages.foreach { message =>
         publishStringMessageToKafka(topic, message)
         eventually {
-          val received = result.select("value", "timestamp").as[(String, Long)]
-            .collect().sortBy(_._2).reverse.headOption.map(_._1)
+          val received = result
+            .select("value", "timestamp")
+            .as[(String, Long)]
+            .collect()
+            .sortBy(_._2)
+            .reverse
+            .headOption
+            .map(_._1)
           received shouldBe Some(message)
         }
       }
-      streamingQuery.stop
+      streamingQuery.stop()
     }
   }
 
   test("Fail gracefully") {
     val inputConfig = KafkaStreamDataSourceConfiguration(
       "unknown_host:0000000",
-      KafkaSubscription("ILLEGAL-SUBSCRIPTION-TYPE", "UNKNOWN-TOPIC"), Some("earliest"))
+      KafkaSubscription("ILLEGAL-SUBSCRIPTION-TYPE", "UNKNOWN-TOPIC"),
+      Some("earliest")
+    )
     an[Exception] shouldBe thrownBy(spark.source(inputConfig).read.get)
   }
 

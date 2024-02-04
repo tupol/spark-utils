@@ -6,7 +6,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf.config.ConfigOps
 import org.tupol.spark.io.FormatType._
-import org.tupol.spark.io.streaming.structured.{FileStreamDataSinkConfiguration, GenericStreamDataSinkConfiguration}
+import org.tupol.spark.io.streaming.structured.{ FileStreamDataSinkConfiguration, GenericStreamDataSinkConfiguration }
 
 import scala.util.Failure
 
@@ -38,11 +38,17 @@ class FileStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val expected = GenericStreamDataSinkConfiguration(
       Json,
       Map("key1" -> "val1", "key2" -> "val2", "path" -> "my_path", "checkpointLocation" -> "myCheckpointLocation"),
-      Some("testQueryName"), Some(Trigger.Continuous(12000)), Seq("col1", "col2"), Some("testOutputMode"))
+      Some("testQueryName"),
+      Some(Trigger.Continuous(12000)),
+      Seq("col1", "col2"),
+      Some("testOutputMode")
+    )
     config.extract[FileStreamDataSinkConfiguration].get.generic shouldBe expected
   }
 
-  test("Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string with empty options") {
+  test(
+    "Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string with empty options"
+  ) {
 
     val configStr =
       """
@@ -70,7 +76,8 @@ class FileStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSinkConfiguration(Parquet, Map("key1" -> "val1", "key2" -> "val2", "path" -> "my_path"))
+    val expected =
+      GenericStreamDataSinkConfiguration(Parquet, Map("key1" -> "val1", "key2" -> "val2", "path" -> "my_path"))
     config.extract[FileStreamDataSinkConfiguration].get.generic shouldBe expected
   }
 
@@ -87,7 +94,7 @@ class FileStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[FileStreamDataSinkConfiguration] shouldBe a [Failure[_]]
+    config.extract[FileStreamDataSinkConfiguration] shouldBe a[Failure[_]]
   }
 
   test("Failed to extract FileStreamDataSinkConfiguration out of a configuration string if options are missing") {
@@ -98,6 +105,6 @@ class FileStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[FileStreamDataSinkConfiguration] shouldBe a [Failure[_]]
+    config.extract[FileStreamDataSinkConfiguration] shouldBe a[Failure[_]]
   }
 }

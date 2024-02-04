@@ -1,7 +1,7 @@
 package org.tupol.spark.testing.files
 
 import org.apache.commons.io.FileUtils
-import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatest.{ BeforeAndAfterEach, Suite }
 
 import java.util.UUID
 import scala.util.Try
@@ -10,7 +10,7 @@ import scala.util.Try
 trait TestTempFolderPath extends BeforeAndAfterEach {
   this: Suite =>
 
-  private val tempDir = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
+  private val tempDir                 = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
   private var _tempFile: java.io.File = _
 
   def testFile1 = _tempFile

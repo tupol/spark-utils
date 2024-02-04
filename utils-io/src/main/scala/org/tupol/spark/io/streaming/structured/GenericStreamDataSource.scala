@@ -20,12 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.streaming.structured
 
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io._
 import org.tupol.utils.implicits._
@@ -33,7 +33,8 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfiguration)
-  extends DataSource[GenericStreamDataSourceConfiguration, DataStreamReader] with Logging {
+    extends DataSource[GenericStreamDataSourceConfiguration, DataStreamReader]
+    with Logging {
 
   /** Create and configure a `DataStreamReader` based on the given `GenericStreamDataSourceConfiguration` */
   def reader(implicit spark: SparkSession): DataStreamReader = {
@@ -49,22 +50,29 @@ case class GenericStreamDataSource(configuration: GenericStreamDataSourceConfigu
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.format}' from '${configuration}'.")
     Try(reader.load())
-      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _))
+      .mapFailure(
+        DataSourceException(s"Failed to read the data as '${configuration.format}' from '${configuration}'", _)
+      )
       .logSuccess(_ => logInfo(s"Successfully read the data as '${configuration.format}' from '${configuration}'"))
       .logFailure(logError)
   }
 }
 
-case class GenericStreamDataSourceConfiguration(format: FormatType, options: Map[String, String],
-  schema: Option[StructType]) extends FormatAwareStreamingSourceConfiguration {
+case class GenericStreamDataSourceConfiguration(
+  format: FormatType,
+  options: Map[String, String],
+  schema: Option[StructType]
+) extends FormatAwareStreamingSourceConfiguration {
   override def addOptions(extraOptions: Map[String, String]): GenericStreamDataSourceConfiguration =
-    this.copy(options =  this.options ++ extraOptions)
+    this.copy(options = this.options ++ extraOptions)
   override def withSchema(schema: Option[StructType]): GenericStreamDataSourceConfiguration =
     this.copy(schema = schema)
 }
 object GenericStreamDataSourceConfiguration {
-  def apply(format: FormatType, options: Option[Map[String, String]] = None,
-            schema: Option[StructType] = None): GenericStreamDataSourceConfiguration = {
+  def apply(
+    format: FormatType,
+    options: Option[Map[String, String]] = None,
+    schema: Option[StructType] = None
+  ): GenericStreamDataSourceConfiguration =
     GenericStreamDataSourceConfiguration(format, options.getOrElse(Map()), schema)
-  }
 }
