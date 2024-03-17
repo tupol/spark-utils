@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark
 
 import org.apache.spark.sql.DataFrame
@@ -28,11 +28,15 @@ import org.apache.spark.sql.functions.col
 
 package object testing {
 
-  class DataFrameCompareResult private (columnsOnlyInLeft: Seq[String], columnsOnlyInRight: Seq[String],
-    dataOnlyInLeft: DataFrame, dataOnlyInRight: DataFrame) {
+  class DataFrameCompareResult private (
+    columnsOnlyInLeft: Seq[String],
+    columnsOnlyInRight: Seq[String],
+    dataOnlyInLeft: DataFrame,
+    dataOnlyInRight: DataFrame
+  ) {
 
-    lazy val countOnlyInLeft = dataOnlyInLeft.count
-    lazy val countOnlyInRight = dataOnlyInRight.count
+    lazy val countOnlyInLeft  = dataOnlyInLeft.count()
+    lazy val countOnlyInRight = dataOnlyInRight.count()
 
     def areEqual(verbose: Boolean = false) = {
       val areEqual = countOnlyInLeft == 0 && countOnlyInRight == 0 &&
@@ -63,17 +67,22 @@ package object testing {
   }
   object DataFrameCompareResult {
     def apply(left: DataFrame, right: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
-      val leftCols = left.columns
-      val rightCols = right.columns
-      val onlyLeftCols = leftCols.filterNot(rightCols.contains)
+      val leftCols      = left.columns
+      val rightCols     = right.columns
+      val onlyLeftCols  = leftCols.filterNot(rightCols.contains)
       val onlyRightCols = rightCols.filterNot(leftCols.contains)
-      val joinCols = if (joinColumns.isEmpty) leftCols.toSeq else joinColumns
+      val joinCols      = if (joinColumns.isEmpty) leftCols.toSeq else joinColumns
 
-      new DataFrameCompareResult(onlyLeftCols, onlyRightCols,
-        left.join(right, joinCols, "left")
+      new DataFrameCompareResult(
+        onlyLeftCols,
+        onlyRightCols,
+        left
+          .join(right, joinCols, "left")
           .except(left.join(right, joinCols, "right")),
-        left.join(right, joinCols, "right")
-          .except(left.join(right, joinCols, "left")))
+        left
+          .join(right, joinCols, "right")
+          .except(left.join(right, joinCols, "left"))
+      )
     }
 
   }
@@ -91,9 +100,8 @@ package object testing {
     DataFrameCompareResult(left, right, joinColumns)
 
   implicit class DataFrameComparator(dataframe: DataFrame) {
-    def compareWith(that: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult = {
+    def compareWith(that: DataFrame, joinColumns: Seq[String] = Seq()): DataFrameCompareResult =
       compareDataFrames(dataframe, that, joinColumns)
-    }
   }
 
 }

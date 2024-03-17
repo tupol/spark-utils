@@ -5,8 +5,13 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.pureconf.config.ConfigOps
-import org.tupol.spark.io.FormatType.{Json, Kafka, Socket, Text}
-import org.tupol.spark.io.streaming.structured.{FileStreamDataSinkConfiguration, FormatAwareStreamingSinkConfiguration, GenericStreamDataSinkConfiguration, KafkaStreamDataSinkConfiguration}
+import org.tupol.spark.io.FormatType.{ Json, Kafka, Socket, Text }
+import org.tupol.spark.io.streaming.structured.{
+  FileStreamDataSinkConfiguration,
+  FormatAwareStreamingSinkConfiguration,
+  GenericStreamDataSinkConfiguration,
+  KafkaStreamDataSinkConfiguration
+}
 import org.tupol.spark.sql.loadSchemaFromFile
 
 import scala.util.Failure
@@ -48,7 +53,8 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
     val expected = FileStreamDataSinkConfiguration(
       path = "OUTPUT_PATH",
       genericConfig = GenericStreamDataSinkConfiguration(Json, Map()),
-      checkpointLocation = None).resolve
+      checkpointLocation = None
+    ).resolve
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result.get.asInstanceOf[FileStreamDataSinkConfiguration].resolve shouldBe expected
@@ -69,7 +75,11 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
 
     val expected = KafkaStreamDataSinkConfiguration(
       kafkaBootstrapServers = "test_server",
-      genericConfig = GenericStreamDataSinkConfiguration(Kafka, Map("kafka.bootstrap.servers" -> "test_server", "key1" -> "val1", "key2" -> "val2")))
+      genericConfig = GenericStreamDataSinkConfiguration(
+        Kafka,
+        Map("kafka.bootstrap.servers" -> "test_server", "key1" -> "val1", "key2" -> "val2")
+      )
+    )
     val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result.get.asInstanceOf[KafkaStreamDataSinkConfiguration].generic shouldBe expected.generic
@@ -88,7 +98,7 @@ class FormatAwareStreamingSinkConfigurationSpec extends AnyFunSuite with Matcher
     val config = ConfigFactory.parseString(configStr)
 
     val expected = GenericStreamDataSinkConfiguration(Socket, Map("key1" -> "val1", "key2" -> "val2"))
-    val result = config.extract[FormatAwareStreamingSinkConfiguration]("output")
+    val result   = config.extract[FormatAwareStreamingSinkConfiguration]("output")
 
     result.get shouldBe expected
   }

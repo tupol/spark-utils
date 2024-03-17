@@ -17,7 +17,6 @@ import scala.util.Try
  *
  */
 @Experimental
-abstract class SparkFun[Context, Result](contextFactory: Config => Try[Context])
-  extends SparkApp[Context, Result] {
+abstract class SparkFun[Context, Result](contextFactory: Config => Try[Context]) extends SparkApp[Context, Result] {
   final override def createContext(config: Config): Try[Context] = contextFactory(config)
 }

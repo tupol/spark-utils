@@ -20,9 +20,7 @@ class PartitionsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = PartitionsConfiguration(
-      number = Some(1),
-      columns = Seq("a", "b", "c"))
+    val expected = PartitionsConfiguration(number = Some(1), columns = Seq("a", "b", "c"))
 
     config.extract[PartitionsConfiguration].get shouldBe expected
   }
@@ -35,9 +33,7 @@ class PartitionsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = PartitionsConfiguration(
-      number = None,
-      columns = Seq("a", "b", "c"))
+    val expected = PartitionsConfiguration(number = None, columns = Seq("a", "b", "c"))
 
     config.extract[PartitionsConfiguration].get shouldBe expected
   }

@@ -4,8 +4,8 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.SharedSparkSession
-import org.tupol.spark.io.sources.{GenericSourceConfiguration, JdbcSourceConfiguration, TextSourceConfiguration}
-import org.tupol.spark.io.{FileSourceConfiguration, FormatAwareDataSourceConfiguration, FormatType}
+import org.tupol.spark.io.sources.{ GenericSourceConfiguration, JdbcSourceConfiguration, TextSourceConfiguration }
+import org.tupol.spark.io.{ FileSourceConfiguration, FormatAwareDataSourceConfiguration, FormatType }
 import org.tupol.spark.sql.loadSchemaFromFile
 
 class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers with SharedSparkSession {
@@ -23,10 +23,8 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = FileSourceConfiguration(
-      path = "INPUT_PATH",
-      sourceConfiguration = TextSourceConfiguration())
-    val result = config.extract[FormatAwareDataSourceConfiguration]("input")
+    val expected = FileSourceConfiguration(path = "INPUT_PATH", sourceConfiguration = TextSourceConfiguration())
+    val result   = config.extract[FormatAwareDataSourceConfiguration]("input")
 
     result.get shouldBe expected
   }
@@ -42,10 +40,8 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericSourceConfiguration(
-      FormatType.Custom("my-format"),
-      options = Map("path" -> "INPUT_PATH"),
-      schema = None)
+    val expected =
+      GenericSourceConfiguration(FormatType.Custom("my-format"), options = Map("path" -> "INPUT_PATH"), schema = None)
 
     val result = config.extract[FormatAwareDataSourceConfiguration]("input")
 
@@ -81,7 +77,7 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
   test("Failed to extract FileSourceConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
     val result = config.extract[FormatAwareDataSourceConfiguration]("input")
 
@@ -92,15 +88,15 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
 
     val configStr =
       s"""
-        |input.url="INPUT_URL"
-        |input.table="SOURCE_TABLE"
-        |input.user="USER_NAME"
-        |input.password="USER_PASS"
-        |input.driver="SOME_DRIVER"
-        |input.options={
-        |  opt1: "val1"
-        |}
-        |input.schema: ${ReferenceSchema.prettyJson}
+         |input.url="INPUT_URL"
+         |input.table="SOURCE_TABLE"
+         |input.user="USER_NAME"
+         |input.password="USER_PASS"
+         |input.driver="SOME_DRIVER"
+         |input.options={
+         |  opt1: "val1"
+         |}
+         |input.schema: ${ReferenceSchema.prettyJson}
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
@@ -111,7 +107,8 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
       password = Some("USER_PASS"),
       driver = Some("SOME_DRIVER"),
       options = Map("opt1" -> "val1"),
-      schema = Some(ReferenceSchema))
+      schema = Some(ReferenceSchema)
+    )
     val result = config.extract[FormatAwareDataSourceConfiguration]("input")
 
     result.get shouldBe expected
@@ -133,7 +130,8 @@ class FormatAwareDataSourceConfigurationSpec extends AnyFunSuite with Matchers w
       password = None,
       driver = None,
       options = Map[String, String](),
-      schema = None)
+      schema = None
+    )
     val result = config.extract[FormatAwareDataSourceConfiguration]("input")
 
     result.get shouldBe expected

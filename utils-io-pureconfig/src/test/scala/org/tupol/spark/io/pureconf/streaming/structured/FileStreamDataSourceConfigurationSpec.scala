@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf.config.ConfigOps
-import org.tupol.spark.io.sources.{CsvSourceConfiguration, TextSourceConfiguration}
+import org.tupol.spark.io.sources.{ CsvSourceConfiguration, TextSourceConfiguration }
 import org.tupol.spark.io.streaming.structured.FileStreamDataSourceConfiguration
 
 class FileStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
@@ -20,9 +20,8 @@ class FileStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = FileStreamDataSourceConfiguration(
-      path = "INPUT_PATH",
-      sourceConfiguration = TextSourceConfiguration())
+    val expected =
+      FileStreamDataSourceConfiguration(path = "INPUT_PATH", sourceConfiguration = TextSourceConfiguration())
     val result = config.extract[FileStreamDataSourceConfiguration]("input")
 
     result.get shouldBe expected
@@ -49,8 +48,18 @@ class FileStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = FileStreamDataSourceConfiguration(
       path = "INPUT_PATH",
-      sourceConfiguration = CsvSourceConfiguration(Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8",
-        "header" -> "true", "delimiter" -> "DELIMITER", "key1" -> "val1", "key2" -> "val2")))
+      sourceConfiguration = CsvSourceConfiguration(
+        Map(
+          "mode"          -> "PERMISSIVE",
+          "samplingRatio" -> "1",
+          "charset"       -> "UTF-8",
+          "header"        -> "true",
+          "delimiter"     -> "DELIMITER",
+          "key1"          -> "val1",
+          "key2"          -> "val2"
+        )
+      )
+    )
     val result = config.extract[FileStreamDataSourceConfiguration]("input")
 
     result.get shouldBe expected
@@ -114,7 +123,7 @@ class FileStreamDataSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract FileStreamDataSourceConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
     val result = config.extract[FileStreamDataSourceConfiguration]
 

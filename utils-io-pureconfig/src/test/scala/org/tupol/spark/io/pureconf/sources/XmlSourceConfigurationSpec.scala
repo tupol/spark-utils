@@ -19,12 +19,12 @@ class XmlSourceConfigurationSpec extends AnyFunSuite with Matchers {
     val expected = XmlSourceConfiguration(Map(), Some(ReferenceSchema), "ROW_TAG")
 
     val configStr = s"""
-                      |format="com.databricks.spark.xml"
-                      |path="INPUT_PATH"
-                      |rowTag="ROW_TAG"
-                      |
-                      |schema: ${ReferenceSchema.prettyJson}
-                      |""".stripMargin
+                       |format="com.databricks.spark.xml"
+                       |path="INPUT_PATH"
+                       |rowTag="ROW_TAG"
+                       |
+                       |schema: ${ReferenceSchema.prettyJson}
+                       |""".stripMargin
 
     val config = ConfigFactory.parseString(configStr)
 
@@ -51,7 +51,9 @@ class XmlSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Parse configuration with options") {
 
-    val expected = XmlSourceConfiguration(Map("rowTag" -> "ROW_TAG", "mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8"))
+    val expected = XmlSourceConfiguration(
+      Map("rowTag" -> "ROW_TAG", "mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8")
+    )
 
     val configStr = """
                       |format="com.databricks.spark.xml"
@@ -72,7 +74,9 @@ class XmlSourceConfigurationSpec extends AnyFunSuite with Matchers {
 
   test("Parse configuration with options overridden by top level properties") {
 
-    val expected = XmlSourceConfiguration(Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8", "rowTag" -> "ROW_TAG"))
+    val expected = XmlSourceConfiguration(
+      Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8", "rowTag" -> "ROW_TAG")
+    )
 
     val configStr = """
                       |format="com.databricks.spark.xml"

@@ -20,31 +20,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery, Trigger}
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery, Trigger }
+import org.apache.spark.sql.{ DataFrame, Row }
 import org.tupol.spark.Logging
-import org.tupol.spark.io.{DataAwareSink, DataSink, DataSinkException, FormatType, PartitionsConfiguration}
+import org.tupol.spark.io.{ DataAwareSink, DataSink, DataSinkException, FormatType, PartitionsConfiguration }
 import org.tupol.utils.implicits._
 import org.tupol.utils.CollectionOps._
 
 import scala.util.Try
 
 case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfiguration)
-  extends DataSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
+    extends DataSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery]
+    with Logging {
 
   def writer(data: DataFrame): Try[DataStreamWriter[Row]] = Try {
     val basicWriter = data.writeStream
       .format(configuration.format.toString)
       .options(configuration.options.getOrElse(Map()))
     val writerWithOutputMode = configuration.outputMode.map(basicWriter.outputMode(_)).getOrElse(basicWriter)
-    val writerWithQueryName = configuration.queryName.map(writerWithOutputMode.queryName(_)).getOrElse(writerWithOutputMode)
+    val writerWithQueryName =
+      configuration.queryName.map(writerWithOutputMode.queryName(_)).getOrElse(writerWithOutputMode)
     val writerWithTrigger = configuration.trigger.map(writerWithQueryName.trigger(_)).getOrElse(writerWithQueryName)
     val writerWithPartitions = configuration.partition match {
-      case None => writerWithTrigger
-      case Some(PartitionsConfiguration(_, Nil)) => writerWithTrigger
+      case None                                               => writerWithTrigger
+      case Some(PartitionsConfiguration(_, Nil))              => writerWithTrigger
       case Some(PartitionsConfiguration(_, partitionColumns)) => writerWithTrigger.partitionBy(partitionColumns: _*)
     }
     writerWithPartitions
@@ -62,18 +64,25 @@ case class GenericStreamDataSink(configuration: GenericStreamDataSinkConfigurati
 
 /** GenericStreamDataAwareSink is "data aware", so it can perform a write call with no arguments */
 case class GenericStreamDataAwareSink(configuration: GenericStreamDataSinkConfiguration, data: DataFrame)
-  extends DataAwareSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
-  override def sink: DataSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] = GenericStreamDataSink(configuration)
+    extends DataAwareSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
+  override def sink: DataSink[GenericStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] =
+    GenericStreamDataSink(configuration)
 }
 
-case class GenericStreamDataSinkConfiguration(format: FormatType, options: Option[Map[String, String]],
-                                              queryName: Option[String], trigger: Option[Trigger],
-                                              partition: Option[PartitionsConfiguration], outputMode: Option[String])
-  extends FormatAwareStreamingSinkConfiguration {
+case class GenericStreamDataSinkConfiguration(
+  format: FormatType,
+  options: Option[Map[String, String]],
+  queryName: Option[String],
+  trigger: Option[Trigger],
+  partition: Option[PartitionsConfiguration],
+  outputMode: Option[String]
+) extends FormatAwareStreamingSinkConfiguration {
   def addOptions(extraOptions: Map[String, String]): GenericStreamDataSinkConfiguration =
     this.copy(options = Some(this.options.getOrElse(Map()) ++ extraOptions))
   override def toString: String = {
-    val optionsStr = options.map(options => if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")).getOrElse("")
+    val optionsStr = options
+      .map(options => if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " "))
+      .getOrElse("")
     val partitionColsStr = partition.map(_.columns.mkString(", ")).getOrElse("")
     s"format: '$format', " +
       s"partition columns: [$partitionColsStr], " +
@@ -84,13 +93,23 @@ case class GenericStreamDataSinkConfiguration(format: FormatType, options: Optio
   }
 }
 object GenericStreamDataSinkConfiguration {
-  def apply(format: FormatType, options: Map[String, String] = Map(),
-            queryName: Option[String] = None, trigger: Option[Trigger] = None,
-            partitionColumns: Seq[String] = Seq(), outputMode: Option[String] = None): GenericStreamDataSinkConfiguration = {
+  def apply(
+    format: FormatType,
+    options: Map[String, String] = Map(),
+    queryName: Option[String] = None,
+    trigger: Option[Trigger] = None,
+    partitionColumns: Seq[String] = Seq(),
+    outputMode: Option[String] = None
+  ): GenericStreamDataSinkConfiguration = {
     val partition = partitionColumns.toOptionNel.map(PartitionsConfiguration(None, _))
-    GenericStreamDataSinkConfiguration(format, options.toSeq.toOptionNel.map(_.toMap), queryName, trigger, partition, outputMode)
+    GenericStreamDataSinkConfiguration(
+      format,
+      options.toSeq.toOptionNel.map(_.toMap),
+      queryName,
+      trigger,
+      partition,
+      outputMode
+    )
   }
 
 }
-
-

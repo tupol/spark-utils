@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf.config.ConfigOps
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType.Kafka
-import org.tupol.spark.io.sources.{JsonSourceConfiguration, TextSourceConfiguration}
+import org.tupol.spark.io.sources.{ JsonSourceConfiguration, TextSourceConfiguration }
 import org.tupol.spark.io.streaming.structured._
 import org.tupol.spark.sql.loadSchemaFromFile
 
@@ -25,9 +25,8 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = FileStreamDataSourceConfiguration(
-      path = "INPUT_PATH",
-      sourceConfiguration = TextSourceConfiguration())
+    val expected =
+      FileStreamDataSourceConfiguration(path = "INPUT_PATH", sourceConfiguration = TextSourceConfiguration())
     val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected
@@ -42,9 +41,8 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = FileStreamDataSourceConfiguration(
-      path = "INPUT_PATH",
-      sourceConfiguration = JsonSourceConfiguration())
+    val expected =
+      FileStreamDataSourceConfiguration(path = "INPUT_PATH", sourceConfiguration = JsonSourceConfiguration())
     val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected
@@ -68,7 +66,8 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
     val expected = KafkaStreamDataSourceConfiguration(
       kafkaBootstrapServers = "my_server",
       subscription = KafkaSubscription("subscribePattern", "topic_*"),
-      options = Map("key1" -> "val1", "key2" -> "val2"))
+      options = Map("key1" -> "val1", "key2" -> "val2")
+    )
     val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected
@@ -83,7 +82,7 @@ class FormatAwareStreamingSourceConfigurationSpec extends AnyFunSuite with Match
     val config = ConfigFactory.parseString(configStr)
 
     val expected = GenericStreamDataSourceConfiguration(Kafka)
-    val result = config.extract[FormatAwareStreamingSourceConfiguration]("input")
+    val result   = config.extract[FormatAwareStreamingSourceConfiguration]("input")
 
     result.get shouldBe expected
   }

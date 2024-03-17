@@ -7,7 +7,7 @@ import org.tupol.spark.io.implicits._
 import org.tupol.spark.io.sources.JdbcSourceConfiguration
 import org.tupol.spark.testing.H2Database
 
-import java.sql.{Connection, PreparedStatement}
+import java.sql.{ Connection, PreparedStatement }
 
 class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSession with H2Database {
 
@@ -15,9 +15,7 @@ class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSessi
 
   val TestTable = "test_table"
 
-  val TestData = Seq(
-    JdbcTestRecord("v1", 1, 1.1, true),
-    JdbcTestRecord("v2", 2, 2.2, false))
+  val TestData = Seq(JdbcTestRecord("v1", 1, 1.1, true), JdbcTestRecord("v2", 2, 2.2, false))
 
   test("Reading the input data yields the correct result") {
 
@@ -27,7 +25,7 @@ class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSessi
 
     noException shouldBe thrownBy(spark.source(sourceConfig).read.get)
 
-    spark.source(sourceConfig).read.get.as[JdbcTestRecord].collect should contain theSameElementsAs (TestData)
+    spark.source(sourceConfig).read.get.as[JdbcTestRecord].collect() should contain theSameElementsAs (TestData)
   }
 
   test("Reading the input data fails if table can not be found") {
@@ -38,16 +36,16 @@ class JdbcDataSourceSpec extends AnyFunSuite with Matchers with SharedSparkSessi
   }
 
   private def createTestTable(conection: Connection, testData: Seq[JdbcTestRecord]) = {
-    connection.createStatement().executeUpdate(
-      s"""CREATE TABLE $TestTable
-         |(
-         |  colString text,
-         |  colInt int,
-         |  colDouble double,
-         |  colBoolean boolean
-         |);""".stripMargin)
+    connection.createStatement().executeUpdate(s"""CREATE TABLE $TestTable
+                                                  |(
+                                                  |  colString text,
+                                                  |  colInt int,
+                                                  |  colDouble double,
+                                                  |  colBoolean boolean
+                                                  |);""".stripMargin)
     val ps: PreparedStatement = connection.prepareStatement(
-      s"INSERT INTO $TestTable (colString, colInt, colDouble, colBoolean) VALUES ( ?, ?, ?, ? );")
+      s"INSERT INTO $TestTable (colString, colInt, colDouble, colBoolean) VALUES ( ?, ?, ?, ? );"
+    )
     testData.foreach { r =>
       ps.setString(1, r.colString)
       ps.setInt(2, r.colInt)

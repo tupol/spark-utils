@@ -20,21 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.streaming.structured
-
 
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{ DataFrame, SparkSession }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.sources.SourceConfiguration
-import org.tupol.spark.io.{DataSource, DataSourceException, FormatType}
+import org.tupol.spark.io.{ DataSource, DataSourceException, FormatType }
 import org.tupol.utils.implicits._
 
 import scala.util.Try
 
-case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration) extends DataSource[FileStreamDataSourceConfiguration, DataStreamReader] with Logging {
+case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration)
+    extends DataSource[FileStreamDataSourceConfiguration, DataStreamReader]
+    with Logging {
 
   /** Create and configure a `DataStreamReader` based on the given `SourceConfiguration` */
   def reader(implicit spark: SparkSession): DataStreamReader = {
@@ -58,15 +59,26 @@ case class FileStreamDataSource(configuration: FileStreamDataSourceConfiguration
   override def read(implicit spark: SparkSession): Try[DataFrame] = {
     logInfo(s"Reading data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'.")
     Try(configuration.options.get("path").map(_ => reader.load()).getOrElse(reader.load(configuration.path)))
-      .mapFailure(DataSourceException(s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'", _))
-      .logSuccess(d => logInfo(s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
-        s"from '${configuration.path}'"))
+      .mapFailure(
+        DataSourceException(
+          s"Failed to read the data as '${configuration.sourceConfiguration.format}' from '${configuration.path}'",
+          _
+        )
+      )
+      .logSuccess(
+        d =>
+          logInfo(
+            s"Successfully read the data as '${configuration.sourceConfiguration.format}' " +
+              s"from '${configuration.path}'"
+          )
+      )
       .logFailure(logError)
   }
 }
 
 case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: SourceConfiguration)
-  extends FormatAwareStreamingSourceConfiguration {
+    extends FormatAwareStreamingSourceConfiguration {
+
   /** Get the format type of the input file. */
   def format: FormatType = sourceConfiguration.format
   override def addOptions(extraOptions: Map[String, String]): FileStreamDataSourceConfiguration =
@@ -75,10 +87,10 @@ case class FileStreamDataSourceConfiguration(path: String, sourceConfiguration: 
     this.copy(sourceConfiguration = sourceConfiguration.withSchema(schema))
   override def toString: String = s"path: '$path', $sourceConfiguration"
 
-  /** The options the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
+  /** The options the can be set to the `org.apache.spark.sql.DataFrameReader` */
   override def options: Map[String, String] = sourceConfiguration.options
 
-  /** The schema the can be set to the [[org.apache.spark.sql.DataFrameReader]] */
+  /** The schema the can be set to the `org.apache.spark.sql.DataFrameReader` */
   override def schema: Option[StructType] = sourceConfiguration.schema
 
 }

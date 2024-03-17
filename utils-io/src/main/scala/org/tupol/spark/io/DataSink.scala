@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import org.apache.spark.sql.DataFrame
@@ -38,15 +38,18 @@ trait DataSink[Config <: DataSinkConfiguration, Writer, WriteOut] {
 trait DataAwareSink[Config <: DataSinkConfiguration, Writer, WriteOut] extends DataSink[Config, Writer, WriteOut] {
   def data: DataFrame
   def sink: DataSink[Config, Writer, WriteOut]
-  def writer(data: DataFrame): Try[Writer] = sink.writer(data)
-  def writer: Try[Writer] = writer(data)
+  def writer(data: DataFrame): Try[Writer]  = sink.writer(data)
+  def writer: Try[Writer]                   = writer(data)
   def write(data: DataFrame): Try[WriteOut] = sink.write(data)
-  def write: Try[WriteOut] = write(data)
+  def write: Try[WriteOut]                  = write(data)
 }
 
 /** Factory trait for DataAwareSinkFactory */
 trait DataAwareSinkFactory {
-  def apply[Config <: DataSinkConfiguration, Writer, WriteOut](configuration: Config, data: DataFrame): DataAwareSink[Config, Writer, WriteOut]
+  def apply[Config <: DataSinkConfiguration, Writer, WriteOut](
+    configuration: Config,
+    data: DataFrame
+  ): DataAwareSink[Config, Writer, WriteOut]
 }
 
 /** Common marker trait for `DataSink` configuration that also knows the data format */
@@ -56,4 +59,4 @@ trait FormatAwareDataSinkConfiguration extends DataSinkConfiguration with Format
 trait DataSinkConfiguration
 
 case class DataSinkException(private val message: String = "", private val cause: Throwable = None.orNull)
-  extends Exception(message, cause)
+    extends Exception(message, cause)

@@ -20,23 +20,25 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.streaming.structured
 
-import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.streaming.{DataStreamWriter, StreamingQuery}
+import org.apache.spark.sql.{ DataFrame, Row }
+import org.apache.spark.sql.streaming.{ DataStreamWriter, StreamingQuery }
 import org.tupol.spark.Logging
 import org.tupol.spark.io.FormatType.Kafka
-import org.tupol.spark.io.{DataAwareSink, DataSink}
+import org.tupol.spark.io.{ DataAwareSink, DataSink }
 
 import scala.util.Try
 
 case class KafkaStreamDataSink(configuration: KafkaStreamDataSinkConfiguration)
-  extends DataSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] with Logging {
+    extends DataSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery]
+    with Logging {
 
   private val innerSink = GenericStreamDataSink(configuration.generic)
 
   override def writer(data: DataFrame): Try[DataStreamWriter[Row]] = innerSink.writer(data)
+
   /** Try to write the data according to the given configuration and return the same data or a failure */
   override def write(data: DataFrame): Try[StreamingQuery] = innerSink.write(data)
 
@@ -44,8 +46,9 @@ case class KafkaStreamDataSink(configuration: KafkaStreamDataSinkConfiguration)
 
 /** KafkaDataSink trait that is data aware, so it can perform a write call with no arguments */
 case class KafkaStreamDataAwareSink(configuration: KafkaStreamDataSinkConfiguration, data: DataFrame)
-  extends DataAwareSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
-  override def sink: DataSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] = KafkaStreamDataSink(configuration)
+    extends DataAwareSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] {
+  override def sink: DataSink[KafkaStreamDataSinkConfiguration, DataStreamWriter[Row], StreamingQuery] =
+    KafkaStreamDataSink(configuration)
 }
 
 case class KafkaStreamDataSinkConfiguration(
@@ -53,8 +56,8 @@ case class KafkaStreamDataSinkConfiguration(
   private val genericConfig: GenericStreamDataSinkConfiguration,
   topic: Option[String] = None,
   checkpointLocation: Option[String] = None,
-  options: Map[String, String] = Map())
-  extends FormatAwareStreamingSinkConfiguration {
+  options: Map[String, String] = Map()
+) extends FormatAwareStreamingSinkConfiguration {
   val format = Kafka
   def addOptions(extraOptions: Map[String, String]): KafkaStreamDataSinkConfiguration = {
     val extraOpts = options ++ extraOptions
@@ -63,9 +66,9 @@ case class KafkaStreamDataSinkConfiguration(
   private val internalOptions =
     Map(
       "kafka.bootstrap.servers" -> Some(kafkaBootstrapServers),
-      "topic" -> topic,
-      "checkpointLocation" -> checkpointLocation)
-    .collect { case (key, Some(value)) => (key, value) }
+      "topic"                   -> topic,
+      "checkpointLocation"      -> checkpointLocation
+    ).collect { case (key, Some(value)) => (key, value) }
 
   /** The generic configuration of this data sink; this is used to build the actual writer */
   val generic = genericConfig.addOptions(options ++ internalOptions)

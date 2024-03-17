@@ -16,7 +16,7 @@ class FileDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
   test("Saving the input data results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
 
     val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet)
@@ -28,7 +28,7 @@ class FileDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
   test("Saving the input data can fail if the mode is default and the target file already exists") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
 
     val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet)
@@ -39,10 +39,10 @@ class FileDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
   test("Saving the input partitioned results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
-    val rootPartition = "int"
-    val childPartition = "string"
+    val rootPartition        = "int"
+    val childPartition       = "string"
 
     val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet, None, None, Seq(rootPartition, "string"))
     inputData.sink(sinkConfig).write shouldBe a[Success[_]]
@@ -59,13 +59,14 @@ class FileDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
   test("Saving the input partitioned with a partition number specified results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
-    val rootPartition = "int"
-    val childPartition = "string"
-    val partitionFiles = 1
+    val rootPartition        = "int"
+    val childPartition       = "string"
+    val partitionFiles       = 1
 
-    val sinkConfig = FileSinkConfiguration(testPath1, FormatType.Parquet, None, Some(partitionFiles), Seq(rootPartition, "string"))
+    val sinkConfig =
+      FileSinkConfiguration(testPath1, FormatType.Parquet, None, Some(partitionFiles), Seq(rootPartition, "string"))
     inputData.sink(sinkConfig).write
 
     val writtenData: DataFrame = spark.read.parquet(testPath1)
@@ -83,10 +84,10 @@ class FileDataSinkSpec extends AnyFunSuite with Matchers with SharedSparkSession
 
   test("Saving the input bucketed results in the same data") {
 
-    val inputPath = "src/test/resources/sources/parquet/sample.parquet"
+    val inputPath            = "src/test/resources/sources/parquet/sample.parquet"
     val inputData: DataFrame = spark.read.parquet(inputPath)
-    val buckets = BucketsConfiguration(1, Seq("int", "string"), Seq("int", "string"))
-    val tableName = "test_output_table"
+    val buckets              = BucketsConfiguration(1, Seq("int", "string"), Seq("int", "string"))
+    val tableName            = "test_output_table"
 
     val sinkConfig = FileSinkConfiguration(tableName, FormatType.Json, Some("overwrite"), None, Seq(), Some(buckets))
     inputData.sink(sinkConfig).write

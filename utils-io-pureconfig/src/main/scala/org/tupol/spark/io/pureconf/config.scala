@@ -20,12 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io.pureconf
 
 import com.typesafe.config.Config
 import org.tupol.spark.io.pureconf.errors.ConfigError
-import pureconfig.{ConfigReader, ConfigSource}
+import pureconfig.{ ConfigReader, ConfigSource }
 import org.tupol.utils.implicits._
 
 import scala.util.Try
@@ -46,9 +46,10 @@ object config {
    * @return an attempt to extract `T`
    */
   implicit class ConfigOps(val config: Config) {
-    import org.tupol.spark.io.pureconf.{config => packageConf}
+    import org.tupol.spark.io.pureconf.{ config => packageConf }
     def extract[T](implicit reader: ConfigReader[T]): Try[T] = packageConf.extract[T](config)
-    def extract[T](path: String)(implicit reader: ConfigReader[T]): Try[T] = packageConf.extract[T](config, path)(reader)
+    def extract[T](path: String)(implicit reader: ConfigReader[T]): Try[T] =
+      packageConf.extract[T](config, path)(reader)
   }
 
   /**

@@ -1,13 +1,12 @@
 package org.tupol.spark
 
-import org.apache.spark.sql.{DataFrame, Dataset, Encoder, Row}
+import org.apache.spark.sql.{ DataFrame, Dataset, Encoder, Row }
 import org.apache.spark.sql.types.StructType
 import org.tupol.spark.implicits.dataframe._
 import org.tupol.spark.implicits.dataset._
 import org.tupol.spark.implicits.schema._
 import org.tupol.spark.implicits.map._
 import org.tupol.spark.implicits.row._
-
 
 package object implicits {
 
@@ -21,6 +20,7 @@ package object implicits {
 
   implicit class DatasetOpsImplicits[T: Encoder](override val dataset: Dataset[T]) extends DatasetOps[T](dataset)
 
-  implicit class KeyValueDatasetOpsImplicits[K: Encoder, V: Encoder](override val dataset: Dataset[(K, V)]) extends KeyValueDatasetOps[K, V](dataset)
+  implicit class KeyValueDatasetOpsImplicits[K: Encoder, V: Encoder](override val dataset: Dataset[(K, V)])
+      extends KeyValueDatasetOps[K, V](dataset)
 
 }

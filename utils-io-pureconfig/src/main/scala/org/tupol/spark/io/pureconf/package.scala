@@ -20,15 +20,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import com.typesafe.config.Config
 import org.tupol.spark.io.sources.SourceConfiguration
 
-
 import scala.util.Try
-
 
 package object pureconf {
 
@@ -36,16 +34,14 @@ package object pureconf {
 
   object SourceConfigurator {
     import readers._
-    def extract(config: Config): Try[SourceConfiguration] = {
+    def extract(config: Config): Try[SourceConfiguration] =
       config.extract[SourceConfiguration]
-    }
   }
 
   object FileSourceConfigurator {
     import readers._
-    def extract(config: Config): Try[FileSourceConfiguration] = {
+    def extract(config: Config): Try[FileSourceConfiguration] =
       config.extract[FileSourceConfiguration]
-    }
   }
 
 }

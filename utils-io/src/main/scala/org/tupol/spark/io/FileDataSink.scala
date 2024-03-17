@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
@@ -30,7 +30,9 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 /**  FileDataSink trait */
-case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] with Logging {
+case class FileDataSink(configuration: FileSinkConfiguration)
+    extends DataSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame]
+    with Logging {
 
   /**
    * Configure a `writer` for the given `DataFrame` using the given `FileSinkConfiguration`,
@@ -46,20 +48,24 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
       case None => data.write
     }
     val partitionsWriter = configuration.partition match {
-      case None => writer
+      case None                                  => writer
       case Some(PartitionsConfiguration(_, Nil)) => writer
       case Some(PartitionsConfiguration(_, columns)) =>
-        logDebug(s"Initializing the DataFrameWriter to partition the data using the following partition columns: " +
-          s"[${columns.mkString(", ")}].")
+        logDebug(
+          s"Initializing the DataFrameWriter to partition the data using the following partition columns: " +
+            s"[${columns.mkString(", ")}]."
+        )
         writer.partitionBy(columns: _*)
     }
     val bucketsWriter = configuration.buckets match {
       case None => partitionsWriter
       case Some(bc) =>
-        logDebug(s"Initializing the DataFrameWriter to bucket the data into ${bc.number} buckets " +
-          s"using the following partition columns: ${bc.columns.mkString(", ")}].")
+        logDebug(
+          s"Initializing the DataFrameWriter to bucket the data into ${bc.number} buckets " +
+            s"using the following partition columns: ${bc.columns.mkString(", ")}]."
+        )
         val sortedWriter = bc.sortByColumns match {
-          case None => partitionsWriter
+          case None      => partitionsWriter
           case Some(Nil) => partitionsWriter
           case Some(sortByColumns) =>
             logDebug(s"Buckets will be sorted by the following columns: ${sortByColumns.mkString(", ")}].")
@@ -69,37 +75,52 @@ case class FileDataSink(configuration: FileSinkConfiguration) extends DataSink[F
     }
     configuration.options match {
       case None => bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString)
-      case Some(options) => bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(options)
+      case Some(options) =>
+        bucketsWriter.mode(configuration.saveMode).format(configuration.format.toString).options(options)
     }
 
   }
 
   /** Try to write the data according to the given configuration and return the same data or a failure */
-  def write(data: DataFrame): Try[DataFrame] = {
-
+  def write(data: DataFrame): Try[DataFrame] =
     writer(data).flatMap { writer =>
       configuration.buckets match {
         case Some(bc) =>
-          logInfo(s"Writing data to Hive as '${configuration.format}' in the '${configuration.path}' table due to the buckets configuration: $bc. " +
-            s"Notice that the path parameter is used as a table name in this case.")
+          logInfo(
+            s"Writing data to Hive as '${configuration.format}' in the '${configuration.path}' table due to the buckets configuration: $bc. " +
+              s"Notice that the path parameter is used as a table name in this case."
+          )
           Try(writer.saveAsTable(configuration.path))
         case None =>
           logInfo(s"Writing data as '${configuration.format}' to '${configuration.path}'.")
-          Try(configuration.options.flatMap(_.get("path"))
-            .map(_ => writer.save()).getOrElse(writer.save(configuration.path)))
+          Try(
+            configuration.options
+              .flatMap(_.get("path"))
+              .map(_ => writer.save())
+              .getOrElse(writer.save(configuration.path))
+          )
       }
-    }
-      .map(_ => data)
-      .logSuccess(_ => logInfo(s"Successfully saved the data as '${configuration.format}' to '${configuration.path}' " +
-        s"(Full configuration: ${configuration})."))
-      .mapFailure(DataSinkException(s"Failed to save the data as '${configuration.format}' to '${configuration.path}' " +
-        s"(Full configuration: ${configuration}).", _))
+    }.map(_ => data)
+      .logSuccess(
+        _ =>
+          logInfo(
+            s"Successfully saved the data as '${configuration.format}' to '${configuration.path}' " +
+              s"(Full configuration: ${configuration})."
+          )
+      )
+      .mapFailure(
+        DataSinkException(
+          s"Failed to save the data as '${configuration.format}' to '${configuration.path}' " +
+            s"(Full configuration: ${configuration}).",
+          _
+        )
+      )
       .logFailure(logError)
-  }
 }
 
 /** FileDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFrame) extends DataAwareSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] {
+case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFrame)
+    extends DataAwareSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] {
   override def sink: DataSink[FileSinkConfiguration, DataFrameWriter[Row], DataFrame] = FileDataSink(configuration)
 }
 
@@ -117,17 +138,21 @@ case class FileDataAwareSink(configuration: FileSinkConfiguration, data: DataFra
  * @param options other sink specific options
  *
  */
-case class FileSinkConfiguration(path: String, format: FormatType, mode: Option[String],
+case class FileSinkConfiguration(
+  path: String,
+  format: FormatType,
+  mode: Option[String],
   partition: Option[PartitionsConfiguration],
   buckets: Option[BucketsConfiguration],
-  options: Option[Map[String, String]])
-  extends FormatAwareDataSinkConfiguration {
+  options: Option[Map[String, String]]
+) extends FormatAwareDataSinkConfiguration {
   def addOptions(extraOptions: Map[String, String]): FileSinkConfiguration =
     this.copy(options = Some(this.options.getOrElse(Map()) ++ extraOptions))
   def saveMode = mode.getOrElse("default")
   override def toString: String = {
     val optionsStr = options match {
-      case Some(options) => if(options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      case Some(options) =>
+        if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
       case None => ""
     }
     s"path: '$path', format: '$format', save mode: '$saveMode', " +
@@ -137,13 +162,18 @@ case class FileSinkConfiguration(path: String, format: FormatType, mode: Option[
   }
 }
 object FileSinkConfiguration {
-  def apply(path: String, format: FormatType, optionalSaveMode: Option[String] = None,
-            partitionFilesNumber: Option[Int] = None, partitionColumns: Seq[String] = Seq(),
-            buckets: Option[BucketsConfiguration] = None,
-            options: Option[Map[String, String]] = None): FileSinkConfiguration = {
+  def apply(
+    path: String,
+    format: FormatType,
+    optionalSaveMode: Option[String] = None,
+    partitionFilesNumber: Option[Int] = None,
+    partitionColumns: Seq[String] = Seq(),
+    buckets: Option[BucketsConfiguration] = None,
+    options: Option[Map[String, String]] = None
+  ): FileSinkConfiguration = {
     val partition = (partitionFilesNumber, partitionColumns) match {
-      case (None, Nil) => None
-      case (None, columns) => Some(PartitionsConfiguration(None, columns))
+      case (None, Nil)       => None
+      case (None, columns)   => Some(PartitionsConfiguration(None, columns))
       case (number, columns) => Some(PartitionsConfiguration(number, columns))
     }
     new FileSinkConfiguration(path, format, optionalSaveMode, partition, buckets, options)
@@ -156,10 +186,9 @@ object FileSinkConfiguration {
  * @param columns optional columns for partitioning
  */
 case class PartitionsConfiguration(number: Option[Int], columns: Seq[String]) {
-  override def toString: String = {
+  override def toString: String =
     s"number of partition: '${number.getOrElse("Unchanged")}', " +
       s"partition columns: [${columns.mkString(", ")}]"
-  }
 }
 
 /**
@@ -171,7 +200,7 @@ case class PartitionsConfiguration(number: Option[Int], columns: Seq[String]) {
 case class BucketsConfiguration(number: Int, columns: Seq[String], sortByColumns: Option[Seq[String]]) {
   override def toString: String = {
     val sortByColumnsStr = sortByColumns match {
-      case None => "not specified"
+      case None      => "not specified"
       case Some(sbc) => s"[${sbc.mkString(", ")}]"
     }
     s"number of buckets: '$number', " +
@@ -184,9 +213,8 @@ object BucketsConfiguration {
   def apply(number: Int, columns: Seq[String], sortByColumns: Seq[String]): BucketsConfiguration = {
     val optSortByColumns = sortByColumns match {
       case Nil => None
-      case _ => Some(sortByColumns)
+      case _   => Some(sortByColumns)
     }
     new BucketsConfiguration(number, columns, optSortByColumns)
   }
 }
-

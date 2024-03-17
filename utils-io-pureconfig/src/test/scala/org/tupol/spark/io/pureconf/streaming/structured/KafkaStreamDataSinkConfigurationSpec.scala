@@ -6,7 +6,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.tupol.spark.io.pureconf.config.ConfigOps
 import org.tupol.spark.io.FormatType._
-import org.tupol.spark.io.streaming.structured.{GenericStreamDataSinkConfiguration, KafkaStreamDataSinkConfiguration}
+import org.tupol.spark.io.streaming.structured.{ GenericStreamDataSinkConfiguration, KafkaStreamDataSinkConfiguration }
 
 import scala.util.Failure
 
@@ -38,13 +38,24 @@ class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
     val expected = GenericStreamDataSinkConfiguration(
       Kafka,
-      Map("key1" -> "val1", "key2" -> "val2", "topic" -> "my_topic",
-        "kafka.bootstrap.servers" -> "test_server", "checkpointLocation" -> "myCheckpointLocation"),
-      Some("testQueryName"), Some(Trigger.Continuous(12000)), Seq("col1", "col2"), Some("testOutputMode"))
+      Map(
+        "key1"                    -> "val1",
+        "key2"                    -> "val2",
+        "topic"                   -> "my_topic",
+        "kafka.bootstrap.servers" -> "test_server",
+        "checkpointLocation"      -> "myCheckpointLocation"
+      ),
+      Some("testQueryName"),
+      Some(Trigger.Continuous(12000)),
+      Seq("col1", "col2"),
+      Some("testOutputMode")
+    )
     config.extract[KafkaStreamDataSinkConfiguration].get.generic shouldBe expected
   }
 
-  test("Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string with empty options") {
+  test(
+    "Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string with empty options"
+  ) {
 
     val configStr =
       """
@@ -72,8 +83,10 @@ class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSinkConfiguration(Kafka, Map("key1" -> "val1", "key2" -> "val2",
-      "kafka.bootstrap.servers" -> "test_server"))
+    val expected = GenericStreamDataSinkConfiguration(
+      Kafka,
+      Map("key1" -> "val1", "key2" -> "val2", "kafka.bootstrap.servers" -> "test_server")
+    )
     config.extract[KafkaStreamDataSinkConfiguration].get.generic shouldBe expected
   }
 
@@ -85,6 +98,6 @@ class KafkaStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[KafkaStreamDataSinkConfiguration] shouldBe a [Failure[_]]
+    config.extract[KafkaStreamDataSinkConfiguration] shouldBe a[Failure[_]]
   }
 }

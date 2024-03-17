@@ -1,7 +1,7 @@
 package org.tupol.spark.implicits
 
-import org.apache.spark.sql.{Dataset, Encoder}
-import org.apache.spark.sql.functions.{col, struct}
+import org.apache.spark.sql.{ Dataset, Encoder }
+import org.apache.spark.sql.functions.{ col, struct }
 import org.tupol.spark.encoders
 
 import java.util.UUID
@@ -31,7 +31,7 @@ object dataset {
      */
     def withColumnDataset[U: Encoder](column: Column): Dataset[(T, U)] = {
       implicit val tuple2Encoder: Encoder[(T, U)] = encoders.tuple2[T, U]
-      val tempColName = s"temp_col_${UUID.randomUUID()}"
+      val tempColName                             = s"temp_col_${UUID.randomUUID()}"
 
       val tuple1 =
         if (dataset.encoder.clsTag.runtimeClass.isPrimitive) dataset.columns.map(col).head
@@ -43,7 +43,6 @@ object dataset {
         .as[(T, U)]
     }
   }
-
 
   implicit class KeyValueDatasetOps[K: Encoder, V: Encoder](val dataset: Dataset[(K, V)]) extends Serializable {
 

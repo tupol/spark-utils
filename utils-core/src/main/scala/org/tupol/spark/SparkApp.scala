@@ -20,12 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark
 
 import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
-import org.tupol.spark.config.{FuzzyTypesafeConfigBuilder, TypesafeConfigBuilder, renderConfig}
+import org.tupol.spark.config.{ renderConfig, FuzzyTypesafeConfigBuilder, TypesafeConfigBuilder }
 import org.tupol.utils.implicits._
 
 import scala.util.Try
@@ -61,11 +61,11 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
   def main(implicit args: Array[String]): Unit = {
     log.info(s"Running $appName")
     val outcome = for {
-      config <- loadConfiguration(args, configurationFileName)
+      config    <- loadConfiguration(args, configurationFileName)
       appConfig <- getApplicationConfiguration(config)
-      context <- createContext(appConfig)
-      spark    = createSparkSession(appName)
-      result  <- run(spark, context)
+      context   <- createContext(appConfig)
+      spark     = createSparkSession(appName)
+      result    <- run(spark, context)
     } yield result
 
     outcome
@@ -82,8 +82,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
   }
 
   protected def createSparkSession(appName: String) =
-    SparkSession.builder.appName(appName).getOrCreate()
-
+    SparkSession.builder().appName(appName).getOrCreate()
 
   /**
    * Extract and assemble a configuration object out of the global configuration.
@@ -96,9 +95,12 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
   def getApplicationConfiguration(config: Config): Try[Config] =
     Try(config.getConfig(appName))
       .logSuccess(config => log.debug(s"$appName: Configuration:\n${renderConfig(config)}"))
-      .recover { case t =>
-        log.error(s"$appName: Failed to load application configuration from the $appName path; using the root configuration instead; ${t.getMessage}")
-        config
+      .recover {
+        case t =>
+          log.error(
+            s"$appName: Failed to load application configuration from the $appName path; using the root configuration instead; ${t.getMessage}"
+          )
+          config
       }
 
 }

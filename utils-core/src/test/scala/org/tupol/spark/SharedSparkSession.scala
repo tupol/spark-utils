@@ -12,7 +12,7 @@ import scala.util.Try
 trait SharedSparkSession extends BeforeAndAfterAll {
   this: Suite =>
 
-  def master = "local[2]"
+  def master  = "local[2]"
   def appName = simpleClassName(this)
 
   val TempDir = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
@@ -23,20 +23,22 @@ trait SharedSparkSession extends BeforeAndAfterAll {
 
   def warehouseDirPath = new java.io.File(warehouseDirName).getAbsolutePath
 
-  private def defaultSparkSessionBuilder = SparkSession.builder()
-    .appName(appName)
-    .master(master)
-    .config("spark.driver.host", "localhost")
+  private def defaultSparkSessionBuilder =
+    SparkSession
+      .builder()
+      .appName(appName)
+      .master(master)
+      .config("spark.driver.host", "localhost")
 
-  def sparkSessionBuilder: SparkSession.Builder = sparkConfig
-    .foldLeft(defaultSparkSessionBuilder)((acc, kv) => acc.config(kv._1, kv._2))
+  def sparkSessionBuilder: SparkSession.Builder =
+    sparkConfig
+      .foldLeft(defaultSparkSessionBuilder)((acc, kv) => acc.config(kv._1, kv._2))
 
   implicit lazy val spark: SparkSession = sparkSessionBuilder.getOrCreate()
 
   implicit lazy val sc: SparkContext = spark.sparkContext
 
   implicit lazy val sqlContext: SQLContext = spark.sqlContext
-
 
   override def afterAll(): Unit = {
     Try(super.afterAll())

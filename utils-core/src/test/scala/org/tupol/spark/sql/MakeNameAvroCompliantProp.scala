@@ -10,13 +10,15 @@ import scala.util.{ Failure, Try }
 
 class MakeNameAvroCompliantProp extends Properties("makeNameAvroCompliant") with Matchers {
 
-  def acceptableFirstChar(char: Char): Boolean = (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_'
+  def acceptableFirstChar(char: Char): Boolean =
+    (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_'
   def acceptableTailChar(char: Char): Boolean = char.isDigit || acceptableFirstChar(char)
-  def acceptableName(name: String): Boolean = name.filterNot(acceptableTailChar).size == 0 && acceptableFirstChar(name.head)
+  def acceptableName(name: String): Boolean =
+    name.filterNot(acceptableTailChar).size == 0 && acceptableFirstChar(name.head)
 
   val avroFiendlyNames: Gen[String] = for {
     start <- Gen.oneOf(alphaChar, const[Char]('_'))
-    end <- Gen.listOf(Gen.frequency((9, alphaNumChar), (1, const('_'))))
+    end   <- Gen.listOf(Gen.frequency((9, alphaNumChar), (1, const('_'))))
   } yield start.toString + end.mkString
 
   val avroNegativeFirstCharDigit: Gen[String] = for {
@@ -36,31 +38,33 @@ class MakeNameAvroCompliantProp extends Properties("makeNameAvroCompliant") with
     forAll(avroNegativeNames) { (name: String) =>
       name.trim match {
         case "" => Try(makeNameAvroCompliant(name, "xyz", "", "")).isInstanceOf[Failure[_]]
-        case _ => makeNameAvroCompliant(name, "xyz", "", "") != name
+        case _  => makeNameAvroCompliant(name, "xyz", "", "") != name
       }
     }
 
-  property("makeNameAvroCompliant should produce shorter names if the name is not Avro compliant and replaceWith, prefix and suffix are empty") =
-    forAll(avroNegativeNames) { (name: String) =>
-      name.trim match {
-        case "" => Try(makeNameAvroCompliant(name, "", "", "")).isInstanceOf[Failure[_]]
-        case _ => makeNameAvroCompliant(name, "", "", "").size < name.size
-      }
+  property(
+    "makeNameAvroCompliant should produce shorter names if the name is not Avro compliant and replaceWith, prefix and suffix are empty"
+  ) = forAll(avroNegativeNames) { (name: String) =>
+    name.trim match {
+      case "" => Try(makeNameAvroCompliant(name, "", "", "")).isInstanceOf[Failure[_]]
+      case _  => makeNameAvroCompliant(name, "", "", "").size < name.size
     }
+  }
 
-  property("makeNameAvroCompliant should produce same size names if the name is not Avro compliant and replaceWith is a single char, prefix and suffix are empty") =
-    forAll(avroNegativeNames) { (name: String) =>
-      name.trim match {
-        case "" => Try(makeNameAvroCompliant(name, "_", "", "")).isInstanceOf[Failure[_]]
-        case _ => makeNameAvroCompliant(name, "_", "", "").size == name.size
-      }
+  property(
+    "makeNameAvroCompliant should produce same size names if the name is not Avro compliant and replaceWith is a single char, prefix and suffix are empty"
+  ) = forAll(avroNegativeNames) { (name: String) =>
+    name.trim match {
+      case "" => Try(makeNameAvroCompliant(name, "_", "", "")).isInstanceOf[Failure[_]]
+      case _  => makeNameAvroCompliant(name, "_", "", "").size == name.size
     }
+  }
 
   property("makeNameAvroCompliant should prepend the specified prefix if the name is not Avro compliant") =
     forAll(avroNegativeNames) { (name: String) =>
       name.trim match {
         case "" => Try(makeNameAvroCompliant(name, "", "", "")).isInstanceOf[Failure[_]]
-        case _ => makeNameAvroCompliant(name, "", "TEST_PREFIX_", "").startsWith("TEST_PREFIX_")
+        case _  => makeNameAvroCompliant(name, "", "TEST_PREFIX_", "").startsWith("TEST_PREFIX_")
       }
     }
 
@@ -68,7 +72,7 @@ class MakeNameAvroCompliantProp extends Properties("makeNameAvroCompliant") with
     forAll(avroNegativeNames) { (name: String) =>
       name.trim match {
         case "" => Try(makeNameAvroCompliant(name, "", "", "")).isInstanceOf[Failure[_]]
-        case _ => makeNameAvroCompliant(name, "", "", "_TEST_SUFFIX").endsWith("_TEST_SUFFIX")
+        case _  => makeNameAvroCompliant(name, "", "", "_TEST_SUFFIX").endsWith("_TEST_SUFFIX")
       }
     }
 

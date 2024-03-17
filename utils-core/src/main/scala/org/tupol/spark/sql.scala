@@ -20,12 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark
 
 import org.apache.spark.sql.catalyst.ScalaReflection
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
+import org.apache.spark.sql.{ Column, DataFrame, Row, SparkSession }
 import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 
 import scala.reflect.runtime.universe._
@@ -55,7 +55,7 @@ package object sql {
    */
   def loadSchemaFromFile(resourcePath: String): Try[StructType] =
     for {
-      json <- fuzzyLoadTextResourceFile(resourcePath)
+      json   <- fuzzyLoadTextResourceFile(resourcePath)
       schema <- loadSchemaFromString(json)
     } yield schema
 
@@ -99,10 +99,9 @@ package object sql {
   def mapFields(dataType: DataType, mapFun: StructField => StructField): DataType =
     dataType match {
       case StructType(children) =>
-        val mappedFields = children.map(mapFun).map {
-          field =>
-            val newDataType = mapFields(field.dataType, mapFun)
-            field.copy(dataType = newDataType)
+        val mappedFields = children.map(mapFun).map { field =>
+          val newDataType = mapFields(field.dataType, mapFun)
+          field.copy(dataType = newDataType)
         }
         StructType(mappedFields)
       case ArrayType(dt, containsNull) =>
@@ -120,8 +119,12 @@ package object sql {
    * @param result
    * @return
    */
-  def checkFields(dataType: DataType, predicate: StructField => Boolean, reducer: (Boolean, Boolean) => Boolean, result: Boolean): Boolean = {
-
+  def checkFields(
+    dataType: DataType,
+    predicate: StructField => Boolean,
+    reducer: (Boolean, Boolean) => Boolean,
+    result: Boolean
+  ): Boolean =
     dataType match {
       case StructType(children) =>
         val checkedFields = children.map(predicate).reduce(reducer)
@@ -131,7 +134,6 @@ package object sql {
         checkFields(keyType, predicate, reducer, checkFields(valueType, predicate, reducer, result))
       case _ => result
     }
-  }
 
   /**
    * Check if all the fields of the given schema satisfy the predicate
@@ -160,7 +162,7 @@ package object sql {
     row.schema.fields.map { key =>
       val value = row.getAs[Any](key.name) match {
         case r: Row => row2map(r)
-        case v => v
+        case v      => v
       }
       (key.name, value)
     }.toMap
@@ -177,19 +179,22 @@ package object sql {
    * @param suffix the string that will suffix the non-compliant Avro strings
    * @return same string if the string was Avro compliant of a compliant Avro name string
    */
-  private[sql] def makeNameAvroCompliant(string: String, replaceWith: String, prefix: String, suffix: String) = {
+  private[sql] def makeNameAvroCompliant(string: String, replaceWith: String, prefix: String, suffix: String): String = {
 
-    def acceptableFirstChar(char: Char): Boolean = (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_'
+    def acceptableFirstChar(char: Char): Boolean =
+      (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_'
     def acceptableTailChar(char: Char): Boolean = char.isDigit || acceptableFirstChar(char)
-    def illegalContentChars(string: String) = string.filterNot(acceptableTailChar).toSet
+    def illegalContentChars(string: String)     = string.filterNot(acceptableTailChar).toSet
     def requireFirstChar(string: String, printName: String) =
       require(
         if (string.size > 0) acceptableFirstChar(string.head) else true,
-        s"The $printName starts with an illegal Avro character: '${string.head}'.")
+        s"The $printName starts with an illegal Avro character: '${string.head}'."
+      )
     def requireContentChars(string: String, printName: String) =
       require(
         if (string.size > 0) illegalContentChars(string).size == 0 else true,
-        s"The $printName contains illegal Avro character(s): '${illegalContentChars(string).mkString("'", ", ", "'")}'.")
+        s"The $printName contains illegal Avro character(s): '${illegalContentChars(string).mkString("'", ", ", "'")}'."
+      )
 
     require(string.nonEmpty, "The input string can not be empty.")
 
@@ -203,7 +208,9 @@ package object sql {
     requireContentChars(suffix, "suffix")
 
     val first = if (prefix.isEmpty && !acceptableFirstChar(string.head)) replaceWith else string.head.toString
-    val body = string.tail.flatMap { c => if (acceptableTailChar(c)) Seq(c) else replaceWith }
+    val body = string.tail.toSeq.flatMap { c =>
+      if (acceptableTailChar(c)) Seq(c) else replaceWith
+    }.mkString
 
     prefix + first + body + suffix
 
@@ -222,12 +229,18 @@ package object sql {
    * @param spark SparkSession
    * @return
    */
-  def makeDataFrameAvroCompliant(dataFrame: DataFrame, replaceWith: String = "_", prefix: String = "", suffix: String = "")(implicit spark: SparkSession): DataFrame = {
+  def makeDataFrameAvroCompliant(
+    dataFrame: DataFrame,
+    replaceWith: String = "_",
+    prefix: String = "",
+    suffix: String = ""
+  )(implicit spark: SparkSession): DataFrame = {
     import org.apache.spark.sql.types.MetadataBuilder
     import org.tupol.spark.implicits._
     val newSchema = dataFrame.schema.mapFields { field =>
       val newFieldName = makeNameAvroCompliant(field.name, replaceWith, prefix, suffix)
-      val newMetadata = new MetadataBuilder().withMetadata(field.metadata).putString("originalColumnName", field.name).build()
+      val newMetadata =
+        new MetadataBuilder().withMetadata(field.metadata).putString("originalColumnName", field.name).build()
       field.copy(name = newFieldName, metadata = newMetadata)
     }
     spark.createDataFrame(dataFrame.rdd, newSchema)

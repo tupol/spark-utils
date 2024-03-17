@@ -32,7 +32,7 @@ class GenericSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration with options") {
 
     val expectedOptions = Map("opt1" -> "yes", "opt2" -> "true", "opt3" -> "8")
-    val expected = GenericSourceConfiguration(FormatType.Custom("custom_format"), expectedOptions)
+    val expected        = GenericSourceConfiguration(FormatType.Custom("custom_format"), expectedOptions)
 
     val configStr = """
                       |format="custom_format"
@@ -52,7 +52,8 @@ class GenericSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration with options and schema") {
 
     val expectedOptions = Map("opt1" -> "yes", "opt2" -> "true", "opt3" -> "8")
-    val expected = GenericSourceConfiguration(FormatType.Custom("custom_format"), expectedOptions, Some(ReferenceSchema))
+    val expected =
+      GenericSourceConfiguration(FormatType.Custom("custom_format"), expectedOptions, Some(ReferenceSchema))
 
     val configStr = """
                       |format="custom_format"

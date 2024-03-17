@@ -16,18 +16,17 @@ class CsvSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration with schema") {
 
     val expected = CsvSourceConfiguration(
-      Map(
-        "header" -> "true", "delimiter" -> "DELIMITER"),
+      Map("header" -> "true", "delimiter" -> "DELIMITER"),
       Some(ReferenceSchema)
     )
 
     val configStr = s"""
-                      |format="csv"
-                      |header=true
-                      |delimiter="DELIMITER"
-                      |path="INPUT_PATH"
-                      |
-                      |schema  : ${ReferenceSchema.prettyJson}
+                       |format="csv"
+                       |header=true
+                       |delimiter="DELIMITER"
+                       |path="INPUT_PATH"
+                       |
+                       |schema  : ${ReferenceSchema.prettyJson}
                       """.stripMargin
 
     val config = ConfigFactory.parseString(configStr)
@@ -39,8 +38,7 @@ class CsvSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration without schema") {
 
     val expected = CsvSourceConfiguration(
-      Map(
-        "header" -> "true", "delimiter" -> "DELIMITER")
+      Map("header" -> "true", "delimiter" -> "DELIMITER")
     )
 
     val configStr = """
@@ -60,8 +58,13 @@ class CsvSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration with options") {
 
     val expected = CsvSourceConfiguration(
-      Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8",
-        "header" -> "true", "delimiter" -> "DELIMITER")
+      Map(
+        "mode"          -> "PERMISSIVE",
+        "samplingRatio" -> "1",
+        "charset"       -> "UTF-8",
+        "header"        -> "true",
+        "delimiter"     -> "DELIMITER"
+      )
     )
 
     val configStr = """
@@ -85,8 +88,13 @@ class CsvSourceConfigurationSpec extends AnyFunSuite with Matchers {
   test("Parse configuration with options overridden by top level properties") {
 
     val expected = CsvSourceConfiguration(
-      Map("mode" -> "PERMISSIVE", "samplingRatio" -> "1", "charset" -> "UTF-8",
-      "header" -> "true", "delimiter" -> "DELIMITER")
+      Map(
+        "mode"          -> "PERMISSIVE",
+        "samplingRatio" -> "1",
+        "charset"       -> "UTF-8",
+        "header"        -> "true",
+        "delimiter"     -> "DELIMITER"
+      )
     )
 
     val configStr = """

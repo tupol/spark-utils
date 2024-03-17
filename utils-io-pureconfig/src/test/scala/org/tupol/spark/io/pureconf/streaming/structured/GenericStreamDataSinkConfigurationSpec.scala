@@ -33,12 +33,20 @@ class GenericStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = GenericStreamDataSinkConfiguration(Kafka, Map("key1" -> "val1", "key2" -> "val2"),
-      Some("testQueryName"), Some(Trigger.Continuous(12000)), Seq("col1", "col2"), Some("testOutputMode"))
+    val expected = GenericStreamDataSinkConfiguration(
+      Kafka,
+      Map("key1" -> "val1", "key2" -> "val2"),
+      Some("testQueryName"),
+      Some(Trigger.Continuous(12000)),
+      Seq("col1", "col2"),
+      Some("testOutputMode")
+    )
     config.extract[GenericStreamDataSinkConfiguration].get shouldBe expected
   }
 
-  test("Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string with empty options") {
+  test(
+    "Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string with empty options"
+  ) {
 
     val configStr =
       """
@@ -69,8 +77,8 @@ class GenericStreamDataSinkConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract GenericStreamDataSinkConfiguration out of an empty string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
-    config.extract[GenericStreamDataSinkConfiguration] shouldBe a [Failure[_]]
+    config.extract[GenericStreamDataSinkConfiguration] shouldBe a[Failure[_]]
   }
 }

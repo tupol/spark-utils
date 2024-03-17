@@ -21,10 +21,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = BucketsConfiguration(
-      number = 1,
-      columns = Seq("a", "b", "c"),
-      sortByColumns = Seq("a", "b"))
+    val expected = BucketsConfiguration(number = 1, columns = Seq("a", "b", "c"), sortByColumns = Seq("a", "b"))
 
     config.extract[BucketsConfiguration].get shouldBe expected
   }
@@ -38,10 +35,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    val expected = BucketsConfiguration(
-      number = 1,
-      columns = Seq("a", "b", "c"),
-      sortByColumns = Seq())
+    val expected = BucketsConfiguration(number = 1, columns = Seq("a", "b", "c"), sortByColumns = Seq())
 
     config.extract[BucketsConfiguration].get shouldBe expected
   }
@@ -55,7 +49,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[BucketsConfiguration] shouldBe a [Failure[_]]
+    config.extract[BucketsConfiguration] shouldBe a[Failure[_]]
   }
 
   test("Failed BucketsConfiguration, empty columns") {
@@ -68,7 +62,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[BucketsConfiguration] shouldBe a [Failure[_]]
+    config.extract[BucketsConfiguration] shouldBe a[Failure[_]]
   }
 
   test("Failed BucketsConfiguration, number = 0") {
@@ -81,7 +75,7 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[BucketsConfiguration] shouldBe a [Failure[_]]
+    config.extract[BucketsConfiguration] shouldBe a[Failure[_]]
   }
 
   test("Failed BucketsConfiguration, number < 0") {
@@ -94,6 +88,6 @@ class BucketsConfigurationSpec extends AnyFunSuite with Matchers {
       """.stripMargin
     val config = ConfigFactory.parseString(configStr)
 
-    config.extract[BucketsConfiguration] shouldBe a [Failure[_]]
+    config.extract[BucketsConfiguration] shouldBe a[Failure[_]]
   }
 }

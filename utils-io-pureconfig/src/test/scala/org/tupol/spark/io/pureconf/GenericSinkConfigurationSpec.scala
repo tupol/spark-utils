@@ -3,9 +3,9 @@ package org.tupol.spark.io.pureconf
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.tupol.spark.io.{FormatType, GenericSinkConfiguration}
+import org.tupol.spark.io.{ FormatType, GenericSinkConfiguration }
 
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
@@ -27,7 +27,8 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val expected = GenericSinkConfiguration(
       format = FormatType.Text,
       mode = Some("MODE"),
-      partitionColumns = Seq("PARTITION_COLUMN"))
+      partitionColumns = Seq("PARTITION_COLUMN")
+    )
 
     val result = config.getConfig("output").extract[GenericSinkConfiguration]
 
@@ -48,7 +49,8 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
     val expected = GenericSinkConfiguration(
       format = FormatType.Custom("custom.format"),
       mode = Some("MODE"),
-      partitionColumns = Seq("PARTITION"))
+      partitionColumns = Seq("PARTITION")
+    )
 
     val result = config.getConfig("output").extract[GenericSinkConfiguration]
 
@@ -59,10 +61,7 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
     val result = GenericSinkConfiguration(FormatType.Text, Some("append"))
 
-    val expected = GenericSinkConfiguration(
-      format = FormatType.Text,
-      mode = Some("append"),
-      partitionColumns = Seq())
+    val expected = GenericSinkConfiguration(format = FormatType.Text, mode = Some("append"), partitionColumns = Seq())
 
     result shouldBe expected
     result.saveMode shouldBe "append"
@@ -87,7 +86,7 @@ class GenericSinkConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract GenericSinkConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
     val result = config.extract[GenericSinkConfiguration]
 

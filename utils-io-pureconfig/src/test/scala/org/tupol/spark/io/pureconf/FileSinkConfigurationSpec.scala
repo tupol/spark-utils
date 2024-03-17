@@ -3,7 +3,7 @@ package org.tupol.spark.io.pureconf
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.tupol.spark.io.{FileSinkConfiguration, FormatType}
+import org.tupol.spark.io.{ FileSinkConfiguration, FormatType }
 
 class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
 
@@ -26,7 +26,8 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("OUTPUT_PATH"),
-      partitionFilesNumber = Some(2))
+      partitionFilesNumber = Some(2)
+    )
 
     val result = config.getConfig("output").extract[FileSinkConfiguration]
 
@@ -49,7 +50,8 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = Some("MODE"),
       partitionColumns = Seq("OUTPUT_PATH"),
-      partitionFilesNumber = None)
+      partitionFilesNumber = None
+    )
 
     val result = config.getConfig("output").extract[FileSinkConfiguration]
 
@@ -65,7 +67,8 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
       format = FormatType.Text,
       optionalSaveMode = None,
       partitionColumns = Seq(),
-      partitionFilesNumber = None)
+      partitionFilesNumber = None
+    )
 
     result shouldBe expected
     result.saveMode shouldBe "default"
@@ -141,7 +144,7 @@ class FileSinkConfigurationSpec extends AnyFunSuite with Matchers {
   test("Failed to extract FileSinkConfiguration out of an empty configuration string") {
 
     val configStr = ""
-    val config = ConfigFactory.parseString(configStr)
+    val config    = ConfigFactory.parseString(configStr)
 
     val result = config.extract[FileSinkConfiguration]
 

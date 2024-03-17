@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package org.tupol.spark.io
 
 import org.apache.spark.sql.{ DataFrame, DataFrameWriter, Row }
@@ -30,20 +30,22 @@ import org.tupol.utils.implicits._
 import scala.util.Try
 
 /**  GenericDataSink trait */
-case class GenericDataSink(configuration: GenericSinkConfiguration) extends DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] with Logging {
+case class GenericDataSink(configuration: GenericSinkConfiguration)
+    extends DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame]
+    with Logging {
 
   /** Configure a `writer` for the given `DataFrame` based on the given `GenericSinkConfiguration` */
-  def writer(data: DataFrame): Try[DataFrameWriter[Row]] = Try{
+  def writer(data: DataFrame): Try[DataFrameWriter[Row]] = Try {
     val basicWriter = data.write
       .format(configuration.format.toString)
       .mode(configuration.saveMode)
     val writerWithPartitions = configuration.partition match {
       case Some(partitions) => basicWriter.partitionBy(partitions.columns: _*)
-      case None => basicWriter
+      case None             => basicWriter
     }
     val writerWithOptions = configuration.options match {
       case Some(options) => writerWithPartitions.options(options)
-      case None => writerWithPartitions
+      case None          => writerWithPartitions
     }
     writerWithOptions
   }
@@ -61,8 +63,10 @@ case class GenericDataSink(configuration: GenericSinkConfiguration) extends Data
 }
 
 /** GenericDataSink trait that is data aware, so it can perform a write call with no arguments */
-case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: DataFrame) extends DataAwareSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] {
-  override def sink: DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] = GenericDataSink(configuration)
+case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: DataFrame)
+    extends DataAwareSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] {
+  override def sink: DataSink[GenericSinkConfiguration, DataFrameWriter[Row], DataFrame] =
+    GenericDataSink(configuration)
 }
 
 /**
@@ -76,17 +80,21 @@ case class GenericDataAwareSink(configuration: GenericSinkConfiguration, data: D
  * @param options other sink specific options
  *
  */
-case class GenericSinkConfiguration(format: FormatType, mode: Option[String], partition: Option[PartitionsConfiguration],
+case class GenericSinkConfiguration(
+  format: FormatType,
+  mode: Option[String],
+  partition: Option[PartitionsConfiguration],
   buckets: Option[BucketsConfiguration],
-  options: Option[Map[String, String]])
-  extends FormatAwareDataSinkConfiguration {
+  options: Option[Map[String, String]]
+) extends FormatAwareDataSinkConfiguration {
   def addOptions(extraOptions: Map[String, String]): GenericSinkConfiguration =
     this.copy(options = Some(this.options.getOrElse(Map()) ++ extraOptions))
   def optionalSaveMode: Option[String] = mode
-  def saveMode = optionalSaveMode.getOrElse("default")
+  def saveMode                         = optionalSaveMode.getOrElse("default")
   override def toString: String = {
     val optionsStr = options match {
-      case Some(options) => if(options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
+      case Some(options) =>
+        if (options.isEmpty) "" else options.map { case (k, v) => s"$k: '$v'" }.mkString(" ", ", ", " ")
       case None => ""
     }
     s"format: '$format', save mode: '$saveMode', " +
@@ -97,16 +105,20 @@ case class GenericSinkConfiguration(format: FormatType, mode: Option[String], pa
 }
 
 object GenericSinkConfiguration {
-  def apply(format: FormatType, mode: Option[String] = None, partitionColumns: Seq[String] = Seq(),
-            buckets: Option[BucketsConfiguration] = None,
-            options: Map[String, String] = Map()): GenericSinkConfiguration = {
+  def apply(
+    format: FormatType,
+    mode: Option[String] = None,
+    partitionColumns: Seq[String] = Seq(),
+    buckets: Option[BucketsConfiguration] = None,
+    options: Map[String, String] = Map()
+  ): GenericSinkConfiguration = {
     val partitions = partitionColumns match {
       case Nil => None
-      case _ => Some(PartitionsConfiguration(None, partitionColumns))
+      case _   => Some(PartitionsConfiguration(None, partitionColumns))
     }
     val optionalOptions = options.toSeq match {
       case Nil => None
-      case _ => Some(options)
+      case _   => Some(options)
     }
     new GenericSinkConfiguration(format, mode, partitions, buckets, optionalOptions)
   }

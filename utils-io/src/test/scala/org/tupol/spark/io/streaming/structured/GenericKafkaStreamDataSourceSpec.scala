@@ -1,29 +1,32 @@
 package org.tupol.spark.io.streaming.structured
 
-import io.github.embeddedkafka.{EmbeddedKafka, EmbeddedKafkaConfig}
+import io.github.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
 import org.apache.spark.sql.streaming.Trigger
 import org.scalatest.concurrent.Eventually
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.time.{Millis, Span}
-import org.scalatest.{BeforeAndAfter, GivenWhenThen}
+import org.scalatest.time.{ Millis, Span }
+import org.scalatest.{ BeforeAndAfter, GivenWhenThen }
 import org.tupol.spark.SharedSparkSession
 import org.tupol.spark.io.FormatType
 import org.tupol.spark.io.implicits._
 
-class GenericKafkaStreamDataSourceSpec extends AnyFunSuite
-  with Matchers with GivenWhenThen with Eventually with BeforeAndAfter
-  with SharedSparkSession with EmbeddedKafka {
+class GenericKafkaStreamDataSourceSpec
+    extends AnyFunSuite
+    with Matchers
+    with GivenWhenThen
+    with Eventually
+    with BeforeAndAfter
+    with SharedSparkSession
+    with EmbeddedKafka {
 
-  implicit override val patienceConfig = PatienceConfig(timeout = scaled(Span(10000, Millis)))
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(timeout = scaled(Span(10000, Millis)))
 
-  implicit val config = EmbeddedKafkaConfig()
-  val topic = "testTopic"
+  implicit val config: EmbeddedKafkaConfig = EmbeddedKafkaConfig()
+  val topic                                = "testTopic"
 
-  val TestOptions = Map(
-    "kafka.bootstrap.servers" -> s":${config.kafkaPort}",
-    "subscribe" -> topic,
-    "startingOffsets" -> "earliest")
+  val TestOptions =
+    Map("kafka.bootstrap.servers" -> s":${config.kafkaPort}", "subscribe" -> topic, "startingOffsets" -> "earliest")
 
   val TestConfig = GenericStreamDataSourceConfiguration(FormatType.Kafka, TestOptions, None)
 
@@ -48,20 +51,27 @@ class GenericKafkaStreamDataSourceSpec extends AnyFunSuite
       testMessages.foreach { message =>
         publishStringMessageToKafka(topic, message)
         eventually {
-          val received = result.select("value", "timestamp").as[(String, Long)]
-            .collect().sortBy(_._2).reverse.headOption.map(_._1)
+          val received = result
+            .select("value", "timestamp")
+            .as[(String, Long)]
+            .collect()
+            .sortBy(_._2)
+            .reverse
+            .headOption
+            .map(_._1)
           received shouldBe Some(message)
         }
       }
-      streamingQuery.stop
+      streamingQuery.stop()
     }
   }
 
   test("Fail gracefully") {
     val TestOptions = Map(
-      "kafka.bootstrap.servers" -> s"unknown_host_garbage_string:0000000",
+      "kafka.bootstrap.servers"    -> s"unknown_host_garbage_string:0000000",
       "NO-LEGAL-SUBSCRIPTION-TYPE" -> topic,
-      "NO-STARTING-OFFSETS" -> "garbage")
+      "NO-STARTING-OFFSETS"        -> "garbage"
+    )
     val inputConfig = GenericStreamDataSourceConfiguration(FormatType.Kafka, TestOptions, None)
     an[Exception] shouldBe thrownBy(spark.source(inputConfig).read.get)
   }

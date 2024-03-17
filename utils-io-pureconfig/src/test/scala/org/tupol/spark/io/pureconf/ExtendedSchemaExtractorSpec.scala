@@ -45,12 +45,12 @@ class ExtendedSchemaExtractorSpec extends AnyFunSuite with Matchers {
 
   test("Fail to load schema from config without a schema configuration path") {
     val config = ConfigFactory.parseString(s"""{ INVALID_SCHEMA: "" } """.stripMargin)
-    config.extract[StructType] shouldBe a [Failure[_]]
+    config.extract[StructType] shouldBe a[Failure[_]]
   }
 
   test("Fail to load schema from a classpath resource") {
     val config = ConfigFactory.parseString(""" schema.path: "this path does not actually exist" """)
-    config.extract[StructType]("schema") shouldBe a [Failure[_]]
+    config.extract[StructType]("schema") shouldBe a[Failure[_]]
     println(config.extract[StructType]("schema"))
   }
 
