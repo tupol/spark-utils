@@ -256,6 +256,7 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 **1.0.0-RCX**
 
 Major library redesign
+- Cross compile Scala 2.12 and 2.13
 - Building with JDK 17 targeting Java 8
 - Added test java options to handle the JDK 17
 - Build with Spark 3.2.x
