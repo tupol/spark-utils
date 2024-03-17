@@ -6,6 +6,11 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC6
+
+- Cross compile Scala 2.12 and 2.13
+- Code reformatting
+
 ### 1.0.0-RC5
 
 - Building with JDK 17 targeting Java 8
