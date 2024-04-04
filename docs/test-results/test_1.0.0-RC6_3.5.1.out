@@ -1,0 +1,878 @@
+[info] Loading settings for project global-plugins from sonatype.sbt,gpg.sbt ...
+[info] Loading global plugins from /Users/olivertupran/.sbt/1.0/plugins
+[info] Loading settings for project spark-utils-build from plugins.sbt ...
+[info] Loading project definition from /Users/olivertupran/work/tupol/spark-utils/project
+[info] Loading settings for project spark-utils from version.sbt,build.sbt ...
+[info] Set current project to spark-utils (in build file:/Users/olivertupran/work/tupol/spark-utils/)
+[success] Total time: 0 s, completed 4 Apr 2024, 19:01:16
+[info] Forcing Scala version to 2.12.19 on all projects.
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/olivertupran/work/tupol/spark-utils/)
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[info] Compiling 15 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-core/target/scala-2.12/classes ...
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[info] Done compiling.
+[info] Compiling 20 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io/target/scala-2.12/classes ...
+[info] Compiling 29 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-core/target/scala-2.12/test-classes ...
+[info] Done compiling.
+[info] Compiling 7 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/target/scala-2.12/classes ...
+[info] Done compiling.
+[info] Compiling 27 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io/target/scala-2.12/test-classes ...
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should not change the name if the name is Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should change the name if the name is not Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should produce shorter names if the name is not Avro compliant and replaceWith, prefix and suffix are empty: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should produce same size names if the name is not Avro compliant and replaceWith is a single char, prefix and suffix are empty: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should prepend the specified prefix if the name is not Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should append the specified suffix if the name is not Avro compliant: OK, passed 100 tests.
+[info] ConfigSpec:
+[info] FuzzyTypesafeConfigBuilder.getConfiguration
+[info] - should load first the app params then defaults to the Spark app.conf file, then to the app.conf in the classpath and then to reference.conf
+[info] - should load first the app.conf then defaults to reference.conf
+[info] - should perform variable substitution
+[info] - should perform variable substitution and addition
+[info] SimpleTypesafeConfigBuilder
+[info] - should loads first the app params then defaults to app.conf file, then to the app.conf in the classpath and then to reference.conf
+[info] - should defaults to reference.conf
+[info] - should perform variable substitution
+[info] SparkFunSpec:
+[info] - SparkFun.main successfully completes
+[info] - SparkFun.main successfully completes with no configuration expected
+[info] - SparkFun.main fails gracefully if SparkFun.run fails
+[info] - SparkFun.appName gets the simple class name
+[info] MakeNameAvroCompliantSpec:
+[info] - makeNameAvroCompliant removes the non-compliant chars
+[info] - makeNameAvroCompliant replaces the first non-compliant char
+[info] - makeNameAvroCompliant does not replace the first non-compliant char if a prefix is specified
+[info] - makeNameAvroCompliant does not work with empty strings
+[info] - makeNameAvroCompliant reports non-compliant prefix
+[info] - makeNameAvroCompliant reports non-compliant replaceWith
+[info] - makeNameAvroCompliant reports non-compliant replaceWith first char if prefix is not specified
+[info] - makeNameAvroCompliant works with non-compliant replaceWith first char if prefix is specified
+[info] - makeNameAvroCompliant reports non-compliant suffix
+[info] Done compiling.
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/src/main/scala/org/tupol/spark/io/pureconf/streaming/structured/package.scala:21:65: method Once in class Trigger is deprecated
+[warn]       case StreamingTrigger.Once                     => Trigger.Once()
+[warn]                                                                 ^
+[info] - makeNameAvroCompliant successfully cleans the schema
+[info] KeyValueDatasetOpsTest:
+[info] mapValues
+[warn] one warning found
+[info] Done compiling.
+[info] - should map only the values and not the keys
+[info] Compiling 29 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/target/scala-2.12/test-classes ...
+[info] - should return an empty dataset for an empty dataset
+[info] flatMapValues
+[info] - should flatMap only the values and not the keys
+[info] - should return an empty dataset for an empty dataset
+[info] SchemaOpsSpec:
+[info] - mapFields & checkAllFields
+[info] - checkAllFields should fail inside array
+[info] - checkAllFields should fail inside map
+[info] - checkAnyFields plainly
+[info] - checkAnyFields inside arrays
+[info] - checkAnyFields inside maps
+[info] DataFrameOpsSpec:
+[info] - flattenFields on a flat DataFrame should produce no changes.
+[info] - flattenFields on a structured DataFrame should flatten it.
+[info] UtilsSpec:
+[info] - fuzzyLoadTextResourceFile fails while trying to load an empty path
+[info] - fuzzyLoadTextResourceFile fails while trying to load a path that does not exist anywhere
+[info] - fuzzyLoadTextResourceFile successfully loads a text from a local path
+[info] - fuzzyLoadTextResourceFile successfully loads a text from the class path
+[info] - fuzzyLoadTextResourceFile successfully loads a text from the URI
+[info] - fuzzyLoadTextResourceFile successfully loads a text from the URL
+[info] MapOpsRowOpsSpec:
+[info] - Converting a map to a row and the conversion back from a row to a map
+[info] DatasetOpsTest:
+[info] withTupledColumn
+[info] - should return a tuple of input and column with a simple dataset of 1 value
+[info] - should return a tuple of input and column with a simple dataset of 2 values
+[info] - should return a tuple of input and column with a simple dataset of nested values
+[info] - should return an empty dataset for an empty dataset
+[info] - should fail if the specified column type does not match the actual column type
+[info] SparkAppSpec:
+[info] - SparkApp.main successfully completes
+[info] - SparkApp.main successfully completes with no configuration expected
+[info] - SparkApp.main fails gracefully if SparkApp.run fails
+[info] - SparkApp.appName gets the simple class name
+[info] GenericDataSourceSpec:
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/src/test/scala/org/tupol/spark/io/pureconf/streaming/structured/TriggerExtractorSpec.scala:23:65: method Once in class Trigger is deprecated
+[warn]     config.extract[Trigger]("trigger") shouldBe Success(Trigger.Once)
+[warn]                                                                 ^
+[info] - Loading the data fails if the file does not exist
+[warn] one warning found
+[info] Done compiling.
+[info] - The number of records in the file provided and the schema must match
+[info] - The number of records in the file provided and the other schema must match
+[info] addOptions
+[info] - should leave the empty options unchanged
+[info] - should leave the options unchanged
+[info] - should add extra options
+[info] - should override options
+[info] withSchema
+[info] - should set a new schema
+[info] - should change an existing schema
+[info] - should remove an existing schema
+[info] OrcFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] StreamingSinkConfigurationSpec:
+[info] addOptions
+[info] - should overwrite existing options for GenericStreamDataSinkConfiguration
+[info] - should overwrite existing options for FileStreamDataSinkConfiguration
+[info] - should overwrite existing options for KafkaStreamDataSinkConfiguration
+[info] FileDataSinkSpec:
+[info] - Saving the input data results in the same data
+[info] - Saving the input data can fail if the mode is default and the target file already exists
+[info] - Saving the input partitioned results in the same data
+[info] - Saving the input partitioned with a partition number specified results in the same data
+[info] - Saving the input bucketed results in the same data
+[info] FileStreamDataSourceSpec:
+[info] - String messages should be written to the file stream and read back
+[info] - Fail gracefully
+[info] GenericFileStreamDataSourceSpec:
+[info] - String messages should be written to the file stream and read back using a GenericStreamDataSource
+[info] - Fail gracefully
+[info] FormatTypeSpec:
+[info] - fromString works on known types
+[info] - fromString returns a Custom format type
+[info] CsvFileDataSourceSpec:
+[info] - The number of records in the csv provided must be the same in the output result
+[info] - The number of records in multiple csv files provided must be the same in the output result
+[info] - User must be able to specify a schema 
+[info] - Providing a good csv schema with the parsing option PERMISSIVE, expecting a success run and a successful dataframe materialization
+[info] - Providing a good csv schema with the parsing option DROPMALFORMED, expecting a success run and a successful dataframe materialization
+[info] - Providing a good csv schema fitting perfectly the data with the parsing option FAILFAST, expecting a success run and a successful dataframe materialization
+[info] - Providing a wrong csv schema with the parsing option PERMISSIVE, expecting a success run and a successful dataframe materialization
+[info] - Providing a wrong csv schema with the parsing option DROPMALFORMED, expecting a success run and a successful dataframe materialization
+[info] - Providing a wrong csv schema with the parsing option FAILFAST, expecting a success run and a failed dataframe materialization
+[info] GenericFileStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Saving the input data as Parquet results in the same data
+[info] GenericSocketStreamDataSourceSpec:
+[info] - String messages should be written to the socket stream and read back
+[info] XmlFileDataSourceSpec:
+[info] - Extract the root element of a single file should yield a single result
+[info] - Extract the root element of multiple files should yield as many results as the number of files
+[info] - Extract elements that do not exist should return an empty result
+[info] - Infer simple schema
+[info] - Deal with corrupted records in default mode (PERMISSIVE)
+[info] - Deal with corrupted records in PERMISSIVE mode with custom corrupt record column
+[info] - Deal with corrupted records in DROPMALFORMED mode
+[info] - Deal with corrupted records in FAILFAST mode
+[info] FileDataSourceSpec:
+[info] - Loading the data fails if the file does not exist
+[info] - Loading a json data source works
+[info] JdbcDataSinkSpec:
+[info] - Saving the input data results in the same data
+[info] - Saving the input data results in the same data with the overwrite save mode
+[info] - Saving the input data results in duplicated data with the append save mode
+[info] - Saving the input data over the same table fails with default save mode
+[info] GenericKafkaStreamDataSourceSpec:
+[info] - String messages should be written to the kafka stream and read back
+[info] - Fail gracefully
+[info] GenericDataSinkSpec:
+[info] - Saving the input data results in the same data
+[info] - Saving the input data can fail if the mode is default and the target file already exists
+[info] - Saving the input partitioned results in the same data
+[info] - Saving the input partitioned with a partition number specified results in the same data
+[info] - Saving the input bucketed results in the same data
+[info] StreamingSourceConfigurationTest:
+[info] addOptions
+[info] - should overwrite existing options for FileStreamDataSourceConfiguration
+[info] - should overwrite existing options for GenericStreamDataSourceConfiguration
+[info] - should overwrite existing options for KafkaStreamDataSourceConfiguration
+[info] TextFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] AvroFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] - The number of records in the file provided and the other schema must match
+[info] GenericStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Fail gracefully
+[info] JsonFileDataSourceSpec:
+[info] - Extract from a single file with a single record should yield a single result
+[info] - Extract from multiple files should yield as many results as the total number of records in the files
+[info] - Infer simple schema
+[info] - Deal with corrupted records in default mode (PERMISSIVE)
+[info] - Deal with corrupted records in PERMISSIVE mode with custom corrupt record column
+[info] - Deal with corrupted records in DROPMALFORMED mode
+[info] - Deal with corrupted records in FAILFAST mode
+[info] JdbcDataSourceSpec:
+[info] - Reading the input data yields the correct result
+[info] - Reading the input data fails if table can not be found
+[info] SourceConfigurationTest:
+[info] schemaWithCorruptRecord
+[info] - should return None if there is no schema defined
+[info] - should return schema if columnNameOfCorruptRecord is not present in options
+[info] - should return schema with columnNameOfCorruptRecord extra column
+[info] addOptions
+[info] - should overwrite existing options for CsvSourceConfiguration
+[info] - should overwrite existing options for XmlSourceConfiguration
+[info] - should overwrite existing options for JsonSourceConfiguration
+[info] - should overwrite existing options for ParquetSourceConfiguration
+[info] - should overwrite existing options for OrcSourceConfiguration
+[info] - should overwrite existing options for AvroSourceConfiguration
+[info] - should overwrite existing options for TextSourceConfiguration
+[info] - should overwrite existing options for JdbcSourceConfiguration
+[info] - should overwrite existing options for GenericSourceConfiguration
+[info] KafkaStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Fail gracefully
+[info] ParquetFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] FileStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Saving the input data as Parquet results in the same data
+[info] KafkaStreamDataSourceSpec:
+[info] - String messages should be written to the kafka stream and read back
+[info] - Fail gracefully
+[info] SinkConfigurationTest:
+[info] addOptions
+[info] - should overwrite existing options for FileSinkConfiguration
+[info] - should overwrite existing options for GenericSinkConfiguration
+[info] OrcSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] FormatAwareStreamingSourceConfigurationSpec:
+[info] - Successfully extract text FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract json FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract kafka FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract generic FileStreamDataSourceConfiguration out of a configuration string
+[info] BucketsConfigurationSpec:
+[info] - Successfully extract a full BucketsConfiguration
+[info] - Successfully extract a partial BucketsConfiguration
+[info] - Failed BucketsConfiguration, missing columns
+[info] - Failed BucketsConfiguration, empty columns
+[info] - Failed BucketsConfiguration, number = 0
+[info] - Failed BucketsConfiguration, number < 0
+[info] JdbcSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] - Parse configuration with path schema
+[info] - Parse configuration with explicit schema
+[info] XmlSourceConfigurationSpec:
+[info] - Parse configuration with schema
+[info] - Parse configuration without schema
+[info] - Parse configuration with options
+[info] - Parse configuration with options overridden by top level properties
+[info] GenericStreamDataSourceConfigurationSpec:
+[info] - Successfully extract a minimal GenericStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract a minimal GenericStreamDataSourceConfiguration out of a configuration string with options
+[info] - Failed to extract GenericStreamDataSourceConfiguration out of an empty string
+[info] TextSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] KafkaStreamDataSinkConfigurationSpec:
+[info] - Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string with empty options
+[info] - Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string with options
+[info] - Failed to extract KafkaStreamDataSinkConfiguration out of an empty configuration string
+[info] FormatAwareDataSourceConfigurationSpec:
+[info] - Successfully extract FileSourceConfiguration out of a configuration string
+[info] - Successfully extract GenericSourceConfiguration out of a configuration string
+[info] - Failed to extract FileSourceConfiguration if the path is not defined
+[info] - Failed to extract FileSourceConfiguration if the format is not defined
+[info] - Failed to extract FileSourceConfiguration out of an empty configuration string
+[info] - Successfully extract JdbcSourceConfiguration out of a configuration string
+[info] - Successfully extract JdbcSourceConfiguration out of a configuration string containing only mandatory fields
+[info] FileSinkConfigurationSpec:
+[info] - Successfully extract FileSinkConfiguration out of a configuration string
+[info] - Successfully extract FileSinkConfiguration out of a configuration string without the partition files
+[info] - Successfully create FileSinkConfiguration using the simplified constructor
+[info] - Failed to extract FileSinkConfiguration if the path is not defined
+[info] - Failed to extract FileSinkConfiguration if the format is not defined
+[info] - Failed to extract FileSinkConfiguration if the format is not acceptable
+[info] - Failed to extract FileSinkConfiguration if the partition.files is a number smaller than 0
+[info] - Failed to extract FileSinkConfiguration out of an empty configuration string
+[info] TriggerExtractorSpec:
+[info] - TriggerExtractor -> Trigger.Once()
+[info] - TriggerExtractor -> Trigger.Continuous() Failure
+[info] - TriggerExtractor -> Trigger.Continuous()
+[info] - TriggerExtractor -> Trigger.ProcessingTime() Failure
+[info] - TriggerExtractor -> Trigger.ProcessingTime()
+[info] - TriggerExtractor Fails on unsupported trigger type
+[info] - TriggerExtractor Fails on empty
+[info] JsonSourceConfigurationSpec:
+[info] Parse configuration
+[info] - should work with schema and no options
+[info] - should work without schema
+[info] - should work with options
+[info] - should fail when path is missing
+[info] JdbcSinkConfigurationSpec:
+[info] - Successfully extract JdbcSinkConfiguration out of a configuration string
+[info] - Failed to extract JdbcSinkConfiguration if the url is not defined
+[info] - Failed to extract JdbcSinkConfiguration out of an empty configuration string
+[info] KafkaStreamDataSourceConfigurationSpec:
+[info] - Successfully extract a minimal KafkaStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract KafkaStreamDataSourceConfiguration out of a configuration string
+[info] - KafkaStreamDataSourceConfiguration required params overwrite the extra options when overlapping
+[info] - Failed to extract KafkaStreamDataSourceConfiguration if 'kafkaBootstrapServers' is not defined
+[info] - Failed to extract KafkaStreamDataSourceConfiguration if 'subscription' is not defined
+[info] - Failed to extract KafkaStreamDataSourceConfiguration out of an empty configuration string
+[info] FormatAwareStreamingSinkConfigurationSpec:
+[info] - Successfully extract a Text FileStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a Json FileStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract KafkaStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract GenericStreamDataSinkConfiguration out of a configuration string
+[info] - Failed to extract FormatAwareStreamingSinkConfiguration out of a configuration string
+[info] PartitionsConfigurationSpec:
+[info] - Successfully extract a full PartitionsConfiguration
+[info] - Successfully extract a partial PartitionsConfiguration
+[info] - Failed PartitionsConfiguration, missing columns
+[info] - Failed PartitionsConfiguration, number = 0
+[info] - Failed PartitionsConfiguration, number < 0
+[info] AvroSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] FileSourceConfigurationSpec:
+[info] - Successfully extract a text FileSourceConfiguration out of a configuration string
+[info] - Successfully extract a csv FileSourceConfiguration out of a configuration string
+[info] ParquetSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] GenericSinkConfigurationSpec:
+[info] - Successfully extract GenericSinkConfiguration out of a configuration string
+[info] - Successfully extract GenericSinkConfiguration out of a configuration string without the partition files
+[info] - Successfully create GenericSinkConfiguration using the simplified constructor
+[info] - Successfully extract GenericSinkConfiguration even for a known format
+[info] - Failed to extract GenericSinkConfiguration out of an empty configuration string
+[info] FileStreamDataSourceConfigurationSpec:
+[info] - Successfully extract FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract FileStreamDataSourceConfiguration out of a configuration string with options
+[info] - Failed to extract FileStreamDataSourceConfiguration if the format is not supported
+[info] - Failed to extract FileStreamDataSourceConfiguration if the path is not defined
+[info] - Failed to extract FileStreamDataSourceConfiguration if the format is not defined
+[info] - Failed to extract FileStreamDataSourceConfiguration if the format is incorrect
+[info] - Failed to extract FileStreamDataSourceConfiguration out of an empty configuration string
+[info] DataSinkConfigurationSpec:
+[info] - Successfully extract FileSinkConfiguration out of a configuration string
+[info] - Successfully extract FileSinkConfiguration out of a configuration string without the partition files
+[info] - Failed to extract FileSinkConfiguration if the format is not defined
+[info] - Successfully extract GenericSinkConfiguration out of a file configuration with a missing path
+[info] - Successfully extract GenericSinkConfiguration out of a configuration with an unknown format
+[info] - Failed to extract FileSinkConfiguration if the partition.files is a number smaller than 0
+[info] - Failed to extract FileSinkConfiguration out of an empty configuration string
+[info] - Successfully extract JdbcSinkConfiguration out of a configuration string
+[info] - Failed to extract JdbcSinkConfiguration if the url is not defined
+[info] GenericSourceConfigurationSpec:
+[info] - Parse configuration without options
+[info] - Parse configuration with options
+[info] - Parse configuration with options and schema
+[info] KafkaSubscriptionSpec:
+[info] - KafkaSubscription.assign
+[info] - KafkaSubscription.subscribe
+[info] - KafkaSubscription.subscribePattern
+[info] - KafkaSubscription Fails on unsupported type
+[info] - KafkaSubscription Fails on empty
+[info] CsvSourceConfigurationSpec:
+[info] - Parse configuration with schema
+[info] - Parse configuration without schema
+[info] - Parse configuration with options
+[info] - Parse configuration with options overridden by top level properties
+[info] FileStreamDataSinkConfigurationSpec:
+[info] - Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string with empty options
+[info] - Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string with options
+[info] - Failed to extract FileStreamDataSinkConfiguration out of a configuration string if the format is unsupported
+[info] - Failed to extract FileStreamDataSinkConfiguration out of a configuration string if options are missing
+[info] ExtendedSchemaExtractorSpec:
+[info] - Load schema from an external resource with a schema configuration path
+[info] - Load schema from an external resource without a schema configuration path
+[info] - Load schema from a classpath resource with a schema configuration path
+[info] - Load schema from a classpath resource without a schema configuration path
+[info] - Load schema from config with a schema configuration path
+[info] - Load schema from config without a schema configuration path
+[info] - Fail to load schema from config without a schema configuration path
+Failure(org.tupol.spark.io.pureconf.errors$ConfigError: Cannot convert configuration to a scala.runtime.Nothing$. Failures are:
+  at the root:
+    - (String: 1) Cannot load 'this path does not actually exist': Unable to find 'this path does not actually exist' in the classpath.
+    - (String: 1) Cannot convert '{"path":"this path does not actually exist"}' to StructType: Failed to convert the JSON string '{"path":"this path does not actually exist"}' to a data type..
+)
+[info] - Fail to load schema from a classpath resource
+[info] FormatTypeSpec:
+[info] - FormatTypeExtractor - custom
+[info] - FormatTypeExtractor - avro
+[info] - FormatTypeExtractor - xml
+[info] - FormatTypeExtractor - xml compact
+[info] GenericStreamDataSinkConfigurationSpec:
+[info] - Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string with empty options
+[info] - Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string with options
+[info] - Failed to extract GenericStreamDataSinkConfiguration out of an empty string
+[info] ScalaTest
+[info] Run completed in 3 minutes, 23 seconds.
+[info] Total number of tests run: 49
+[info] Suites: completed 10, aborted 0
+[info] Tests: succeeded 49, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[info] Passed: Total 55, Failed 0, Errors 0, Passed 55
+[info] ScalaTest
+[info] Run completed in 3 minutes, 10 seconds.
+[info] Total number of tests run: 96
+[info] Suites: completed 27, aborted 0
+[info] Tests: succeeded 96, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[info] Passed: Total 96, Failed 0, Errors 0, Passed 96
+[info] ScalaTest
+[info] Run completed in 2 minutes, 54 seconds.
+[info] Total number of tests run: 129
+[info] Suites: completed 29, aborted 0
+[info] Tests: succeeded 129, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[info] Passed: Total 129, Failed 0, Errors 0, Passed 129
+[success] Total time: 251 s (04:11), completed 4 Apr 2024, 19:05:28
+[info] Forcing Scala version to 2.13.13 on all projects.
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/olivertupran/work/tupol/spark-utils/)
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[info] Compiling 15 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-core/target/scala-2.13/classes ...
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[warn] -target is deprecated: Use -release instead to compile against the correct platform API.
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/main/scala/org/tupol/spark/SparkApp.scala:64:38: method copyArrayToImmutableIndexedSeq in class LowPriorityImplicits2 is deprecated (since 2.13.0): implicit conversions from Array to immutable.IndexedSeq are implemented by copying; use `toIndexedSeq` explicitly if you want to copy, or use the more efficient non-copying ArraySeq.unsafeWrapArray
+[warn]       config    <- loadConfiguration(args, configurationFileName)
+[warn]                                      ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/main/scala/org/tupol/spark/implicits/dataset.scala:78:40: type TraversableOnce in package scala is deprecated (since 2.13.0): Use IterableOnce instead of TraversableOnce
+[warn]     def flatMapValues[U: Encoder](f: V => TraversableOnce[U]): Dataset[(K, U)] = {
+[warn]                                        ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/main/scala/org/tupol/spark/implicits/dataset.scala:80:45: method map in class IterableOnceExtensionMethods is deprecated (since 2.13.0): Use .iterator.map instead or consider requiring an Iterable
+[warn]       dataset.flatMap { case (k, v) => f(v).map((k, _)) }
+[warn]                                             ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/main/scala/org/tupol/spark/sql.scala:80:27: method copyArrayToImmutableIndexedSeq in class LowPriorityImplicits2 is deprecated (since 2.13.0): implicit conversions from Array to immutable.IndexedSeq are implemented by copying; use `toIndexedSeq` explicitly if you want to copy, or use the more efficient non-copying ArraySeq.unsafeWrapArray
+[warn]           children.flatMap(child => createAliases(child, ancestors :+ field.name))
+[warn]                           ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/main/scala/org/tupol/spark/implicits/dataset.scala:38:40: Passing an explicit array value to a Scala varargs method is deprecated (since 2.13.0) and will result in a defensive copy; Use the more efficient non-copying ArraySeq.unsafeWrapArray or an explicit toIndexedSeq call
+[warn]         else struct(dataset.columns.map(col): _*)
+[warn]                                        ^
+[warn] 6 warnings found
+[info] Done compiling.
+[info] Compiling 20 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io/target/scala-2.13/classes ...
+[info] Compiling 29 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-core/target/scala-2.13/test-classes ...
+[warn] -target is deprecated: Use -release instead to compile against the correct platform API.
+[warn] -target is deprecated: Use -release instead to compile against the correct platform API.
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/test/scala/org/tupol/spark/implicits/KeyValueDatasetOpsTest.scala:17:51: method mapValues in trait MapOps is deprecated (since 2.13.0): Use .view.mapValues(f). A future version will include a strict version of this method (for now, .view.mapValues(f).toMap).
+[warn]       val expected                        = input.mapValues(_ * 10)
+[warn]                                                   ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/test/scala/org/tupol/spark/testing/package.scala:77:9: method copyArrayToImmutableIndexedSeq in class LowPriorityImplicits2 is deprecated (since 2.13.0): implicit conversions from Array to immutable.IndexedSeq are implemented by copying; use `toIndexedSeq` explicitly if you want to copy, or use the more efficient non-copying ArraySeq.unsafeWrapArray
+[warn]         onlyLeftCols,
+[warn]         ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/test/scala/org/tupol/spark/testing/package.scala:78:9: method copyArrayToImmutableIndexedSeq in class LowPriorityImplicits2 is deprecated (since 2.13.0): implicit conversions from Array to immutable.IndexedSeq are implemented by copying; use `toIndexedSeq` explicitly if you want to copy, or use the more efficient non-copying ArraySeq.unsafeWrapArray
+[warn]         onlyRightCols,
+[warn]         ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/test/scala/org/tupol/spark/testing/package.scala:60:34: Passing an explicit array value to a Scala varargs method is deprecated (since 2.13.0) and will result in a defensive copy; Use the more efficient non-copying ArraySeq.unsafeWrapArray or an explicit toIndexedSeq call
+[warn]           dataOnlyInLeft.orderBy(cols: _*).show(false)
+[warn]                                  ^
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-core/src/test/scala/org/tupol/spark/testing/package.scala:64:35: Passing an explicit array value to a Scala varargs method is deprecated (since 2.13.0) and will result in a defensive copy; Use the more efficient non-copying ArraySeq.unsafeWrapArray or an explicit toIndexedSeq call
+[warn]           dataOnlyInRight.orderBy(cols: _*).show(false)
+[warn]                                   ^
+[warn] one warning found
+[info] Done compiling.
+[info] Compiling 7 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/target/scala-2.13/classes ...
+[warn] -target is deprecated: Use -release instead to compile against the correct platform API.
+[warn] 6 warnings found
+[info] Done compiling.
+[info] Compiling 27 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io/target/scala-2.13/test-classes ...
+[warn] -target is deprecated: Use -release instead to compile against the correct platform API.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should not change the name if the name is Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should change the name if the name is not Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should produce shorter names if the name is not Avro compliant and replaceWith, prefix and suffix are empty: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should produce same size names if the name is not Avro compliant and replaceWith is a single char, prefix and suffix are empty: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should prepend the specified prefix if the name is not Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should append the specified suffix if the name is not Avro compliant: OK, passed 100 tests.
+[info] ConfigSpec:
+[info] FuzzyTypesafeConfigBuilder.getConfiguration
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-io/src/test/scala/org/tupol/spark/io/streaming/structured/StreamingSinkConfigurationSpec.scala:30:61: Auto-application to `()` is deprecated. Supply the empty argument list `()` explicitly to invoke method options,
+[warn] or remove the empty argument list from its definition (Java-defined methods are exempt).
+[warn] In Scala 3, an unapplied method like this will be eta-expanded into a function. [quickfixable]
+[warn]       val resultedOptions = tested.addOptions(extraOptions).options
+[warn]                                                             ^
+[info] - should load first the app params then defaults to the Spark app.conf file, then to the app.conf in the classpath and then to reference.conf
+[info] - should load first the app.conf then defaults to reference.conf
+[info] - should perform variable substitution
+[info] - should perform variable substitution and addition
+[info] SimpleTypesafeConfigBuilder
+[info] - should loads first the app params then defaults to app.conf file, then to the app.conf in the classpath and then to reference.conf
+[info] - should defaults to reference.conf
+[info] - should perform variable substitution
+[info] SparkFunSpec:
+[info] - SparkFun.main successfully completes
+[info] - SparkFun.main successfully completes with no configuration expected
+[info] - SparkFun.main fails gracefully if SparkFun.run fails
+[info] - SparkFun.appName gets the simple class name
+[info] MakeNameAvroCompliantSpec:
+[info] - makeNameAvroCompliant removes the non-compliant chars
+[info] - makeNameAvroCompliant replaces the first non-compliant char
+[info] - makeNameAvroCompliant does not replace the first non-compliant char if a prefix is specified
+[info] - makeNameAvroCompliant does not work with empty strings
+[info] - makeNameAvroCompliant reports non-compliant prefix
+[info] - makeNameAvroCompliant reports non-compliant replaceWith
+[info] - makeNameAvroCompliant reports non-compliant replaceWith first char if prefix is not specified
+[info] - makeNameAvroCompliant works with non-compliant replaceWith first char if prefix is specified
+[info] - makeNameAvroCompliant reports non-compliant suffix
+[warn] two warnings found
+[info] Done compiling.
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/src/main/scala/org/tupol/spark/io/pureconf/streaming/structured/package.scala:21:65: method Once in class Trigger is deprecated
+[warn]       case StreamingTrigger.Once                     => Trigger.Once()
+[warn]                                                                 ^
+[warn] two warnings found
+[info] Done compiling.
+[info] Compiling 29 Scala sources to /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/target/scala-2.13/test-classes ...
+[warn] -target is deprecated: Use -release instead to compile against the correct platform API.
+[info] - makeNameAvroCompliant successfully cleans the schema
+[info] KeyValueDatasetOpsTest:
+[info] mapValues
+[info] - should map only the values and not the keys
+[info] - should return an empty dataset for an empty dataset
+[info] flatMapValues
+[info] - should flatMap only the values and not the keys
+[info] - should return an empty dataset for an empty dataset
+[info] SchemaOpsSpec:
+[info] - mapFields & checkAllFields
+[info] - checkAllFields should fail inside array
+[info] - checkAllFields should fail inside map
+[info] - checkAnyFields plainly
+[info] - checkAnyFields inside arrays
+[info] - checkAnyFields inside maps
+[info] DataFrameOpsSpec:
+[info] - flattenFields on a flat DataFrame should produce no changes.
+[info] - flattenFields on a structured DataFrame should flatten it.
+[info] UtilsSpec:
+[info] - fuzzyLoadTextResourceFile fails while trying to load an empty path
+[info] - fuzzyLoadTextResourceFile fails while trying to load a path that does not exist anywhere
+[info] - fuzzyLoadTextResourceFile successfully loads a text from a local path
+[info] - fuzzyLoadTextResourceFile successfully loads a text from the class path
+[info] - fuzzyLoadTextResourceFile successfully loads a text from the URI
+[info] - fuzzyLoadTextResourceFile successfully loads a text from the URL
+[info] MapOpsRowOpsSpec:
+[info] - Converting a map to a row and the conversion back from a row to a map
+[info] DatasetOpsTest:
+[info] withTupledColumn
+[info] - should return a tuple of input and column with a simple dataset of 1 value
+[info] - should return a tuple of input and column with a simple dataset of 2 values
+[info] - should return a tuple of input and column with a simple dataset of nested values
+[info] - should return an empty dataset for an empty dataset
+[info] - should fail if the specified column type does not match the actual column type
+[info] SparkAppSpec:
+[info] - SparkApp.main successfully completes
+[warn] /Users/olivertupran/work/tupol/spark-utils/utils-io-pureconfig/src/test/scala/org/tupol/spark/io/pureconf/streaming/structured/TriggerExtractorSpec.scala:23:65: method Once in class Trigger is deprecated
+[warn]     config.extract[Trigger]("trigger") shouldBe Success(Trigger.Once)
+[warn]                                                                 ^
+[info] - SparkApp.main successfully completes with no configuration expected
+[info] - SparkApp.main fails gracefully if SparkApp.run fails
+[info] - SparkApp.appName gets the simple class name
+[info] GenericDataSourceSpec:
+[warn] two warnings found
+[info] Done compiling.
+[info] - Loading the data fails if the file does not exist
+[info] - The number of records in the file provided and the schema must match
+[info] - The number of records in the file provided and the other schema must match
+[info] addOptions
+[info] - should leave the empty options unchanged
+[info] - should leave the options unchanged
+[info] - should add extra options
+[info] - should override options
+[info] withSchema
+[info] - should set a new schema
+[info] - should change an existing schema
+[info] - should remove an existing schema
+[info] OrcFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] StreamingSinkConfigurationSpec:
+[info] addOptions
+[info] - should overwrite existing options for GenericStreamDataSinkConfiguration
+[info] - should overwrite existing options for FileStreamDataSinkConfiguration
+[info] - should overwrite existing options for KafkaStreamDataSinkConfiguration
+[info] FileDataSinkSpec:
+[info] - Saving the input data results in the same data
+[info] - Saving the input data can fail if the mode is default and the target file already exists
+[info] - Saving the input partitioned results in the same data
+[info] - Saving the input partitioned with a partition number specified results in the same data
+[info] - Saving the input bucketed results in the same data
+[info] FileStreamDataSourceSpec:
+[info] - String messages should be written to the file stream and read back
+[info] - Fail gracefully
+[info] GenericFileStreamDataSourceSpec:
+[info] - String messages should be written to the file stream and read back using a GenericStreamDataSource
+[info] - Fail gracefully
+[info] FormatTypeSpec:
+[info] - fromString works on known types
+[info] - fromString returns a Custom format type
+[info] CsvFileDataSourceSpec:
+[info] - The number of records in the csv provided must be the same in the output result
+[info] - The number of records in multiple csv files provided must be the same in the output result
+[info] - User must be able to specify a schema 
+[info] - Providing a good csv schema with the parsing option PERMISSIVE, expecting a success run and a successful dataframe materialization
+[info] - Providing a good csv schema with the parsing option DROPMALFORMED, expecting a success run and a successful dataframe materialization
+[info] - Providing a good csv schema fitting perfectly the data with the parsing option FAILFAST, expecting a success run and a successful dataframe materialization
+[info] - Providing a wrong csv schema with the parsing option PERMISSIVE, expecting a success run and a successful dataframe materialization
+[info] - Providing a wrong csv schema with the parsing option DROPMALFORMED, expecting a success run and a successful dataframe materialization
+[info] - Providing a wrong csv schema with the parsing option FAILFAST, expecting a success run and a failed dataframe materialization
+[info] GenericFileStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Saving the input data as Parquet results in the same data
+[info] GenericSocketStreamDataSourceSpec:
+[info] - String messages should be written to the socket stream and read back
+[info] XmlFileDataSourceSpec:
+[info] - Extract the root element of a single file should yield a single result
+[info] - Extract the root element of multiple files should yield as many results as the number of files
+[info] - Extract elements that do not exist should return an empty result
+[info] - Infer simple schema
+[info] - Deal with corrupted records in default mode (PERMISSIVE)
+[info] - Deal with corrupted records in PERMISSIVE mode with custom corrupt record column
+[info] - Deal with corrupted records in DROPMALFORMED mode
+[info] - Deal with corrupted records in FAILFAST mode
+[info] FileDataSourceSpec:
+[info] - Loading the data fails if the file does not exist
+[info] - Loading a json data source works
+[info] JdbcDataSinkSpec:
+[info] - Saving the input data results in the same data
+[info] - Saving the input data results in the same data with the overwrite save mode
+[info] - Saving the input data results in duplicated data with the append save mode
+[info] - Saving the input data over the same table fails with default save mode
+[info] GenericKafkaStreamDataSourceSpec:
+[info] - String messages should be written to the kafka stream and read back
+[info] - Fail gracefully
+[info] GenericDataSinkSpec:
+[info] - Saving the input data results in the same data
+[info] - Saving the input data can fail if the mode is default and the target file already exists
+[info] - Saving the input partitioned results in the same data
+[info] - Saving the input partitioned with a partition number specified results in the same data
+[info] - Saving the input bucketed results in the same data
+[info] StreamingSourceConfigurationTest:
+[info] addOptions
+[info] - should overwrite existing options for FileStreamDataSourceConfiguration
+[info] - should overwrite existing options for GenericStreamDataSourceConfiguration
+[info] - should overwrite existing options for KafkaStreamDataSourceConfiguration
+[info] TextFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] AvroFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] - The number of records in the file provided and the other schema must match
+[info] GenericStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Fail gracefully
+[info] JsonFileDataSourceSpec:
+[info] - Extract from a single file with a single record should yield a single result
+[info] - Extract from multiple files should yield as many results as the total number of records in the files
+[info] - Infer simple schema
+[info] - Deal with corrupted records in default mode (PERMISSIVE)
+[info] - Deal with corrupted records in PERMISSIVE mode with custom corrupt record column
+[info] - Deal with corrupted records in DROPMALFORMED mode
+[info] - Deal with corrupted records in FAILFAST mode
+[info] JdbcDataSourceSpec:
+[info] - Reading the input data yields the correct result
+[info] - Reading the input data fails if table can not be found
+[info] SourceConfigurationTest:
+[info] schemaWithCorruptRecord
+[info] - should return None if there is no schema defined
+[info] - should return schema if columnNameOfCorruptRecord is not present in options
+[info] - should return schema with columnNameOfCorruptRecord extra column
+[info] addOptions
+[info] - should overwrite existing options for CsvSourceConfiguration
+[info] - should overwrite existing options for XmlSourceConfiguration
+[info] - should overwrite existing options for JsonSourceConfiguration
+[info] - should overwrite existing options for ParquetSourceConfiguration
+[info] - should overwrite existing options for OrcSourceConfiguration
+[info] - should overwrite existing options for AvroSourceConfiguration
+[info] - should overwrite existing options for TextSourceConfiguration
+[info] - should overwrite existing options for JdbcSourceConfiguration
+[info] - should overwrite existing options for GenericSourceConfiguration
+[info] KafkaStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Fail gracefully
+[info] ParquetFileDataSourceSpec:
+[info] - The number of records in the file provided and the schema must match
+[info] FileStreamDataSinkSpec:
+[info] - Saving the input data as Json results in the same data
+[info] - Saving the input data as Parquet results in the same data
+[info] KafkaStreamDataSourceSpec:
+[info] - String messages should be written to the kafka stream and read back
+[info] - Fail gracefully
+[info] SinkConfigurationTest:
+[info] addOptions
+[info] - should overwrite existing options for FileSinkConfiguration
+[info] - should overwrite existing options for GenericSinkConfiguration
+[info] OrcSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] FormatAwareStreamingSourceConfigurationSpec:
+[info] - Successfully extract text FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract json FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract kafka FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract generic FileStreamDataSourceConfiguration out of a configuration string
+[info] BucketsConfigurationSpec:
+[info] - Successfully extract a full BucketsConfiguration
+[info] - Successfully extract a partial BucketsConfiguration
+[info] - Failed BucketsConfiguration, missing columns
+[info] - Failed BucketsConfiguration, empty columns
+[info] - Failed BucketsConfiguration, number = 0
+[info] - Failed BucketsConfiguration, number < 0
+[info] JdbcSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] - Parse configuration with path schema
+[info] - Parse configuration with explicit schema
+[info] XmlSourceConfigurationSpec:
+[info] - Parse configuration with schema
+[info] - Parse configuration without schema
+[info] - Parse configuration with options
+[info] - Parse configuration with options overridden by top level properties
+[info] GenericStreamDataSourceConfigurationSpec:
+[info] - Successfully extract a minimal GenericStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract a minimal GenericStreamDataSourceConfiguration out of a configuration string with options
+[info] - Failed to extract GenericStreamDataSourceConfiguration out of an empty string
+[info] TextSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] KafkaStreamDataSinkConfigurationSpec:
+[info] - Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string with empty options
+[info] - Successfully extract a minimal KafkaStreamDataSinkConfiguration out of a configuration string with options
+[info] - Failed to extract KafkaStreamDataSinkConfiguration out of an empty configuration string
+[info] FormatAwareDataSourceConfigurationSpec:
+[info] - Successfully extract FileSourceConfiguration out of a configuration string
+[info] - Successfully extract GenericSourceConfiguration out of a configuration string
+[info] - Failed to extract FileSourceConfiguration if the path is not defined
+[info] - Failed to extract FileSourceConfiguration if the format is not defined
+[info] - Failed to extract FileSourceConfiguration out of an empty configuration string
+[info] - Successfully extract JdbcSourceConfiguration out of a configuration string
+[info] - Successfully extract JdbcSourceConfiguration out of a configuration string containing only mandatory fields
+[info] FileSinkConfigurationSpec:
+[info] - Successfully extract FileSinkConfiguration out of a configuration string
+[info] - Successfully extract FileSinkConfiguration out of a configuration string without the partition files
+[info] - Successfully create FileSinkConfiguration using the simplified constructor
+[info] - Failed to extract FileSinkConfiguration if the path is not defined
+[info] - Failed to extract FileSinkConfiguration if the format is not defined
+[info] - Failed to extract FileSinkConfiguration if the format is not acceptable
+[info] - Failed to extract FileSinkConfiguration if the partition.files is a number smaller than 0
+[info] - Failed to extract FileSinkConfiguration out of an empty configuration string
+[info] TriggerExtractorSpec:
+[info] - TriggerExtractor -> Trigger.Once()
+[info] - TriggerExtractor -> Trigger.Continuous() Failure
+[info] - TriggerExtractor -> Trigger.Continuous()
+[info] - TriggerExtractor -> Trigger.ProcessingTime() Failure
+[info] - TriggerExtractor -> Trigger.ProcessingTime()
+[info] - TriggerExtractor Fails on unsupported trigger type
+[info] - TriggerExtractor Fails on empty
+[info] JsonSourceConfigurationSpec:
+[info] Parse configuration
+[info] - should work with schema and no options
+[info] - should work without schema
+[info] - should work with options
+[info] - should fail when path is missing
+[info] JdbcSinkConfigurationSpec:
+[info] - Successfully extract JdbcSinkConfiguration out of a configuration string
+[info] - Failed to extract JdbcSinkConfiguration if the url is not defined
+[info] - Failed to extract JdbcSinkConfiguration out of an empty configuration string
+[info] KafkaStreamDataSourceConfigurationSpec:
+[info] - Successfully extract a minimal KafkaStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract KafkaStreamDataSourceConfiguration out of a configuration string
+[info] - KafkaStreamDataSourceConfiguration required params overwrite the extra options when overlapping
+[info] - Failed to extract KafkaStreamDataSourceConfiguration if 'kafkaBootstrapServers' is not defined
+[info] - Failed to extract KafkaStreamDataSourceConfiguration if 'subscription' is not defined
+[info] - Failed to extract KafkaStreamDataSourceConfiguration out of an empty configuration string
+[info] FormatAwareStreamingSinkConfigurationSpec:
+[info] - Successfully extract a Text FileStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a Json FileStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract KafkaStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract GenericStreamDataSinkConfiguration out of a configuration string
+[info] - Failed to extract FormatAwareStreamingSinkConfiguration out of a configuration string
+[info] PartitionsConfigurationSpec:
+[info] - Successfully extract a full PartitionsConfiguration
+[info] - Successfully extract a partial PartitionsConfiguration
+[info] - Failed PartitionsConfiguration, missing columns
+[info] - Failed PartitionsConfiguration, number = 0
+[info] - Failed PartitionsConfiguration, number < 0
+[info] AvroSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] FileSourceConfigurationSpec:
+[info] - Successfully extract a text FileSourceConfiguration out of a configuration string
+[info] - Successfully extract a csv FileSourceConfiguration out of a configuration string
+[info] ParquetSourceConfigurationSpec:
+[info] - Parse configuration without schema
+[info] GenericSinkConfigurationSpec:
+[info] - Successfully extract GenericSinkConfiguration out of a configuration string
+[info] - Successfully extract GenericSinkConfiguration out of a configuration string without the partition files
+[info] - Successfully create GenericSinkConfiguration using the simplified constructor
+[info] - Successfully extract GenericSinkConfiguration even for a known format
+[info] - Failed to extract GenericSinkConfiguration out of an empty configuration string
+[info] FileStreamDataSourceConfigurationSpec:
+[info] - Successfully extract FileStreamDataSourceConfiguration out of a configuration string
+[info] - Successfully extract FileStreamDataSourceConfiguration out of a configuration string with options
+[info] - Failed to extract FileStreamDataSourceConfiguration if the format is not supported
+[info] - Failed to extract FileStreamDataSourceConfiguration if the path is not defined
+[info] - Failed to extract FileStreamDataSourceConfiguration if the format is not defined
+[info] - Failed to extract FileStreamDataSourceConfiguration if the format is incorrect
+[info] - Failed to extract FileStreamDataSourceConfiguration out of an empty configuration string
+[info] DataSinkConfigurationSpec:
+[info] - Successfully extract FileSinkConfiguration out of a configuration string
+[info] - Successfully extract FileSinkConfiguration out of a configuration string without the partition files
+[info] - Failed to extract FileSinkConfiguration if the format is not defined
+[info] - Successfully extract GenericSinkConfiguration out of a file configuration with a missing path
+[info] - Successfully extract GenericSinkConfiguration out of a configuration with an unknown format
+[info] - Failed to extract FileSinkConfiguration if the partition.files is a number smaller than 0
+[info] - Failed to extract FileSinkConfiguration out of an empty configuration string
+[info] - Successfully extract JdbcSinkConfiguration out of a configuration string
+[info] - Failed to extract JdbcSinkConfiguration if the url is not defined
+[info] GenericSourceConfigurationSpec:
+[info] - Parse configuration without options
+[info] - Parse configuration with options
+[info] - Parse configuration with options and schema
+[info] KafkaSubscriptionSpec:
+[info] - KafkaSubscription.assign
+[info] - KafkaSubscription.subscribe
+[info] - KafkaSubscription.subscribePattern
+[info] - KafkaSubscription Fails on unsupported type
+[info] - KafkaSubscription Fails on empty
+[info] CsvSourceConfigurationSpec:
+[info] - Parse configuration with schema
+[info] - Parse configuration without schema
+[info] - Parse configuration with options
+[info] - Parse configuration with options overridden by top level properties
+[info] FileStreamDataSinkConfigurationSpec:
+[info] - Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string with empty options
+[info] - Successfully extract a minimal FileStreamDataSinkConfiguration out of a configuration string with options
+[info] - Failed to extract FileStreamDataSinkConfiguration out of a configuration string if the format is unsupported
+[info] - Failed to extract FileStreamDataSinkConfiguration out of a configuration string if options are missing
+[info] ExtendedSchemaExtractorSpec:
+[info] - Load schema from an external resource with a schema configuration path
+[info] - Load schema from an external resource without a schema configuration path
+[info] - Load schema from a classpath resource with a schema configuration path
+[info] - Load schema from a classpath resource without a schema configuration path
+[info] - Load schema from config with a schema configuration path
+[info] - Load schema from config without a schema configuration path
+[info] - Fail to load schema from config without a schema configuration path
+Failure(org.tupol.spark.io.pureconf.errors$ConfigError: Cannot convert configuration to a scala.runtime.Nothing$. Failures are:
+  at the root:
+    - (String: 1) Cannot load 'this path does not actually exist': Unable to find 'this path does not actually exist' in the classpath.
+    - (String: 1) Cannot convert '{"path":"this path does not actually exist"}' to StructType: Failed to convert the JSON string '{"path":"this path does not actually exist"}' to a data type..
+)
+[info] - Fail to load schema from a classpath resource
+[info] FormatTypeSpec:
+[info] - FormatTypeExtractor - custom
+[info] - FormatTypeExtractor - avro
+[info] - FormatTypeExtractor - xml
+[info] - FormatTypeExtractor - xml compact
+[info] GenericStreamDataSinkConfigurationSpec:
+[info] - Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string
+[info] - Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string with empty options
+[info] - Successfully extract a minimal GenericStreamDataSinkConfiguration out of a configuration string with options
+[info] - Failed to extract GenericStreamDataSinkConfiguration out of an empty string
+[info] ScalaTest
+[info] Run completed in 2 minutes, 50 seconds.
+[info] Total number of tests run: 49
+[info] Suites: completed 10, aborted 0
+[info] Tests: succeeded 49, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[info] Passed: Total 55, Failed 0, Errors 0, Passed 55
+[info] ScalaTest
+[info] Run completed in 2 minutes, 40 seconds.
+[info] Total number of tests run: 96
+[info] Suites: completed 27, aborted 0
+[info] Tests: succeeded 96, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[info] Passed: Total 96, Failed 0, Errors 0, Passed 96
+[info] ScalaTest
+[info] Run completed in 2 minutes, 28 seconds.
+[info] Total number of tests run: 129
+[info] Suites: completed 29, aborted 0
+[info] Tests: succeeded 129, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[info] Passed: Total 129, Failed 0, Errors 0, Passed 129
+[success] Total time: 203 s (03:23), completed 4 Apr 2024, 19:08:52
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/olivertupran/work/tupol/spark-utils/)

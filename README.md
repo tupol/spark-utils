@@ -34,7 +34,7 @@ The latest stable versions, available through Maven Central are
 - Spark 3.0: `0.6.2`
 - Spark 3.5: `1.0.0`
 
-The development version is `1.0.0-R5` which is bringing a clean separation between configuration implementation and the
+The development version is `1.0.0-R6` which is bringing a clean separation between configuration implementation and the
 core, and additionally the [PureConfig] based configuration module that brings the power and features of [PureConfig]
 to increase productivity even further and allowing for a more mature configuration framework.
 
@@ -50,6 +50,16 @@ More details are available in the [RELEASE-NOTES](RELEASE-NOTES.md).
 
 For now, some of the documentation related or referenced from this project might be obsolete or outdated,
 but as the project will get closer to the final release, there will be more improvements. 
+
+### Test Results Matrix
+
+| Spark | Scala 2.12 | Scala 2.13 | Report                                              |
+|-------|:----------:|:----------:|-----------------------------------------------------|
+| 3.1.3 |    YES     |    N/A     | [3.1.3](docs/test-results/test_1.0.0-RC6_3.1.3.out) |
+| 3.2.4 |    YES     |    YES     | [3.2.4](docs/test-results/test_1.0.0-RC6_3.2.4.out) |
+| 3.3.4 |    YES     |    YES     | [3.3.4](docs/test-results/test_1.0.0-RC6_3.3.4.out) |
+| 3.4.2 |    YES     |    YES     | [3.4.2](docs/test-results/test_1.0.0-RC6_3.4.2.out) |
+| 3.5.1 |    YES     |    YES     | [3.5.1](docs/test-results/test_1.0.0-RC6_3.5.1.out) |
 
 
 ## Description ##
