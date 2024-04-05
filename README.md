@@ -32,7 +32,7 @@ At the moment there are a lot of changes happening to the `spark-utils` project,
 The latest stable versions, available through Maven Central are
 - Spark 2.4: `0.4.2`
 - Spark 3.0: `0.6.2`
-- Spark 3.5: `1.0.0`
+- Spark 3.x: `1.0.0`
 
 The development version is `1.0.0-R6` which is bringing a clean separation between configuration implementation and the
 core, and additionally the [PureConfig] based configuration module that brings the power and features of [PureConfig]
@@ -45,7 +45,7 @@ We completely removed the legacy scalaz based configuration framework.
 
 We suggest to start considering the new for the future `spark-utils-io-pureconfig`.
 
-Migrating to the new `1.0.0-RC3` is quite easy, as the configuration structure was mainly preserved.
+Migrating to the new `1.0.0-RC6` is quite easy, as the configuration structure was mainly preserved.
 More details are available in the [RELEASE-NOTES](RELEASE-NOTES.md).
 
 For now, some of the documentation related or referenced from this project might be obsolete or outdated,
@@ -55,6 +55,7 @@ but as the project will get closer to the final release, there will be more impr
 
 | Spark | Scala 2.12 | Scala 2.13 | Report                                              |
 |-------|:----------:|:----------:|-----------------------------------------------------|
+| 3.0.3 |    YES     |    N/A     | [3.0.3](docs/test-results/test_1.0.0-RC6_3.0.3.out) |
 | 3.1.3 |    YES     |    N/A     | [3.1.3](docs/test-results/test_1.0.0-RC6_3.1.3.out) |
 | 3.2.4 |    YES     |    YES     | [3.2.4](docs/test-results/test_1.0.0-RC6_3.2.4.out) |
 | 3.3.4 |    YES     |    YES     | [3.3.4](docs/test-results/test_1.0.0-RC6_3.3.4.out) |
@@ -219,12 +220,12 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils-io-pureconfig" % "1.0.0-RC3"
+libraryDependencies += "org.tupol" %% "spark-utils-io-pureconfig" % "1.0.0-RC6"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
 ```bash
-$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.12:1.0.0-RC3
+$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.12:1.0.0-RC6
 ```
 
 
@@ -268,7 +269,8 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 Major library redesign
 - Building with JDK 17 targeting Java 8
 - Added test java options to handle the JDK 17
-- Build with Spark 3.2.x
+- Cross compile Scala 2.12 and 2.13
+- Build with Spark 3.2.x and tested against Spark 3.x
 - Removed the `spark-utils-io-pureconfig` module
 - Added configuration module based on [PureConfig]
 - `DataSource` exposes `reader` in addition to `read`

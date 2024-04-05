@@ -6,6 +6,10 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC6
+- Cross compile Scala 2.12 and 2.13
+- Tested against all major available Apache Spark 3.x versions
+
 ### 1.0.0-RC5
 
 - Building with JDK 17 targeting Java 8
