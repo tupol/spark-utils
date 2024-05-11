@@ -214,8 +214,9 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
 - Latest stable versions:
-  - Spark 2.4: `0.4.2`
-  - Spark 3.0: `0.6.2`
+  - Spark 2.4: `0.4.2` to `0.6.2`
+  - Spark 3.0: `0.6.2` to `1.0.0-RC7`
+  - Spark 3.3: `1.0.0-RC7` to
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
@@ -264,7 +265,13 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**1.0.0-RCX**
+**1.0.0-RC7**
+
+- Adapt towards the latest Apache Spark versions from 3.3.x
+- Added `StreamingTrigger.AvailableNow`
+- Build with Spark 3.3.x and tested against Spark 3.3.0 to 3.5.1 
+
+**1.0.0-RC1 to 1.0.0-RC6**
 
 Major library redesign
 - Cross compile Scala 2.12 and 2.13
@@ -298,7 +305,7 @@ This code is open source software licensed under the [MIT License](LICENSE).
 [scala]: https://scala-lang.org/
 [spark]: https://spark.apache.org/
 [spark-utils-g8]: https://github.com/tupol/spark-apps.seed.g8
-[maven-central]: https://mvnrepository.com/artifact/org.tupol/spark-utils
+[maven-central]: https://mvnrepository.com/artifact/org.tupol/spark-utils-core
 [spark-packages]: https://spark-packages.org/package/tupol/spark-utils
 [license]: https://github.com/tupol/spark-utils/blob/master/LICENSE
 [travis.org]: https://travis-ci.com/tupol/spark-utils 

@@ -19,7 +19,7 @@ object Dependencies {
     val h2database = "1.4.197"
     val pureconfig = "0.17.5"
 
-    val spark = "3.2.4"
+    val spark = "3.3.0"
     val sparkXml = "0.17.0"
     val fasterxml = "2.12.3"
     val embeddedKafka = "3.6.1"

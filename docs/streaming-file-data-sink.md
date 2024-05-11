@@ -43,7 +43,7 @@ val dataframe = data.streamingSink(sourceConfiguration).write
   - possible values are:  `xml`, `csv`, `json`, `parquet`, `avro`, `orc` and `text`
 - `path` **Required**
 - `trigger` *Optional*
-   - `type`: possible values: "continuous", "once", "processing-time" 
+   - `type`: possible values: "continuous", "once", "available-now", "processing-time"
    - `interval`: mandatory for "continuous", "processing-time" 
 - `queryName` *Optional*
 - `partition.columns` *Optional*
