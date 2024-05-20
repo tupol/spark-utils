@@ -6,6 +6,12 @@
 
 _Soon to a repo near you_ :)
 
+### 1.0.0-RC7
+
+- Adapt towards the latest Apache Spark versions from 3.3.x
+- Added `StreamingTrigger.AvailableNow`
+- Build with Spark 3.3.0 and tested against Spark 3.3.0 to 3.5.1
+
 ### 1.0.0-RC6
 
 - Cross compile Scala 2.12 and 2.13

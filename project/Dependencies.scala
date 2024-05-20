@@ -6,23 +6,23 @@ object Dependencies {
     val jvm = "1.8"
     val targetJava = "8"
     val scala_2_12 = "2.12.19"
-    val scala_2_13 = "2.13.13"
+    val scala_2_13 = "2.13.14"
     val scala = scala_2_13
     val crossScala = Seq(scala_2_12, scala_2_13)
     val scalaUtils = "2.0.0"
-    val scalatest = "3.1.1"
-    val scalacheck = "1.15.1"
+    val scalatest = "3.2.18"
+    val scalacheck = "1.18.0"
     val json4s = "3.6.8"
-    val scala_logging = "3.9.2"
+    val scalaLogging = "3.9.2"
     val mockito = "1.14.4"
-    val typesafe_config = "1.4.3"
-    val h2database = "1.4.197"
-    val pureconfig = "0.17.5"
+    val typesafeConfig = "1.4.3"
+    val h2database = "2.2.224"
+    val pureconfig = "0.17.6"
 
     val spark = "3.3.0"
     val sparkXml = "0.17.0"
     val fasterxml = "2.12.3"
-    val embeddedKafka = "3.6.1"
+    val embeddedKafka = "3.7.0"
     val snappy = "1.1.8.4"
   }
 
@@ -58,7 +58,7 @@ object Dependencies {
 
   val CoreDependencies: Seq[ModuleID] =  Seq(
     "org.tupol" %% "scala-utils-core" % Versions.scalaUtils,
-    "com.typesafe" % "config" % Versions.typesafe_config
+    "com.typesafe" % "config" % Versions.typesafeConfig
   )
 
   val IoConfigzDependencies: Seq[ModuleID] =  Seq(
