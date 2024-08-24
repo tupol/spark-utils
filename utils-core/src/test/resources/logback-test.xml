@@ -1,0 +1,15 @@
+<configuration scan="true">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{ISO8601} %-6level %logger{36} %X{sourceThread} %X{pekkoSource} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache" level="ERROR"/>
+    <logger name="org.eclipse" level="ERROR"/>
+    <logger name="org.sparkproject" level="ERROR" />
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
