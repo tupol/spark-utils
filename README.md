@@ -30,9 +30,9 @@ for developers to help each other, so please do not be shy and join through [git
 At the moment there are a lot of changes happening to the `spark-utils` project, hopefully for the better.
 
 The latest stable versions, available through Maven Central are
-- Spark 2.4: `0.4.2`
-- Spark 3.0: `0.6.2`
-- Spark 3.x: `1.0.0`
+- Spark 2.4: `0.4.2` to `0.6.2`
+- Spark 3.0: `0.6.2` to `1.0.0-RC6`
+- Spark >= 3.3.0: `1.0.0-RC7` +
 
 The development version is `1.0.0-R6` which is bringing a clean separation between configuration implementation and the
 core, and additionally the [PureConfig] based configuration module that brings the power and features of [PureConfig]
@@ -53,14 +53,14 @@ but as the project will get closer to the final release, there will be more impr
 
 ### Test Results Matrix
 
-| Spark | Scala 2.12 | Scala 2.13 | Report                                              |
-|-------|:----------:|:----------:|-----------------------------------------------------|
-| 3.0.3 |    YES     |    N/A     | [3.0.3](docs/test-results/test_1.0.0-RC6_3.0.3.out) |
-| 3.1.3 |    YES     |    N/A     | [3.1.3](docs/test-results/test_1.0.0-RC6_3.1.3.out) |
-| 3.2.4 |    YES     |    YES     | [3.2.4](docs/test-results/test_1.0.0-RC6_3.2.4.out) |
-| 3.3.4 |    YES     |    YES     | [3.3.4](docs/test-results/test_1.0.0-RC6_3.3.4.out) |
-| 3.4.2 |    YES     |    YES     | [3.4.2](docs/test-results/test_1.0.0-RC6_3.4.2.out) |
-| 3.5.1 |    YES     |    YES     | [3.5.1](docs/test-results/test_1.0.0-RC6_3.5.1.out) |
+| Spark | Scala 2.12 | Scala 2.13 | Report 1.0.0-RC6                                    | Report 1.0.0-RC7                                    |
+|-------|:----------:|:----------:|-----------------------------------------------------|-----------------------------------------------------|
+| 3.0.3 |    YES     |    N/A     | [3.0.3](docs/test-results/test_1.0.0-RC6_3.0.3.out) | N/A                                                 |
+| 3.1.3 |    YES     |    N/A     | [3.1.3](docs/test-results/test_1.0.0-RC6_3.1.3.out) | N/A                                                 |
+| 3.2.4 |    YES     |    YES     | [3.2.4](docs/test-results/test_1.0.0-RC6_3.2.4.out) | N/A                                                 |
+| 3.3.4 |    YES     |    YES     | [3.3.4](docs/test-results/test_1.0.0-RC6_3.3.4.out) | [3.3.4](docs/test-results/test_1.0.0-RC7_3.3.4.out) |
+| 3.4.2 |    YES     |    YES     | [3.4.2](docs/test-results/test_1.0.0-RC6_3.4.2.out) | [3.4.2](docs/test-results/test_1.0.0-RC7_3.4.2.out) |
+| 3.5.1 |    YES     |    YES     | [3.5.1](docs/test-results/test_1.0.0-RC6_3.5.1.out) | [3.5.1](docs/test-results/test_1.0.0-RC7_3.5.1.out) |
 
 
 ## Description ##
@@ -214,8 +214,9 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 - Group id / organization: `org.tupol`
 - Artifact id / name: `spark-utils`
 - Latest stable versions:
-  - Spark 2.4: `0.4.2`
-  - Spark 3.0: `0.6.2`
+  - Spark 2.4: `0.4.2` to `0.6.2`
+  - Spark 3.0: `0.6.2` to `1.0.0-RC7`
+  - Spark 3.3: `1.0.0-RC7` to
 
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
@@ -264,7 +265,13 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**1.0.0-RCX**
+**1.0.0-RC7**
+
+- Adapt towards the latest Apache Spark versions from 3.3.x
+- Added `StreamingTrigger.AvailableNow`
+- Build with Spark 3.3.x and tested against Spark 3.3.0 to 3.5.1 
+
+**1.0.0-RC1 to 1.0.0-RC6**
 
 Major library redesign
 - Cross compile Scala 2.12 and 2.13
@@ -298,7 +305,7 @@ This code is open source software licensed under the [MIT License](LICENSE).
 [scala]: https://scala-lang.org/
 [spark]: https://spark.apache.org/
 [spark-utils-g8]: https://github.com/tupol/spark-apps.seed.g8
-[maven-central]: https://mvnrepository.com/artifact/org.tupol/spark-utils
+[maven-central]: https://mvnrepository.com/artifact/org.tupol/spark-utils-core
 [spark-packages]: https://spark-packages.org/package/tupol/spark-utils
 [license]: https://github.com/tupol/spark-utils/blob/master/LICENSE
 [travis.org]: https://travis-ci.com/tupol/spark-utils 

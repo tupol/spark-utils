@@ -23,6 +23,16 @@ class TriggerExtractorSpec extends AnyFunSuite with Matchers {
     config.extract[Trigger]("trigger") shouldBe Success(Trigger.Once)
   }
 
+  test("TriggerExtractor -> Trigger.AvailableNow()") {
+    val configStr =
+      """
+        |trigger.type="available-now"
+      """.stripMargin
+    val config = ConfigFactory.parseString(configStr)
+
+    config.extract[Trigger]("trigger") shouldBe Success(Trigger.AvailableNow())
+  }
+
   test("TriggerExtractor -> Trigger.Continuous() Failure") {
     val configStr =
       """

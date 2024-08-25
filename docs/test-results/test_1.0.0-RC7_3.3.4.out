@@ -1,0 +1,288 @@
+[info] Loading settings for project global-plugins from gpg.sbt ...
+[info] Loading global plugins from /Users/oliver/.sbt/1.0/plugins
+[info] Loading settings for project spark-utils-build from plugins.sbt ...
+[info] Loading project definition from /Users/oliver/work/tmp/spark-utils/project
+[info] Loading settings for project spark-utils from version.sbt,build.sbt ...
+[info] Set current project to spark-utils (in build file:/Users/oliver/work/tmp/spark-utils/)
+[info] Forcing Scala version to 2.12.19 on all projects.
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/oliver/work/tmp/spark-utils/)
+[success] Total time: 0 s, completed 20 May 2024, 11:20:16
+[info] Forcing Scala version to 2.13.14 on all projects.
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/oliver/work/tmp/spark-utils/)
+[success] Total time: 0 s, completed 20 May 2024, 11:20:17
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/oliver/work/tmp/spark-utils/)
+[info] Forcing Scala version to 2.12.19 on all projects.
+[info] Reapplying settings...
+[info] Set current project to spark-utils (in build file:/Users/oliver/work/tmp/spark-utils/)
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[info] Compiling 15 Scala sources to /Users/oliver/work/tmp/spark-utils/utils-core/target/scala-2.12/classes ...
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.
+[info] Done compiling.
+[info] Compiling 29 Scala sources to /Users/oliver/work/tmp/spark-utils/utils-core/target/scala-2.12/test-classes ...
+[info] Compiling 20 Scala sources to /Users/oliver/work/tmp/spark-utils/utils-io/target/scala-2.12/classes ...
+[info] Done compiling.
+[info] Compiling 7 Scala sources to /Users/oliver/work/tmp/spark-utils/utils-io-pureconfig/target/scala-2.12/classes ...
+[info] Done compiling.
+[info] Compiling 27 Scala sources to /Users/oliver/work/tmp/spark-utils/utils-io/target/scala-2.12/test-classes ...
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should not change the name if the name is Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should change the name if the name is not Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should produce shorter names if the name is not Avro compliant and replaceWith, prefix and suffix are empty: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should produce same size names if the name is not Avro compliant and replaceWith is a single char, prefix and suffix are empty: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should prepend the specified prefix if the name is not Avro compliant: OK, passed 100 tests.
+[info] + makeNameAvroCompliant.makeNameAvroCompliant should append the specified suffix if the name is not Avro compliant: OK, passed 100 tests.
+[info] ConfigSpec:
+[info] FuzzyTypesafeConfigBuilder.getConfiguration
+24/05/20 11:20:36 INFO SparkContext: Running Spark version 3.3.4
+24/05/20 11:20:36 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+24/05/20 11:20:36 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:36 INFO ResourceUtils: No custom resources configured for spark.driver.
+24/05/20 11:20:36 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:36 INFO SparkContext: Submitted application: ConfigSpec
+24/05/20 11:20:36 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+24/05/20 11:20:36 INFO ResourceProfile: Limiting resource is cpu
+24/05/20 11:20:36 INFO ResourceProfileManager: Added ResourceProfile id: 0
+24/05/20 11:20:36 INFO SecurityManager: Changing view acls to: oliver
+24/05/20 11:20:36 INFO SecurityManager: Changing modify acls to: oliver
+24/05/20 11:20:36 INFO SecurityManager: Changing view acls groups to: 
+24/05/20 11:20:36 INFO SecurityManager: Changing modify acls groups to: 
+24/05/20 11:20:36 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(oliver); groups with view permissions: Set(); users  with modify permissions: Set(oliver); groups with modify permissions: Set()
+24/05/20 11:20:36 INFO Utils: Successfully started service 'sparkDriver' on port 58580.
+24/05/20 11:20:36 INFO SparkEnv: Registering MapOutputTracker
+24/05/20 11:20:36 INFO SparkEnv: Registering BlockManagerMaster
+24/05/20 11:20:36 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+24/05/20 11:20:36 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+24/05/20 11:20:36 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+24/05/20 11:20:37 INFO DiskBlockManager: Created local directory at /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/blockmgr-32a6e7f7-83e2-4962-9c31-383a5d89a73d
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore started with capacity 4.6 GiB
+24/05/20 11:20:37 INFO SparkEnv: Registering OutputCommitCoordinator
+24/05/20 11:20:37 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193236582
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-c859b400-189f-479e-9ec8-f6f40a8a5a66/app.conf
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193236582
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-c859b400-189f-479e-9ec8-f6f40a8a5a66/fun.conf
+24/05/20 11:20:37 INFO Executor: Starting executor ID driver on host mbd0r6gq0w6p.lan
+24/05/20 11:20:37 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193236582
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-c859b400-189f-479e-9ec8-f6f40a8a5a66/app.conf
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193236582
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-c859b400-189f-479e-9ec8-f6f40a8a5a66/fun.conf
+24/05/20 11:20:37 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 58583.
+24/05/20 11:20:37 INFO NettyBlockTransferService: Server created on localhost:58583
+24/05/20 11:20:37 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+24/05/20 11:20:37 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, localhost, 58583, None)
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Registering block manager localhost:58583 with 4.6 GiB RAM, BlockManagerId(driver, localhost, 58583, None)
+24/05/20 11:20:37 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, localhost, 58583, None)
+24/05/20 11:20:37 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, localhost, 58583, None)
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Arguments:
+MockApp.whoami="app.param"
+MockApp.param="param"
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-c859b400-189f-479e-9ec8-f6f40a8a5a66/app.conf is available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: successfully parsed at '/private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-c859b400-189f-479e-9ec8-f6f40a8a5a66/app.conf'
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Local configuration file: /Users/oliver/work/tmp/spark-utils/utils-core/app.conf is not available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Successfully parsed the classpath configuration at 'app.conf'
+24/05/20 11:20:37 WARN config$FuzzyTypesafeConfigBuilder: Failed to resolve the variables locally.
+24/05/20 11:20:37 WARN config$FuzzyTypesafeConfigBuilder: Failed to resolve the variables from the arguments.
+[info] - should load first the app params then defaults to the Spark app.conf file, then to the app.conf in the classpath and then to reference.conf
+24/05/20 11:20:37 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
+24/05/20 11:20:37 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore cleared
+24/05/20 11:20:37 INFO BlockManager: BlockManager stopped
+24/05/20 11:20:37 INFO BlockManagerMaster: BlockManagerMaster stopped
+24/05/20 11:20:37 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+24/05/20 11:20:37 INFO SparkContext: Successfully stopped SparkContext
+24/05/20 11:20:37 INFO SparkContext: Running Spark version 3.3.4
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO ResourceUtils: No custom resources configured for spark.driver.
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO SparkContext: Submitted application: ConfigSpec
+24/05/20 11:20:37 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+24/05/20 11:20:37 INFO ResourceProfile: Limiting resource is cpu
+24/05/20 11:20:37 INFO ResourceProfileManager: Added ResourceProfile id: 0
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(oliver); groups with view permissions: Set(); users  with modify permissions: Set(oliver); groups with modify permissions: Set()
+24/05/20 11:20:37 INFO Utils: Successfully started service 'sparkDriver' on port 58585.
+24/05/20 11:20:37 INFO SparkEnv: Registering MapOutputTracker
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMaster
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+24/05/20 11:20:37 INFO DiskBlockManager: Created local directory at /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/blockmgr-17fe500f-d25b-416f-b090-e7282a91c280
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore started with capacity 4.6 GiB
+24/05/20 11:20:37 INFO SparkEnv: Registering OutputCommitCoordinator
+24/05/20 11:20:37 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237510
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-68b12442-7df3-4fe5-a39a-0f6eb026ccfb/app.conf
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193237510
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-68b12442-7df3-4fe5-a39a-0f6eb026ccfb/fun.conf
+24/05/20 11:20:37 INFO Executor: Starting executor ID driver on host mbd0r6gq0w6p.lan
+24/05/20 11:20:37 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237510
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-68b12442-7df3-4fe5-a39a-0f6eb026ccfb/app.conf
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193237510
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-68b12442-7df3-4fe5-a39a-0f6eb026ccfb/fun.conf
+24/05/20 11:20:37 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 58586.
+24/05/20 11:20:37 INFO NettyBlockTransferService: Server created on localhost:58586
+24/05/20 11:20:37 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+24/05/20 11:20:37 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, localhost, 58586, None)
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Registering block manager localhost:58586 with 4.6 GiB RAM, BlockManagerId(driver, localhost, 58586, None)
+24/05/20 11:20:37 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, localhost, 58586, None)
+24/05/20 11:20:37 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, localhost, 58586, None)
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Arguments:
+MockFun.param="param"
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-68b12442-7df3-4fe5-a39a-0f6eb026ccfb/fun.conf is available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: successfully parsed at '/private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-68b12442-7df3-4fe5-a39a-0f6eb026ccfb/fun.conf'
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Local configuration file: /Users/oliver/work/tmp/spark-utils/utils-core/fun.conf is not available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Successfully parsed the classpath configuration at 'fun.conf'
+24/05/20 11:20:37 WARN config$FuzzyTypesafeConfigBuilder: Failed to resolve the variables locally.
+24/05/20 11:20:37 WARN config$FuzzyTypesafeConfigBuilder: Failed to resolve the variables from the arguments.
+[info] - should load first the app.conf then defaults to reference.conf
+24/05/20 11:20:37 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
+24/05/20 11:20:37 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore cleared
+24/05/20 11:20:37 INFO BlockManager: BlockManager stopped
+24/05/20 11:20:37 INFO BlockManagerMaster: BlockManagerMaster stopped
+24/05/20 11:20:37 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+24/05/20 11:20:37 INFO SparkContext: Successfully stopped SparkContext
+24/05/20 11:20:37 INFO SparkContext: Running Spark version 3.3.4
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO ResourceUtils: No custom resources configured for spark.driver.
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO SparkContext: Submitted application: ConfigSpec
+24/05/20 11:20:37 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+24/05/20 11:20:37 INFO ResourceProfile: Limiting resource is cpu
+24/05/20 11:20:37 INFO ResourceProfileManager: Added ResourceProfile id: 0
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(oliver); groups with view permissions: Set(); users  with modify permissions: Set(oliver); groups with modify permissions: Set()
+24/05/20 11:20:37 INFO Utils: Successfully started service 'sparkDriver' on port 58587.
+24/05/20 11:20:37 INFO SparkEnv: Registering MapOutputTracker
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMaster
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+24/05/20 11:20:37 INFO DiskBlockManager: Created local directory at /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/blockmgr-0c3f398e-e3b6-4d89-85ef-e01270da908b
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore started with capacity 4.6 GiB
+24/05/20 11:20:37 INFO SparkEnv: Registering OutputCommitCoordinator
+24/05/20 11:20:37 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237602
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-2138a7ef-c3d6-46a4-bea1-5b216b07acb2/app.conf
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193237602
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-2138a7ef-c3d6-46a4-bea1-5b216b07acb2/fun.conf
+24/05/20 11:20:37 INFO Executor: Starting executor ID driver on host mbd0r6gq0w6p.lan
+24/05/20 11:20:37 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237602
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-2138a7ef-c3d6-46a4-bea1-5b216b07acb2/app.conf
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193237602
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-2138a7ef-c3d6-46a4-bea1-5b216b07acb2/fun.conf
+24/05/20 11:20:37 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 58588.
+24/05/20 11:20:37 INFO NettyBlockTransferService: Server created on localhost:58588
+24/05/20 11:20:37 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+24/05/20 11:20:37 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, localhost, 58588, None)
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Registering block manager localhost:58588 with 4.6 GiB RAM, BlockManagerId(driver, localhost, 58588, None)
+24/05/20 11:20:37 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, localhost, 58588, None)
+24/05/20 11:20:37 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, localhost, 58588, None)
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Arguments:
+MockApp.param="param"
+my.var="MYVAR"
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-2138a7ef-c3d6-46a4-bea1-5b216b07acb2/app.conf is available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: successfully parsed at '/private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-2138a7ef-c3d6-46a4-bea1-5b216b07acb2/app.conf'
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Local configuration file: /Users/oliver/work/tmp/spark-utils/utils-core/app.conf is not available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Successfully parsed the classpath configuration at 'app.conf'
+[info] - should perform variable substitution
+24/05/20 11:20:37 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
+24/05/20 11:20:37 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore cleared
+24/05/20 11:20:37 INFO BlockManager: BlockManager stopped
+24/05/20 11:20:37 INFO BlockManagerMaster: BlockManagerMaster stopped
+24/05/20 11:20:37 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+24/05/20 11:20:37 INFO SparkContext: Successfully stopped SparkContext
+24/05/20 11:20:37 INFO SparkContext: Running Spark version 3.3.4
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO ResourceUtils: No custom resources configured for spark.driver.
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO SparkContext: Submitted application: ConfigSpec
+24/05/20 11:20:37 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+24/05/20 11:20:37 INFO ResourceProfile: Limiting resource is cpu
+24/05/20 11:20:37 INFO ResourceProfileManager: Added ResourceProfile id: 0
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(oliver); groups with view permissions: Set(); users  with modify permissions: Set(oliver); groups with modify permissions: Set()
+24/05/20 11:20:37 INFO Utils: Successfully started service 'sparkDriver' on port 58589.
+24/05/20 11:20:37 INFO SparkEnv: Registering MapOutputTracker
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMaster
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+24/05/20 11:20:37 INFO DiskBlockManager: Created local directory at /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/blockmgr-2b8178ff-d119-49b6-8dcc-c57c3a145843
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore started with capacity 4.6 GiB
+24/05/20 11:20:37 INFO SparkEnv: Registering OutputCommitCoordinator
+24/05/20 11:20:37 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237709
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-76590535-9c2e-4ccf-a99d-6a20319d9807/app.conf
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193237709
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-76590535-9c2e-4ccf-a99d-6a20319d9807/fun.conf
+24/05/20 11:20:37 INFO Executor: Starting executor ID driver on host mbd0r6gq0w6p.lan
+24/05/20 11:20:37 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237709
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-76590535-9c2e-4ccf-a99d-6a20319d9807/app.conf
+24/05/20 11:20:37 INFO Executor: Fetching file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf with timestamp 1716193237709
+24/05/20 11:20:37 INFO Utils: /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockFun/fun.conf has been previously copied to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-76590535-9c2e-4ccf-a99d-6a20319d9807/fun.conf
+24/05/20 11:20:37 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 58590.
+24/05/20 11:20:37 INFO NettyBlockTransferService: Server created on localhost:58590
+24/05/20 11:20:37 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+24/05/20 11:20:37 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, localhost, 58590, None)
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Registering block manager localhost:58590 with 4.6 GiB RAM, BlockManagerId(driver, localhost, 58590, None)
+24/05/20 11:20:37 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, localhost, 58590, None)
+24/05/20 11:20:37 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, localhost, 58590, None)
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Arguments:
+MockApp.param=param
+MockApp.my.var=MYVAR
+MockApp.substitute.my-other-var=MY_OTHER_VAR
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: SparkFiles configuration file: /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-76590535-9c2e-4ccf-a99d-6a20319d9807/MockApp/app2.conf is not available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Local configuration file: /Users/oliver/work/tmp/spark-utils/utils-core/MockApp/app2.conf is not available.
+24/05/20 11:20:37 INFO config$FuzzyTypesafeConfigBuilder: Successfully parsed the classpath configuration at 'MockApp/app2.conf'
+[info] - should perform variable substitution and addition
+24/05/20 11:20:37 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
+24/05/20 11:20:37 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore cleared
+24/05/20 11:20:37 INFO BlockManager: BlockManager stopped
+24/05/20 11:20:37 INFO BlockManagerMaster: BlockManagerMaster stopped
+24/05/20 11:20:37 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+24/05/20 11:20:37 INFO SparkContext: Successfully stopped SparkContext
+[info] SimpleTypesafeConfigBuilder
+24/05/20 11:20:37 INFO SparkContext: Running Spark version 3.3.4
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO ResourceUtils: No custom resources configured for spark.driver.
+24/05/20 11:20:37 INFO ResourceUtils: ==============================================================
+24/05/20 11:20:37 INFO SparkContext: Submitted application: ConfigSpec
+24/05/20 11:20:37 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+24/05/20 11:20:37 INFO ResourceProfile: Limiting resource is cpu
+24/05/20 11:20:37 INFO ResourceProfileManager: Added ResourceProfile id: 0
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls to: oliver
+24/05/20 11:20:37 INFO SecurityManager: Changing view acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: Changing modify acls groups to: 
+24/05/20 11:20:37 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(oliver); groups with view permissions: Set(); users  with modify permissions: Set(oliver); groups with modify permissions: Set()
+24/05/20 11:20:37 INFO Utils: Successfully started service 'sparkDriver' on port 58591.
+24/05/20 11:20:37 INFO SparkEnv: Registering MapOutputTracker
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMaster
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+24/05/20 11:20:37 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+24/05/20 11:20:37 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+24/05/20 11:20:37 INFO DiskBlockManager: Created local directory at /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/blockmgr-c77b907d-6cee-4b17-bb76-2fb865251cac
+24/05/20 11:20:37 INFO MemoryStore: MemoryStore started with capacity 4.6 GiB
+24/05/20 11:20:37 INFO SparkEnv: Registering OutputCommitCoordinator
+24/05/20 11:20:37 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+24/05/20 11:20:37 INFO SparkContext: Added file /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf at file:/Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf with timestamp 1716193237830
+24/05/20 11:20:37 INFO Utils: Copying /Users/oliver/work/tmp/spark-utils/utils-core/src/test/resources/MockApp/app.conf to /private/var/folders/zn/68snk5x50wx12b90vxp6347c0000gn/T/spark-9309dae5-bf3f-4d58-aac5-82d4ba779994/userFiles-9984712e-57a0-48aa-b267-ab16e8d20909/app.conf

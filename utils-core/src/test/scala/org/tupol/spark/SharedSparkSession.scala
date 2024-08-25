@@ -29,6 +29,7 @@ trait SharedSparkSession extends BeforeAndAfterAll {
       .appName(appName)
       .master(master)
       .config("spark.driver.host", "localhost")
+      .config("spark.driver.bindAddress", "127.0.0.1")
 
   def sparkSessionBuilder: SparkSession.Builder =
     sparkConfig
@@ -39,6 +40,11 @@ trait SharedSparkSession extends BeforeAndAfterAll {
   implicit lazy val sc: SparkContext = spark.sparkContext
 
   implicit lazy val sqlContext: SQLContext = spark.sqlContext
+
+  override protected def beforeAll(): Unit = {
+    super.beforeAll()
+    spark.sparkContext.setLogLevel("OFF")
+  }
 
   override def afterAll(): Unit = {
     Try(super.afterAll())

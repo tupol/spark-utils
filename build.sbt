@@ -6,21 +6,21 @@ import sbtrelease.ReleaseStateTransformations.{checkSnapshotDependencies, commit
 crossScalaVersions := Nil
 
 lazy val basicSettings = Seq(
-  organization := "org.tupol",
-  name := "spark-utils",
-  scalaVersion := Versions.scala,
-  crossScalaVersions := Versions.crossScala,
-  scalacOptions ++= Seq(
+  ThisBuild / organization := "org.tupol",
+  ThisBuild / name := "spark-utils",
+  ThisBuild / scalaVersion := Versions.scala,
+  ThisBuild / crossScalaVersions := Versions.crossScala,
+  ThisBuild / scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
     "-unchecked",
     s"-target:jvm-${Versions.jvm}",
   ),
-  updateOptions := updateOptions.value.withCachedResolution(true),
-  libraryDependencies ++= CoreTestDependencies,
-  dependencyOverrides ++= NettyOverrides,
-  resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases",
-  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  ThisBuild / updateOptions := updateOptions.value.withCachedResolution(true),
+  ThisBuild / libraryDependencies ++= CoreTestDependencies,
+  ThisBuild / dependencyOverrides ++= NettyOverrides,
+  ThisBuild / resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases",
+  ThisBuild / resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   Test / parallelExecution := false,
   Test / fork := true,
   Test / javaOptions ++= Seq(
@@ -34,23 +34,23 @@ lazy val basicSettings = Seq(
 lazy val publishSettings = Seq(
   isSnapshot := version.value.trim.endsWith("SNAPSHOT"),
   // Nexus (see https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html)
-  publishTo := {
+  ThisBuild / publishTo in ThisBuild := {
     val repo = "https://oss.sonatype.org/"
     if (isSnapshot.value) Some("snapshots" at repo + "content/repositories/snapshots")
     else Some("releases" at repo + "service/local/staging/deploy/maven2")
   },
-  publishArtifact in Test := true,
-  publishMavenStyle := true,
-  pomIncludeRepository := { _ => false },
-  licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT")),
-  homepage := Some(url("https://github.com/tupol/spark-utils")),
-  scmInfo := Some(
+  ThisBuild / publishArtifact in Test := true,
+  ThisBuild / publishMavenStyle := true,
+  ThisBuild / pomIncludeRepository := { _ => false },
+  ThisBuild / licenses := Seq("MIT-style" -> url("https://opensource.org/licenses/MIT")),
+  ThisBuild / homepage := Some(url("https://github.com/tupol/spark-utils")),
+  ThisBuild / scmInfo := Some(
     ScmInfo(
       url("https://github.com/tupol/spark-utils.git"),
       "scm:git@github.com:tupol/spark-utils.git"
     )
   ),
-  developers := List(
+  ThisBuild / developers := List(
     Developer(
       id = "tupol",
       name = "Tupol",
