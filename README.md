@@ -221,12 +221,12 @@ Spark Utils is published to [Maven Central][maven-central] and [Spark Packages][
 Usage with SBT, adding a dependency to the latest version of tools to your sbt build definition file:
 
 ```scala
-libraryDependencies += "org.tupol" %% "spark-utils-io-pureconfig" % "1.0.0-RC6"
+libraryDependencies += "org.tupol" %% "spark-utils-io-pureconfig" % "1.0.0-RC8"
 ```
 
 Include this package in your Spark Applications using `spark-shell` or `spark-submit`
 ```bash
-$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.12:1.0.0-RC6
+$SPARK_HOME/bin/spark-shell --packages org.tupol:spark-utils_2.12:1.0.0-RC8
 ```
 
 
@@ -265,13 +265,11 @@ g8 tupol/spark-apps.seed.g8 --name="My Project" --appname="My App" --organizatio
 
 ## What's new? ##
 
-**1.0.0-RC7**
+**1.0.0-RC8**
 
-- Adapt towards the latest Apache Spark versions from 3.3.x
-- Added `StreamingTrigger.AvailableNow`
-- Build with Spark 3.3.x and tested against Spark 3.3.0 to 3.5.1 
+- **Breaking Change**! Extracted `SparkApp` with the TypesafeConfig integration into a separate module: `spark-utils-app` 
 
-**1.0.0-RC1 to 1.0.0-RC6**
+**1.0.0-RC1 to 1.0.0-RC7**
 
 Major library redesign
 - Cross compile Scala 2.12 and 2.13
@@ -286,6 +284,9 @@ Major library redesign
 - Added `SparkSessionOps.streamingSource`
 - Refactored `TypesafeConfigBuilder`, which has two implementations now: `SimpleTypesafeConfigBuilder` and `FuzzyTypesafeConfigBuilder`
 - Small improvements to `SharedSparkSession`
+- Adapt towards the latest Apache Spark versions from 3.3.x
+- Added `StreamingTrigger.AvailableNow`
+- Build with Spark 3.3.x and tested against Spark 3.3.0 to 3.5.1
 - Documentation improvements  
 
 

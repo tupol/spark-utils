@@ -23,9 +23,7 @@ SOFTWARE.
  */
 package org.tupol.spark
 
-import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
-import org.tupol.spark.config.{ renderConfig, FuzzyTypesafeConfigBuilder, TypesafeConfigBuilder }
 import org.tupol.utils.implicits._
 
 import scala.util.Try
@@ -37,7 +35,7 @@ import scala.util.Try
  * @tparam Result The output type of the run function.
  *
  */
-trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with TypesafeConfigBuilder with Logging {
+trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
 
   /**
    * This is the key for basically choosing a certain app and it should have
@@ -47,23 +45,17 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
    */
   def appName: String = simpleClassName(this)
 
-  /** The configuration file that the application will look for in order to resolve the configuration.
-   * This will be further used by the `getApplicationConfiguration` method */
-  def configurationFileName = "application.conf"
-
   /**
    * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
    */
-  def createContext(config: Config): Try[Context]
+  def createContext(args: Array[String]): Try[Context]
 
   /** Any object extending this trait becomes a runnable application. */
   def main(implicit args: Array[String]): Unit = {
     log.info(s"Running $appName")
     val outcome = for {
-      config    <- loadConfiguration(args, configurationFileName)
-      appConfig <- getApplicationConfiguration(config)
-      context   <- createContext(appConfig)
+      context   <- createContext(args)
       spark     = createSparkSession(appName)
       result    <- run(spark, context)
     } yield result
@@ -76,31 +68,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
     outcome.get
   }
 
-  override def loadConfiguration(args: Seq[String], configurationFileName: String): Try[Config] = {
-    val fuzzyArgs = (args ++ args.map(arg => s"$appName.$arg"))
-    FuzzyTypesafeConfigBuilder.loadConfiguration(fuzzyArgs, configurationFileName)
-  }
-
   protected def createSparkSession(appName: String) =
     SparkSession.builder().appName(appName).getOrCreate()
-
-  /**
-   * Extract and assemble a configuration object out of the global configuration.
-   * It will try to extract the configuration from the application name; if tha fails it will default back to the
-   * root configuration, on the off-chance that the application configuration was not structured inside a named root.
-   *
-   * @param config global configuration object, that should contain also a root configuration with the same name as the `appName`
-   * @return the application configuration object
-   */
-  def getApplicationConfiguration(config: Config): Try[Config] =
-    Try(config.getConfig(appName))
-      .logSuccess(config => log.debug(s"$appName: Configuration:\n${renderConfig(config)}"))
-      .recover {
-        case t =>
-          log.error(
-            s"$appName: Failed to load application configuration from the $appName path; using the root configuration instead; ${t.getMessage}"
-          )
-          config
-      }
 
 }

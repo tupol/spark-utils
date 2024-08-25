@@ -99,6 +99,19 @@ lazy val `spark-utils-core` = (project in file("utils-core"))
     Test / publishArtifact := true
   )
 
+lazy val `spark-utils-app` = (project in file("utils-app"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "spark-utils-app",
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime, BuildInfoOption.ToMap, BuildInfoOption.ToJson),
+    buildInfoPackage := "org.tupol.spark.app.info",
+    libraryDependencies ++= ProvidedSparkCoreDependencies,
+    libraryDependencies ++= AppDependencies
+  )
+  .dependsOn(`spark-utils-core` % "test->test;compile->compile")
+
 lazy val `spark-utils-io` = (project in file("utils-io"))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)

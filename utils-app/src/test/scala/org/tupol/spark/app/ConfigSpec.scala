@@ -1,8 +1,9 @@
-package org.tupol.spark
+package org.tupol.spark.app
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.tupol.spark.config.{ FuzzyTypesafeConfigBuilder, SimpleTypesafeConfigBuilder }
+import org.tupol.spark.LocalSparkSession
+import org.tupol.spark.app.config._
 
 import java.io.File
 import scala.util.Try

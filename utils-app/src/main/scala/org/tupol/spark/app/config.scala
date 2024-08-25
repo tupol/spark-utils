@@ -1,8 +1,9 @@
-package org.tupol.spark
+package org.tupol.spark.app
 
 import org.tupol.utils.implicits._
-import com.typesafe.config.{ Config, ConfigFactory, ConfigParseOptions, ConfigRenderOptions, ConfigResolveOptions }
+import com.typesafe.config.{Config, ConfigFactory, ConfigParseOptions, ConfigRenderOptions, ConfigResolveOptions}
 import org.apache.spark.SparkFiles
+import org.tupol.spark.Logging
 
 import scala.io.Source
 import scala.util.Try

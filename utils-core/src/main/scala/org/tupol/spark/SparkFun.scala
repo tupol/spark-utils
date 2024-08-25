@@ -1,6 +1,5 @@
 package org.tupol.spark
 
-import com.typesafe.config.Config
 import org.apache.spark.annotation.Experimental
 
 import scala.util.Try
@@ -17,6 +16,6 @@ import scala.util.Try
  *
  */
 @Experimental
-abstract class SparkFun[Context, Result](contextFactory: Config => Try[Context]) extends SparkApp[Context, Result] {
-  final override def createContext(config: Config): Try[Context] = contextFactory(config)
+abstract class SparkFun[Context, Result](contextFactory: Array[String] => Try[Context]) extends SparkApp[Context, Result] {
+  final override def createContext(args: Array[String]): Try[Context] = contextFactory(args)
 }

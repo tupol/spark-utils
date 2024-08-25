@@ -1,12 +1,14 @@
 # SparkApp
 
-
 ## Description
 
 This is the main workhorse for our Spark applications, providing most of the infrastructure for building
 a Spark application.
 
+This is provided in the `spark-utils-core` module.
+
 ```scala
+package org.tupol.spark
 /**
  * Trivial trait for executing basic Spark runnable applications.
  *
@@ -14,7 +16,7 @@ a Spark application.
  * @tparam Result The output type of the run function.
  *
  */
-trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with TypesafeConfigBuilder with Logging {
+trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Logging {
 
   /**
    * This is the key for basically choosing a certain app and it should have
@@ -28,7 +30,7 @@ trait SparkApp[Context, Result] extends SparkRunnable[Context, Result] with Type
    * This function needs to be implemented and should contain all logic related
    * to parsing the configuration settings and building the application context.
    */
-  def createContext(config: Config): Try[Context]
+  def createContext(args: Array[String]): Try[Context]
 
 
 }
@@ -54,8 +56,11 @@ an actual Spark application. The following steps will be performed:
 4. Logging the steps and the success or failure of the application; including the entire configuration used.
 5. Return the result and exit
 
+## `org.tupol.spark.app.SparkApp`
 
-## Configuration
+This is provided in the `spark-utils-app` module.
+
+### Configuration
 
 The `SparkApp` configuration is done through the `config: Config` parameter of the `run()` function.
 
@@ -77,10 +82,10 @@ The `application.conf` and the `reference.conf` are acceptable in Java propertie
 formats.
 See also the [Typesafe Config](https://github.com/typesafehub/config) project for more details.
 
-The way the configuration is loaded can be changed, by changing the implementation of the `getConfiguration` method.
+The way the configuration is loaded can be changed, by changing the implementation of the `loadConfiguration` method.
 
 ```scala
-override def getConfiguration(args: Array[String], configurationFileName: String): Try[Config]
+override def loadConfiguration(args: Array[String], configurationFileName: String): Try[Config]
 ```
 
 For example, it can be overwritten to use the `SimpleTypesafeConfigBuilder` implementation or any other custom 

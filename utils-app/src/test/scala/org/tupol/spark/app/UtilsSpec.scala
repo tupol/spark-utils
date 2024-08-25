@@ -1,7 +1,8 @@
-package org.tupol.spark.utils
+package org.tupol.spark.app
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import org.tupol.spark.utils.fuzzyLoadTextResourceFile
 
 import scala.util.Failure
 

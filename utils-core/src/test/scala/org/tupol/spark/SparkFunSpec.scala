@@ -1,7 +1,6 @@
 package org.tupol.spark
 
 import java.io.File
-import com.typesafe.config.Config
 import org.apache.spark.sql.SparkSession
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
@@ -9,15 +8,6 @@ import org.scalatest.matchers.should.Matchers
 import scala.util.{ Failure, Success, Try }
 
 class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
-
-  val filesArg = Seq(new File("src/test/resources/MockFun/fun.conf").getAbsolutePath)
-
-  override def sparkConfig: Map[String, String] =
-    // Add the comma separated configuration files to the files property.
-    // There can be just one file with the same name, as they all end up at the same level in the same folder.
-    // There is an exception however, if the files have the same content no exception will be thrown.
-    super.sparkConfig +
-      ("spark.files" -> filesArg.mkString(","))
 
   test("SparkFun.main successfully completes") {
     noException shouldBe thrownBy(MockFun$.main(Array()))
@@ -36,11 +26,11 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
     MockFunFailure.appName shouldBe "MockFunFailure"
   }
 
-  object MockFunConfig extends (Config => Try[String]) {
-    def apply(config: Config): Try[String] = Success("Hello")
+  object MockFunConfig extends (Array[String] => Try[String]) {
+    def apply(args: Array[String]): Try[String] = Success("Hello")
   }
 
-  val contextFactory: Config => Try[String] = (_: Config) => Success("Hello")
+  val contextFactory: Array[String] => Try[String] = (_: Array[String]) => Success("Hello")
 
   object MockFun$ extends SparkFun[String, Unit](MockFunConfig(_)) {
     override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
@@ -50,7 +40,7 @@ class SparkFunSpec extends AnyFunSuite with Matchers with LocalSparkSession {
     override def run(implicit spark: SparkSession, config: String): Try[Unit] = Success(())
   }
 
-  object MockFunFailure extends SparkFun[String, Unit]((_: Config) => Try("Hello")) {
+  object MockFunFailure extends SparkFun[String, Unit]((_: Array[String]) => Try("Hello")) {
     override def run(implicit spark: SparkSession, config: String): Try[Unit] = Failure(new MockApException)
   }
 
