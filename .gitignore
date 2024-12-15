@@ -5,6 +5,10 @@
 
 # User-specific stuff:
 .idea
+.vscode
+.bloop
+.metals
+metals.sbt
 
 # CMake
 cmake-build-debug/
@@ -52,6 +56,7 @@ target/
 lib_managed/
 src_managed/
 project/boot/
+project/project/
 project/plugins/project/
 .history
 .cache
